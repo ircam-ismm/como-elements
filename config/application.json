@@ -1,0 +1,21 @@
+{
+  "name": "CoMo",
+  "author": "",
+
+  "clients": {
+    "player": {
+      "target": "browser",
+      "default": true
+    },
+    "controller": {
+      "target": "browser",
+      // "default": true
+    },
+    "script-editor": {
+      "target": "browser",
+      // "default": true
+    },
+  },
+
+  "htmlTemplateDirectory": ".build/server/tmpl",
+}
