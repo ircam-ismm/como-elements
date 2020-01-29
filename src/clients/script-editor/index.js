@@ -6,14 +6,12 @@ import ScriptEditorExperience from './ScriptEditorExperience';
 import initQoS from '../utils/qos';
 
 // @todo - move inside CoMo ?
-import audio from 'waves-audio';
-const audioContext = audio.audioContext;
 const config = window.soundworksConfig;
 
 async function init($container, index) {
   try {
     const client = new Client();
-    const como = new CoMo(client, audioContext);
+    const como = new CoMo(client);
 
     // -------------------------------------------------------------------
     // register services

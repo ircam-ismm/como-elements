@@ -84,7 +84,7 @@ class PlayerExperience extends Experience {
     //   this.coMoPlayer.player.set({ sessionId: sessionId });
     // }
 
-    this.coMoPlayer.player.set({ sessionId: 'session-1' });
+    // this.coMoPlayer.player.set({ sessionId: 'session-1' });
 
     this.renderApp();
   }
@@ -116,7 +116,7 @@ class PlayerExperience extends Experience {
           </form>
 
           <select
-            @change="${() => this.eventListeners['player:set']({ sessionId: e.target.value || null })}"
+            @change="${e => this.eventListeners['player:set']({ sessionId: e.target.value || null })}"
           >
             <option value="">select session</option>
             ${project.sessionsOverview.map((session) => {

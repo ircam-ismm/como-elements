@@ -130,7 +130,7 @@
         type: 'AudioDestination',
         options: {
           scriptName: 'fx-gain-energy',
-          volume: -6,
+          volume: -15,
           mute: true,
         },
       },

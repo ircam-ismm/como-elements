@@ -6,9 +6,9 @@ import CoMo from 'como/client';
 import initQoS from '../utils/qos';
 // default views for services
 import PlayerExperience from './PlayerExperience';
-import audio from 'waves-audio';
 
-const audioContext = audio.audioContext;
+const AudioContext = ( window.AudioContext || window.webkitAudioContext)
+const audioContext = new AudioContext();
 const config = window.soundworksConfig;
 // initalize all clients at once for emulated clients
 const platformServices = new Set();

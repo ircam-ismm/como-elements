@@ -5,9 +5,8 @@ import CoMo from 'como/client'
 import ControllerExperience from './ControllerExperience';
 import initQoS from '../utils/qos';
 
-// @todo - move inside CoMo ?
-import audio from 'waves-audio';
-const audioContext = audio.audioContext;
+const AudioContext = ( window.AudioContext || window.webkitAudioContext)
+const audioContext = new AudioContext();
 const config = window.soundworksConfig;
 
 async function init() {

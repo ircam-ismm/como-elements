@@ -88,6 +88,7 @@ class PlayerExperience extends Experience {
       },
       deleteScript: async (e) => {
         const scriptName = this.currentScript.name;
+        console.log(scriptName);
 
         // @todo - this should be more robust, do it server side ?
         if (scriptName === 'default') {

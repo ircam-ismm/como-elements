@@ -16,7 +16,7 @@ class CoMoPlayer {
       for (let name in updates) {
         switch (name) {
           case 'sessionId': {
-            this.createSessionAndGraph(updates[name]);
+            await this.createSessionAndGraph(updates[name]);
             break;
           }
         }

@@ -9,7 +9,7 @@ function audioDefault(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   synth.connect(audioOutNode);
 
   return {
-    process(inputFrame, outputFrame) {
+    process(inputFrame) {
       const label = inputFrame.data['ml-decoder'].likeliest;
       
       if (currentLabel !== label) {
