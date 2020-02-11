@@ -1,5 +1,5 @@
 {
-  name: 'Session 2',
+  name: 'session-2',
   id: 'session-2',
   audioFiles: [
     {
@@ -21,21 +21,28 @@
       url: 'audio/bubble.mp3',
       extension: '.mp3',
       active: true,
-      label: 'a',
+      label: 'bubble.mp3',
     },
     {
       name: 'clicks.mp3',
       url: 'audio/clicks.mp3',
       extension: '.mp3',
       active: true,
-      label: 'b',
+      label: 'clicks.mp3',
+    },
+    {
+      name: 'cluck.mp3',
+      url: 'audio/cluck.mp3',
+      extension: '.mp3',
+      active: true,
+      label: 'cluck.mp3',
     },
     {
       name: 'crashedcan.mp3',
       url: 'audio/crashedcan.mp3',
       extension: '.mp3',
       active: true,
-      label: 'c',
+      label: 'crashedcan.mp3',
     },
     {
       name: 'feu.mp3',
@@ -73,6 +80,10 @@
       {
         id: 'example-recorder',
         type: 'ExampleRecorder',
+      },
+      {
+        id: 'stream-recorder',
+        type: 'StreamRecorder',
       },
       {
         id: 'network-send',
@@ -130,7 +141,7 @@
         type: 'AudioDestination',
         options: {
           scriptName: 'fx-gain-energy',
-          volume: -15,
+          volume: -6,
           mute: true,
         },
       },
