@@ -1,6 +1,6 @@
 # `como-template`
 
-> example / test application for the CoMo framework
+> example / test application for the CoMo framework  
 > cf. https://github.com/ircam-ismm/como
 
 __*WARNING: The CoMo library is under heavy development*__
@@ -17,10 +17,13 @@ npm run watch
 ## Clients 
 
 *notes:*
+
   - *we assume in the description above that the application has been launched in development mode using `npm run watch`, and is thus accessible on the port `8000`*
   - *beware that using motion sensors and smartphones requires an `https` connection and most the evergreen browsers. By default, the application generates a self-signed certificate, which will cause the browser to display a warning.*
 
+
 By default the template application creates 3 different clients:
+
   - the `player`, is the default client and is accessible at `https://your.ip:8000`, this client is dedicated at running on smartphones as it tries to access the motion sensors of the device. For development purposes it can also run on desktop, in such case it will generate random values to emulate the motion sensors (this mode is of poor help to work on and test the IML part the application).
   - the `controller`, is accessible at `https://your.ip:8000/controller`. This client is dedicated at monitoring and controlling every `player` of the application.
   - the `script-editor`, is accessible at `https://your.ip:8000/script-editor`. This client is dedicated at editing sensor data and audio processing and mappings directly in the browser. When a script is edited it is immediatly updated by every client that use it (more on that later).
@@ -29,7 +32,7 @@ By default the template application creates 3 different clients:
 
 The CoMo environment is dedicated to create movement-based distributed Interactive Machine Learning (IML) applications using principaly the sensors (accelerometers and gyroscopes) of smartphones.
 
-A given application can host multiple __projects__ that can themselves host multiple __sessions__
+A given application can host multiple __projects__ that can themselves contain several __sessions__.
 
 A __project__ (cf. `./projects` directory) is defined by several attributes:
   - Its *audio* files (cf. `./projects/[project-name]/audio`) that can be used in every __sessions__
@@ -46,11 +49,11 @@ The source code, to be adapted to your application is located in the `./src` dir
 
 ## Configuring application
 
-*note: the CoMo application make heavy use of the json5 format and library [https://www.npmjs.com/package/json5](https://www.npmjs.com/package/json5), to simplify edition of configuration files.*
+*note: the CoMo application make heavy use of the json5 format and library [https://www.npmjs.com/package/json5](https://www.npmjs.com/package/json5), to simplify the manual edition of configuration files.*
 
 The `./config/como.json` allows to configure the **project** to be used when the application starts. By default, the application uses the `default` **project** (for most applications, a single project should be enough) : 
 
-```json
+```js
 // ./config/como.json
 {
   project: 'default',
@@ -59,7 +62,7 @@ The `./config/como.json` allows to configure the **project** to be used when the
 
 The `./config/como.json` allows to configure the application name et author, as well as to declare available clients :
 
-```json
+```js
 {
   // ./config/application.json
   "name": "CoMo",
