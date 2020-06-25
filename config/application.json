@@ -1,5 +1,5 @@
 {
-  "name": "CoMo",
+  "name": "CoMo Elements",
   "author": "",
 
   "clients": {
@@ -7,13 +7,14 @@
       "target": "browser",
       "default": true
     },
+    "designer": {
+      "target": "browser",
+    },
     "controller": {
       "target": "browser",
-      // "default": true
     },
     "script-editor": {
       "target": "browser",
-      // "default": true
     },
   },
 

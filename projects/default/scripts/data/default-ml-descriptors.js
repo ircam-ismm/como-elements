@@ -1,7 +1,4 @@
 function defaultMLDescriptors(graph, helpers, outputFrame) {
-  // @warning - this script won't be transpiled, so it needs to be compliant
-  // with every javascript engine it might run on (i.e. watch out for Safari!)
-
   // reset outputData, here `outputFrame.data` is an array to comply
   // with the data format accepted by the xmm encoder / decoder
   outputFrame.data = [];
@@ -15,7 +12,7 @@ function defaultMLDescriptors(graph, helpers, outputFrame) {
   ];
 
   // we can do additionnal things here such as creating filters, etc., e.g.
-  // const movingAverage = new helpers.algo.MovingAverage(12);
+  // var movingAverage = new helpers.algo.MovingAverage(12);
 
   // return the function that will executed on each frame
   return function(inputFrame, outputFrame) {

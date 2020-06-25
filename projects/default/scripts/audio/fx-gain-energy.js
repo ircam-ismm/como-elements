@@ -1,7 +1,4 @@
-function audioDefault(graph, helpers, audioInNode, audioOutNode, outputFrame) {
-  // @warning - this script won't be transpiled (for now), so it needs to be compliant
-  // with every javascript engine it might run on.
-  // For example, this example will probably not work on Safari...
+function fxGainEnergy(graph, helpers, audioInNode, audioOutNode, outputFrame) {
 
   const audioContext = graph.como.audioContext;
   const movingAverage = new helpers.algo.MovingAverage(12);
@@ -14,9 +11,9 @@ function audioDefault(graph, helpers, audioInNode, audioOutNode, outputFrame) {
 
   return {
     process(inputFrame, outputFrame) {
-      const now = audioContext.currentTime;
-      const enhancedIntensity = inputFrame.data['intensity'][1];
-      const avg = movingAverage.process(enhancedIntensity);
+      var now = audioContext.currentTime;
+      var enhancedIntensity = inputFrame.data['intensity'][1];
+      var avg = movingAverage.process(enhancedIntensity);
 
       // we know that we have a frame every 20ms so a ramp of 10ms should be safe
       envelop.gain.linearRampToValueAtTime(avg, now + 0.01);

@@ -197,7 +197,7 @@ class ControllerExperience extends Experience {
     }
 
     if (sourceId) {
-      console.log('create strem', sourceId, this.como.client.id);
+      console.log('create stream', sourceId, this.como.client.id);
       const created = await this.como.project.createStreamRoute(sourceId, this.como.client.id);
 
       if (created) {

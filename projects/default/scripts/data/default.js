@@ -1,13 +1,10 @@
 function descriptorsDefault(graph, helpers, outputFrame) {
-  // @warning - this script won't be transpiled, so it needs to be compliant
-  // with every javascript engine it might run on (i.e. watch out for Safari!)
-
   // reset outputData, here `outputFrame.data` is an array to comply
   // with the data format accepted by the xmm encoder / decoder
   outputFrame.data = [];
 
   // define the keys from `inputFrame.data` to be copied into `outputFrame.data`
-  const filteredKeys = [
+  var filteredKeys = [
     'intensity',
     'accelerationBandpass5hz',
     'orientation',
@@ -15,22 +12,22 @@ function descriptorsDefault(graph, helpers, outputFrame) {
   ];
 
   // we can do additionnal things here such as creating filters, etc., e.g.
-  // const movingAverage = new helpers.algo.MovingAverage(12);
+  // var movingAverage = new helpers.algo.MovingAverage(12);
 
   // return the function that will executed on each frame
   return function(inputFrame, outputFrame) {
-    const inputData = inputFrame.data;
+    var inputData = inputFrame.data;
 
     // Copy the data that must be sent to the ML module into `outputFrame.data`
     // by default, we only forward the values computed by the `motionDescriptors`.
     // As the ML modules requires a flat array as input, we copy values
     // from chosen entries into the `outputFrame.data` array
-    let index = 0;
+    var index = 0;
 
-    for (let i = 0; i < filteredKeys.length; i++) {
-      const key = filteredKeys[i];
+    for (var i = 0; i < filteredKeys.length; i++) {
+      var key = filteredKeys[i];
 
-      for (let j = 0; j < inputData[key].length; j++) {
+      for (var j = 0; j < inputData[key].length; j++) {
         outputFrame.data[index] = inputData[key][j];
         index += 1;
       }

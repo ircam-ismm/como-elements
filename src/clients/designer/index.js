@@ -3,8 +3,8 @@ import { Client } from '@soundworks/core/client';
 import CoMo from 'como/client';
 // import services
 import initQoS from '../utils/qos';
-// default views for services
-import PlayerExperience from './PlayerExperience';
+// // default views for services
+import DesignerExperience from './DesignerExperience';
 
 const AudioContext = ( window.AudioContext || window.webkitAudioContext)
 const audioContext = new AudioContext();
@@ -30,10 +30,10 @@ async function init($container, index) {
     // sockets are connected, we can init QoS
     initQoS(client);
 
-    const playerExperience = new PlayerExperience(como, config, $container);
+    const designerExperience = new DesignerExperience(como, config, $container);
     // store platform service to be able to call all `onUserGesture` at once
-    if (playerExperience.services.platform) {
-      platformServices.add(playerExperience.services.platform);
+    if (designerExperience.services.platform) {
+      platformServices.add(designerExperience.services.platform);
     }
     // remove loader and init default views for the services
     document.body.classList.remove('loading');
@@ -41,7 +41,7 @@ async function init($container, index) {
     await client.start();
     await como.start();
 
-    playerExperience.start();
+    designerExperience.start();
 
     return Promise.resolve();
   } catch(err) {
@@ -100,3 +100,7 @@ window.addEventListener('load', async () => {
     init($container, 0);
   }
 });
+
+// window.addEventListener("unhandledrejection", event => {
+//   console.warn(`UNHANDLED PROMISE REJECTION: ${event.reason}`);
+// });

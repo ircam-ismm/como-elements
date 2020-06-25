@@ -63,6 +63,7 @@ html {
 
 * {
   box-sizing: border-box;
+  font-family: Consolas, monaco, monospace;
 }
 
 .loading {

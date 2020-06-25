@@ -1,5 +1,4 @@
 import '@babel/polyfill';
-import '@wessberg/pointer-events';
 import { Client } from '@soundworks/core/client';
 import CoMo from 'como/client'
 import ScriptEditorExperience from './ScriptEditorExperience';
