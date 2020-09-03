@@ -11,7 +11,6 @@
     {
       id: 'input-resampler',
       type: 'InputResampler',
-      preEncodingStart: true,
       options: {
         resamplingPeriod: 0.02,
       },
@@ -40,12 +39,11 @@
       type: 'Merge',
     },
     {
-      id: 'script-descriptors',
+      id: 'script-select-descriptors',
       type: 'ScriptData',
       options: {
         scriptName: 'default-ml-descriptors',
       },
-      preEncodingEnd: true,
     },
     {
       id: 'ml-decoder',
@@ -79,9 +77,8 @@
       id: 'audio-destination',
       type: 'AudioDestination',
       options: {
-        scriptName: 'fx-gain-energy',
-        volume: -6,
-        mute: true,
+        volume: 0,
+        mute: false,
       },
     },
   ],
@@ -112,10 +109,10 @@
     ],
     [
       'merge-descriptors',
-      'script-descriptors',
+      'script-select-descriptors',
     ],
     [
-      'script-descriptors',
+      'script-select-descriptors',
       'ml-decoder',
     ],
     [

@@ -1,9 +1,9 @@
-import { Experience } from '@soundworks/core/client';
+import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
-import renderAppInitialization from '../views/renderAppInitialization';
+import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer';
 
-class ControllerExperience extends Experience {
+class ControllerExperience extends AbstractExperience {
   constructor(como, config, $container) {
     super(como.client);
 
@@ -18,19 +18,19 @@ class ControllerExperience extends Experience {
     this.localCoMoPlayers = new Map(); // <playerId, CoMoPlayer>
 
     como.configureExperience(this, {
-      // bypass some services if not needed
+      // bypass some plugins if not needed
       checkin: false,
     });
 
-    renderAppInitialization(como.client, config, $container);
+    renderInitializationScreens(como.client, config, $container);
   }
 
   async start() {
     super.start();
 
     // we need these to diplay the list of available scripts
-    this.scriptsDataService = this.como.experience.services['scripts-data'];
-    this.scriptsAudioService = this.como.experience.services['scripts-audio'];
+    this.scriptsDataService = this.como.experience.plugins['scripts-data'];
+    this.scriptsAudioService = this.como.experience.plugins['scripts-audio'];
 
     this.eventListeners = {
       'project:createSession': async e => {
@@ -114,13 +114,13 @@ class ControllerExperience extends Experience {
 
       session.onDetach(() => {
         this.sessions.delete(sessionId);
-        this.renderApp();
+        this.render();
       });
 
-      session.subscribe(updates => this.renderApp());
+      session.subscribe(updates => this.render());
 
       this.sessions.set(sessionId, session);
-      this.renderApp();
+      this.render();
     });
 
     // ----------------------------------------------------
@@ -132,23 +132,24 @@ class ControllerExperience extends Experience {
 
       player.onDetach(() => {
         this.players.delete(playerId);
-        this.renderApp();
+        this.render();
       });
 
-      player.subscribe(updates => this.renderApp());
+      player.subscribe(updates => this.render());
 
       this.players.set(playerId, player);
-      this.renderApp();
+      this.render();
     });
 
     // ----------------------------------------------------
     // TRACK SCRIPTS LIST
     // ----------------------------------------------------
-    this.scriptsDataService.state.subscribe(() => this.renderApp());
-    this.scriptsAudioService.state.subscribe(() => this.renderApp());
+    this.scriptsDataService.state.subscribe(() => this.render());
+    this.scriptsAudioService.state.subscribe(() => this.render());
 
+    window.addEventListener('resize', () => this.render());
     // initial render
-    this.renderApp();
+    this.render();
   }
 
   // @note - this might change in the future because we might want to duplicate a
@@ -182,8 +183,6 @@ class ControllerExperience extends Experience {
     const player = await this.como.project.createPlayer(playerId);
     const coMoPlayer = new CoMoPlayer(this.como, player);
 
-    player.set({ sessionId: 'session-1' });
-
     this.localCoMoPlayers.set(playerId, coMoPlayer);
   }
 
@@ -208,7 +207,7 @@ class ControllerExperience extends Experience {
     }
   }
 
-  renderApp() {
+  render() {
     window.cancelAnimationFrame(this.rafId);
 
     this.rafId = window.requestAnimationFrame(() => {
@@ -294,6 +293,7 @@ class ControllerExperience extends Experience {
                                   >${scriptName}</option>`;
                                 })}
                               </select>
+                            </label>
                           `;
                           break;
                         case 'ScriptAudio':
@@ -316,6 +316,7 @@ class ControllerExperience extends Experience {
                                 .checked="${module.options.bypass}"
                                 @change="${e => this.eventListeners['session:updateGraphOption'](session.id, module.id, 'bypass', !!e.target.checked)}"
                               />
+                            </label>
                           `;
                           break;
                         case 'AudioDestination':
@@ -336,6 +337,7 @@ class ControllerExperience extends Experience {
                                 .checked="${module.options.mute}"
                                 @change="${e => this.eventListeners['session:updateGraphOption'](session.id, module.id, 'mute', !!e.target.checked)}"
                               />
+                            </label>
                           `;
                           break;
                       }
@@ -373,7 +375,6 @@ class ControllerExperience extends Experience {
                     })}
                   </div>
 
-
                   <!-- ATTACHED PLAYERS MANAGEMENT -->
                   <div style="margin: 10px 0">
                     <h2 style="font-size: 14px">> players</h2>
@@ -389,7 +390,7 @@ class ControllerExperience extends Experience {
                         <label>
                           attach to session:
                           <select
-                            @change="${e => this.eventListeners['player:set'](player.id, 'sessionId', e.target.value || null)}"
+                            @change="${e => this.eventListeners['player:set'](player.id, 'sessionId', e.target.value || null)}"
                           >
                             <option value="">select session</option>
                             ${sessions.map((session) => {
@@ -402,6 +403,61 @@ class ControllerExperience extends Experience {
                           </select>
                         </label>
 
+                        <!-- override graph options -->
+                        <!--
+                        <div style="margin: 10px 0">
+                        ${session.graph.modules.map(module => {
+                          switch (module.type) {
+                            case 'AudioDestination':
+                              return html`
+                                <label style="display: block;">
+                                  ${module.id} -
+                                  volume: <input
+                                    type="range"
+                                    min="-60"
+                                    max="6"
+                                    .value="${module.options.volume}"
+                                    @input="${e => this.eventListeners['session:updateGraphOption'](session.id, module.id, 'volume', parseInt(e.target.value))}"
+                                  />
+                                  </select>
+                                  | mute
+                                  <input
+                                    type="checkbox"
+                                    .checked="${module.options.mute}"
+                                    @change="${e => this.eventListeners['session:updateGraphOption'](session.id, module.id, 'mute', !!e.target.checked)}"
+                                  />
+                                </label>
+                              `;
+                            break;
+                            case 'ScriptAudio':
+                              return html`
+                                <label style="display: block;">
+                                  ${module.id}
+                                  <select
+                                    @change="${e => this.eventListeners['session:updateGraphOption'](session.id, module.id, 'scriptName', e.target.value)}"
+                                  >
+                                    ${audioScriptList.map(scriptName => {
+                                      return html`<option
+                                        value="${scriptName}"
+                                        ?selected="${scriptName === module.options.scriptName}"
+                                      >${scriptName}</option>`;
+                                    })}
+                                  </select>
+                                  | bypass
+                                  <input
+                                    type="checkbox"
+                                    .checked="${module.options.bypass}"
+                                    @change="${e => this.eventListeners['session:updateGraphOption'](session.id, module.id, 'bypass', !!e.target.checked)}"
+                                  />
+                                </label>
+                              `;
+                              break;
+                          }
+                        })}
+                        </div>
+                        -->
+
+                        <!-- special local players -->
                         ${player.id >= 1000 ?
                           html`
                             <label>
@@ -411,7 +467,7 @@ class ControllerExperience extends Experience {
                                 min="0"
                                 step="1"
                                 .value="${this.localCoMoPlayers.has(player.id).source && this.localCoMoPlayers.has(player.id).source.streamId}"
-                                @change="${e => this.eventListeners['localPlayer:setSource'](player.id, parseInt(e.target.value) || null)}"
+                                @change="${e => this.eventListeners['localPlayer:setSource'](player.id, parseInt(e.target.value) || null)}"
                               />
                             </label>
                           ` :

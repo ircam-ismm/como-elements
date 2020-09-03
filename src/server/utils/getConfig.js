@@ -15,7 +15,6 @@ function getConfig(ENV) {
       envConfig.port = process.env.PORT;
     }
   } catch(err) {
-    console.log(err);
     console.log(`Invalid "${ENV}" env config file`);
     process.exit(0);
   }
@@ -24,12 +23,11 @@ function getConfig(ENV) {
     const appConfigPath = path.join('config', 'application.json');
     appConfig = JSON5.parse(fs.readFileSync(appConfigPath, 'utf-8'));
   } catch(err) {
-    console.log(err);
-    console.log(`Invalid "application.json" config file`);
+    console.log(`Invalid app config file`);
     process.exit(0);
   }
 
-  // // parse services config
+  // parse services config
   // try {
   //   const servicesConfigPath = path.join('config', 'services.json');
   //   servicesConfig = JSON5.parse(fs.readFileSync(servicesConfigPath, 'utf-8'));
@@ -38,8 +36,7 @@ function getConfig(ENV) {
   //   process.exit(0);
   // }
 
-  // parse como config
-  return { env: envConfig, app: appConfig, services: servicesConfig };
+  return { env: envConfig, app: appConfig };
 }
 
 export default getConfig;

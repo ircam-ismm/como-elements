@@ -1,13 +1,13 @@
-import { Experience } from '@soundworks/core/client';
-import { render, html } from 'lit-html';
+import { AbstractExperience } from '@soundworks/core/client';
 import { ifDefined } from 'lit-html/directives/if-defined';
-import renderAppInitialization from '../views/renderAppInitialization';
-import '../views/elements/sw-editor';
-import '../views/elements/sw-combo-box';
-import '../views/elements/sw-button';
+import { render, html } from 'lit-html';
+import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
+import '@ircam/simple-components/sc-editor';
+import '@ircam/simple-components/sc-text';
+import '@ircam/simple-components/sc-button';
 
 
-class PlayerExperience extends Experience {
+class PlayerExperience extends AbstractExperience {
   constructor(como, config = {}, $container) {
     super(como.client);
 
@@ -26,125 +26,143 @@ class PlayerExperience extends Experience {
 
     this.currentScript = null;
     // default initialization views
-    renderAppInitialization(como.client, config, $container);
+    renderInitializationScreens(como.client, config, $container);
   }
 
   async start() {
     super.start();
 
-    this.scriptsAudio = this.como.experience.services['scripts-audio'];
-    this.scriptsData = this.como.experience.services['scripts-data'];
+    this.scripts = {
+      audio: this.como.experience.plugins['scripts-audio'],
+      data: this.como.experience.plugins['scripts-data'],
+    };
 
-    this.scriptsAudio.state.subscribe(updates => this.renderApp());
-    this.scriptsData.state.subscribe(updates => this.renderApp());
 
-    this.currentScriptsType = 'audio';
-    this.currentScriptService = this.scriptsAudio;
-    // // on script list update
+    this.scripts.audio.state.subscribe(updates => this.render());
+    this.scripts.data.state.subscribe(updates => this.render());
 
-    this.eventListeners = {
-      setScriptType: async (type) => {
-        if (type === 'audio') {
-          this.currentScriptsType = 'audio';
-          this.currentScriptService = this.scriptsAudio;
-        } else if (type === 'data') {
-          this.currentScriptsType = 'data';
-          this.currentScriptService = this.scriptsData;
+    this.listeners = {
+      createScript: async (type, scriptName) => {
+        const list = this.scripts[type].getList(scriptName);
+
+        if (scriptName && list.indexOf(scriptName) === -1) {
+          await this.scripts[type].create(scriptName);
+          await this.listeners.selectScript(type, scriptName);
         }
 
-        this.currentScript = null;
-        this.renderApp();
+        this.render();
       },
-      createOrSelectScript: async (e) => {
-        const scriptName = e.detail.value;
-        const list = this.currentScriptService.state.get('list');
-
-        if (list.indexOf(scriptName) === -1) {
-          await this.currentScriptService.create(scriptName);
-        }
-
+      selectScript: async (type, scriptName) => {
         if (this.currentScript) {
           await this.currentScript.detach();
         }
 
-        this.currentScript = await this.currentScriptService.attach(scriptName);
+        this.currentScript = await this.scripts[type].attach(scriptName);
+        this.currentScript.type = type; // booooooh !!!!
 
         this.currentScript.subscribe(() => {
-          this.renderApp();
+          this.render();
         });
 
         this.currentScript.onDetach(() => {
           this.currentScript = undefined;
-          this.renderApp();
+          this.render();
         });
 
-        this.renderApp();
+        this.render();
       },
-      saveScript: async (e) => {
+      updateScript: async (value) => {
         if (this.currentScript) {
-          await this.currentScript.setValue(e.target.value);
-          this.renderApp();
+          await this.currentScript.setValue(value);
+          this.render();
         }
       },
-      deleteScript: async (e) => {
-        const scriptName = this.currentScript.name;
-        console.log(scriptName);
+      deleteCurrentScript: async () => {
+        const { name: scriptName, type } = this.currentScript;
 
-        // @todo - this should be more robust, do it server side ?
+        // cannot delete the template script (@note, should be more robust)
         if (scriptName === 'default') {
-          // cannot delete the template script
           return;
         }
 
-        await this.currentScriptService.delete(scriptName);
-        this.renderApp();
+        await this.scripts[type].delete(scriptName);
+        this.render();
       },
     };
 
-    this.renderApp();
+    window.addEventListener('resize', () => this.render());
+    this.render();
   }
 
-  renderApp() {
+  render() {
     window.cancelAnimationFrame(this.rafId);
 
     this.rafId = window.requestAnimationFrame(() => {
-      const list = this.currentScriptService.state.get('list');
+      const { width, height } = this.$container.getBoundingClientRect();
+      const sideBarWidth = 200;
 
       render(html`
-        <div class="screen" style="padding: 20px;">
-          <sw-button
-            text="Audio Scripts"
-            @click="${e => this.eventListeners.setScriptType('audio')}"
-          ></sw-button>
-          <sw-button
-            text="Data Scripts"
-            @click="${e => this.eventListeners.setScriptType('data')}"
-          ></sw-button>
-          <div style="margin-top: 20px;">
-            <header
-              style="margin-bottom: 12px"
-            >
-              <h2 class="title">> edit ${this.currentScriptsType} scripts</h2>
-              <sw-combo-box
-                placeholder="select or create script"
-                options="${JSON.stringify(list)}"
-                value="${ifDefined((this.currentScript && this.currentScript.name) || undefined)}"
-                @change="${this.eventListeners.createOrSelectScript}"
-              ></sw-combo-box>
-              ${this.currentScript
-                ? html`<sw-button
-                    @click="${this.eventListeners.deleteScript}"
-                    text="delete ${this.currentScript.name}"
-                  ></sw-button>`
-                : ''
-              }
-            </header>
-            <sw-editor id="test"
-              width="800"
-              height="400"
-              value="${ifDefined((this.currentScript && this.currentScript.getValue()) || undefined)}"
-              @save="${this.eventListeners.saveScript}"
-            ></sw-editor>
+        <div style="position: relative">
+          <div class="sidebar"
+            style="
+              position: absolute;
+              left: 0;
+              top: 0;
+              height: ${height}px;
+              width: ${sideBarWidth}px;
+              overflow: auto;
+              background-color: #565656;
+            "
+          >
+            ${['audio', 'data'].map(type => {
+              return html`
+                <sc-text readonly value="${type}"></sc-text>
+                <sc-text
+                  .value=""
+                  @change="${e => this.listeners.createScript(type, e.detail.value)}"
+                ></sc-text>
+                ${this.scripts[type].getList().map(scriptName => {
+                  return html`
+                    <sc-button
+                      value="${scriptName}"
+                      @input="${e => this.listeners.selectScript(type, scriptName)}"
+                    ></sc-button>
+                  `
+                })}
+              `
+            })}
+          </div>
+          <div
+            style="
+              margin-left: ${sideBarWidth}px;
+              width: ${width - sideBarWidth}px;
+              height: ${height}px;
+              position: relative;
+            "
+          >
+            <sc-text
+              value="${(this.currentScript && this.currentScript.name) || ''}"
+              width="${width - 200}"
+              height="30"
+              readonly
+            ></sc-text>
+            ${this.currentScript ?
+              html`<sc-button
+                style="
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                "
+                value="delete"
+                @release="${e => this.listeners.deleteCurrentScript()}"
+              ></sc-button>`
+            : ''}
+            <sc-editor
+              width="${width - sideBarWidth}"
+              height="${height - 30}"
+              value="${(this.currentScript && this.currentScript.getValue()) || ''}"
+              @save="${this.listeners.saveScript}"
+            ></sc-editor>
           </div>
         </div>
       `, this.$container);

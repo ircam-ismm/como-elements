@@ -1,9 +1,9 @@
-import { Experience } from '@soundworks/core/client';
+import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
-import renderAppInitialization from '../views/renderAppInitialization';
+import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer';
 
-class PlayerExperience extends Experience {
+class PlayerExperience extends AbstractExperience {
   constructor(como, config, $container) {
     super(como.client);
 
@@ -17,7 +17,7 @@ class PlayerExperience extends Experience {
     // configure como w/ the given experience
     this.como.configureExperience(this);
     // default initialization views
-    renderAppInitialization(como.client, config, $container);
+    renderInitializationScreens(como.client, config, $container);
   }
 
   async start() {
@@ -71,10 +71,10 @@ class PlayerExperience extends Experience {
     };
 
     // subscribe for updates to render views
-    this.coMoPlayer.onChange(() => this.renderApp());
+    this.coMoPlayer.onChange(() => this.render());
     // if we want to track the sessions that are created and deleted
     // e.g. when displaying the session choice screen
-    this.como.project.subscribe(() => this.renderApp());
+    this.como.project.subscribe(() => this.render());
 
     // force loading first session of the list
     // const sessionsOverview = this.como.project.get('sessionsOverview');
@@ -86,10 +86,11 @@ class PlayerExperience extends Experience {
 
     // this.coMoPlayer.player.set({ sessionId: 'session-1' });
 
-    this.renderApp();
+    window.addEventListener('resize', () => this.render());
+    this.render();
   }
 
-  renderApp() {
+  render() {
     let $screen;
 
     const project = this.como.project.getValues();
@@ -116,7 +117,7 @@ class PlayerExperience extends Experience {
           </form>
 
           <select
-            @change="${e => this.eventListeners['player:set']({ sessionId: e.target.value || null })}"
+            @change="${e => this.eventListeners['player:set']({ sessionId: e.target.value || null })}"
           >
             <option value="">select session</option>
             ${project.sessionsOverview.map((session) => {

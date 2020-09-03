@@ -1,47 +1,36 @@
-import '@babel/polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import { Client } from '@soundworks/core/client';
-import CoMo from 'como/client';
-// import services
-import initQoS from '../utils/qos';
-// // default views for services
-import DesignerExperience from './DesignerExperience';
+import CoMo from 'como/client'
+import initQoS from '@soundworks/template-helpers/client/init-qos.js';
+import DesignerExperience from './DesignerExperience.js';
 
-const AudioContext = ( window.AudioContext || window.webkitAudioContext)
+const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
 const config = window.soundworksConfig;
-// initalize all clients at once for emulated clients
-const platformServices = new Set();
+// store experiences of emulated clients
+const experiences = new Set();
 
-async function init($container, index) {
+async function launch($container, index) {
   try {
     const client = new Client();
     const como = new CoMo(client, audioContext);
 
-    // -------------------------------------------------------------------
-    // register services
-    // -------------------------------------------------------------------
-
-    // -------------------------------------------------------------------
-    // launch application
-    // -------------------------------------------------------------------
-
     await client.init(config);
     await como.init();
-    // sockets are connected, we can init QoS
     initQoS(client);
 
-    const designerExperience = new DesignerExperience(como, config, $container);
-    // store platform service to be able to call all `onUserGesture` at once
-    if (designerExperience.services.platform) {
-      platformServices.add(designerExperience.services.platform);
-    }
-    // remove loader and init default views for the services
+    const experience = new DesignerExperience(como, config, $container);
+    // store exprience for emulated clients
+    experiences.add(experience);
+
     document.body.classList.remove('loading');
 
+    // start all the things
     await client.start();
     await como.start();
 
-    designerExperience.start();
+    experience.start();
 
     return Promise.resolve();
   } catch(err) {
@@ -49,58 +38,44 @@ async function init($container, index) {
   }
 }
 
-window.addEventListener('load', async () => {
-  // -------------------------------------------------------------------
-  // bootstrapping
-  // -------------------------------------------------------------------
-  const $container = document.querySelector('#container');
-  // this allows to emulate multiple clients in the same page
-  // to facilitate development and testing
-  // ...be careful in production...
-  function getQueryVariable(variable) {
-    const query = window.location.search.substring(1);
-    const vars = query.split('&');
+// -------------------------------------------------------------------
+// bootstrapping
+// -------------------------------------------------------------------
+const $container = document.querySelector('#__soundworks-container');
+const searchParams = new URLSearchParams(window.location.search);
+// enable instanciation of multiple clients in the same page to facilitate
+// development and testing (be careful in production...)
+const numEmulatedClients = parseInt(searchParams.get('emulate')) || 1;
 
-    for (let i = 0; i < vars.length; i++) {
-        const pair = vars[i].split('=');
-        if (decodeURIComponent(pair[0]) == variable) {
-            return decodeURIComponent(pair[1]);
-        }
-    }
+// special logic for emulated clients (1 click to rule them all)
+if (numEmulatedClients > 1) {
+  for (let i = 0; i < numEmulatedClients; i++) {
+    const $div = document.createElement('div');
+    $div.classList.add('emulate');
+    $container.appendChild($div);
 
-    return null;
+    launch($div, i);
   }
 
-  const numClients = parseInt(getQueryVariable('emulate')) || 1;
+  const $initPlatformBtn = document.createElement('div');
+  $initPlatformBtn.classList.add('init-platform');
+  $initPlatformBtn.textContent = 'resume all';
 
-  // special logic for emulated clients (1 click to rule them all)
-  if (numClients > 1) {
-    for (let i = 0; i < numClients; i++) {
-      const $div = document.createElement('div');
-      $div.classList.add('emulate');
-      $container.appendChild($div);
-
-      init($div, i);
-    }
-
-    const $initPlatform = document.createElement('div');
-    $initPlatform.classList.add('init-platform');
-    $initPlatform.textContent = 'resume all';
-
-    function initPlatforms(e) {
-      platformServices.forEach(service => service.onUserGesture(e));
-      $initPlatform.remove();
-    }
-
-    $initPlatform.addEventListener('touchend', initPlatforms);
-    $initPlatform.addEventListener('mouseup', initPlatforms);
-
-    document.body.appendChild($initPlatform);
-  } else {
-    init($container, 0);
+  function initPlatforms(e) {
+    experiences.forEach(experience => {
+      if (experience.platform) {
+        experience.platform.onUserGesture(e)
+      }
+    });
+    $initPlatformBtn.removeEventListener('touchend', initPlatforms);
+    $initPlatformBtn.removeEventListener('mouseup', initPlatforms);
+    $initPlatformBtn.remove();
   }
-});
 
-// window.addEventListener("unhandledrejection", event => {
-//   console.warn(`UNHANDLED PROMISE REJECTION: ${event.reason}`);
-// });
+  $initPlatformBtn.addEventListener('touchend', initPlatforms);
+  $initPlatformBtn.addEventListener('mouseup', initPlatforms);
+
+  $container.appendChild($initPlatformBtn);
+} else {
+  launch($container, 0);
+}

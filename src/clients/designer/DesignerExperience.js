@@ -1,7 +1,7 @@
-import { Experience } from '@soundworks/core/client';
+import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
+import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer.js';
-import renderAppInitialization from '../views/renderAppInitialization.js';
 import views from './views/index.js';
 
 
@@ -10,7 +10,7 @@ const MOCK_SENSORS = window.location.hash === '#mock-sensors';
 console.info('> to mock sensors for debugging purpose, use https://127.0.0.1:8000/designer#mock-sensors');
 console.info('> hash:', window.location.hash, '- mock sensors:', MOCK_SENSORS);
 
-class PlayerExperience extends Experience {
+class DesignerExperience extends AbstractExperience {
   constructor(como, config, $container) {
     super(como.client);
 
@@ -23,8 +23,7 @@ class PlayerExperience extends Experience {
 
     // configure como w/ the given experience
     this.como.configureExperience(this);
-    // default initialization views
-    renderAppInitialization(como.client, config, $container);
+    renderInitializationScreens(como.client, config, $container);
   }
 
   async start() {
@@ -63,7 +62,19 @@ class PlayerExperience extends Experience {
     // }
 
     // @todo - should propagate the Promise...
-    await this.coMoPlayer.player.set({ sessionId: 'session-1' });
+    // await this.coMoPlayer.player.set({ sessionId: 'session-1' });
+
+    this.listeners = {
+      'createSession': async (sessionName, sessionPreset) => {
+        const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
+        return sessionId;
+      },
+      'clearSessionExamples': async () => this.coMoPlayer.session.clearExamples(),
+      'clearSessionLabel': async label => this.coMoPlayer.session.clearLabel(label),
+      'setPlayerParams': async updates => await this.coMoPlayer.player.set(updates),
+    };
+
+    window.addEventListener('resize', () => this.render());
     this.render();
   }
 
@@ -76,15 +87,7 @@ class PlayerExperience extends Experience {
       session: this.coMoPlayer.session ? this.coMoPlayer.session.getValues() : null,
     };
 
-    const listeners = {
-      'createSession': async (sessionName, sessionPreset) => {
-        const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
-        return sessionId;
-      },
-      'clearSessionExamples': async () => this.coMoPlayer.session.clearExamples(),
-      'clearSessionLabel': async label => this.coMoPlayer.session.clearLabel(label),
-      'setPlayerParams': async updates => await this.coMoPlayer.player.set(updates),
-    };
+    const listeners = this.listeners;
 
     let screen = ``;
 
@@ -109,4 +112,4 @@ class PlayerExperience extends Experience {
   }
 }
 
-export default PlayerExperience;
+export default DesignerExperience;

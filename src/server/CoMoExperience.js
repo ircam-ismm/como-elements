@@ -1,6 +1,6 @@
-import { Experience } from '@soundworks/core/server';
+import { AbstractExperience } from '@soundworks/core/server';
 
-class PlayerExperience extends Experience {
+class CoMoExperience extends AbstractExperience {
   constructor(como) {
     super(como.server, como.clientTypes);
 
@@ -25,4 +25,4 @@ class PlayerExperience extends Experience {
   }
 }
 
-export default PlayerExperience;
+export default CoMoExperience;
