@@ -2,7 +2,7 @@ import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer.js';
-import views from './views/index.js';
+import views from '../como-helpers/views/index.js';
 
 
 // for simple debugging in browser...
@@ -96,7 +96,7 @@ class DesignerExperience extends AbstractExperience {
     } else if (this.coMoPlayer.session === null) {
       screen = views.manageSessions(viewData, listeners);
     } else {
-      screen = views.designer(viewData, listeners);
+      screen = views[this.client.type](viewData, listeners);
     }
 
     render(html`

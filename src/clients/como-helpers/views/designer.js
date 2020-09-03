@@ -1,27 +1,11 @@
 import { html } from 'lit-html';
 import * as styles from './styles.js';
 
-const { css } = styles;
-const bannerStyles = css`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  font-size: 16px;
-  background-color: rgba(255, 255, 255, 0.8);
-  color: #000000;
-  text-align: center;
-  z-index: 10;
-`;
-
-
 export function designer(data, listeners) {
   return html`
     <!-- LOADER -->
     ${data.player.loading ?
-      html`<div style="${bannerStyles}">loading...</div>` : ''
+      html`<div style="${styles.loadingBanner}">loading...</div>` : ''
     }
 
     <!-- HEADER -->

@@ -147,9 +147,6 @@ class ControllerExperience extends AbstractExperience {
     this.scriptsDataService.state.subscribe(() => this.render());
     this.scriptsAudioService.state.subscribe(() => this.render());
 
-    const testPlayer = await this._createLocalPlayer();
-    testPlayer.player.set({ sessionId: 'niap' });
-
     window.addEventListener('resize', () => this.render());
     // initial render
     this.render();

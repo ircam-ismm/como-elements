@@ -2,6 +2,13 @@ import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer';
+import views from '../como-helpers/views/index.js';
+
+
+// for simple debugging in browser...
+const MOCK_SENSORS = window.location.hash === '#mock-sensors';
+console.info('> to mock sensors for debugging purpose, use https://127.0.0.1:8000/designer#mock-sensors');
+console.info('> hash:', window.location.hash, '- mock sensors:', MOCK_SENSORS);
 
 class PlayerExperience extends AbstractExperience {
   constructor(como, config, $container) {
@@ -53,22 +60,17 @@ class PlayerExperience extends AbstractExperience {
     this.coMoPlayer.setSource(source);
 
     // 4. react to gui controls.
-    this.eventListeners = {
-      'project:createAndSetSession': async e => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const sessionName = formData.get('session-name').trim();
-        const sessionPreset = formData.get('session-preset');
-
-        if (sessionName && sessionPreset) {
-          const id = await this.como.project.createSession(sessionName, sessionPreset);
-          e.target.reset();
-          // set newly created session to player
-          this.coMoPlayer.player.set({ sessionId: id });
-        }
+    this.listeners = {
+      'createSession': async (sessionName, sessionPreset) => {
+        const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
+        return sessionId;
       },
-      'player:set': updates => this.coMoPlayer.player.set(updates),
+      // these 2 ones are only for the designer...
+      // 'clearSessionExamples': async () => this.coMoPlayer.session.clearExamples(),
+      // 'clearSessionLabel': async label => this.coMoPlayer.session.clearLabel(label),
+      'setPlayerParams': async updates => await this.coMoPlayer.player.set(updates),
     };
+
 
     // subscribe for updates to render views
     this.coMoPlayer.onChange(() => this.render());
@@ -76,121 +78,41 @@ class PlayerExperience extends AbstractExperience {
     // e.g. when displaying the session choice screen
     this.como.project.subscribe(() => this.render());
 
-    // force loading first session of the list
-    // const sessionsOverview = this.como.project.get('sessionsOverview');
-
-    // if (sessionsOverview[0]) {
-    //   const sessionId = sessionsOverview[0].id;
-    //   this.coMoPlayer.player.set({ sessionId: sessionId });
-    // }
-
-    // this.coMoPlayer.player.set({ sessionId: 'session-1' });
-
     window.addEventListener('resize', () => this.render());
     this.render();
   }
 
   render() {
-    let $screen;
+    const viewData = {
+      config: this.config,
+      boundingClientRect: this.$container.getBoundingClientRect(),
+      project: this.como.project.getValues(),
+      player: this.coMoPlayer.player.getValues(),
+      session: this.coMoPlayer.session ? this.coMoPlayer.session.getValues() : null,
+    };
 
-    const project = this.como.project.getValues();
+    const listeners = this.listeners;
 
-    const player = this.coMoPlayer.player.getValues();
-    const session = this.coMoPlayer.session ? this.coMoPlayer.session.getValues() : null;
+    let screen = ``;
 
-    if (session === null) {
-
-      $screen = html`
-        <div class="screen" style="box-sizing: border-box; padding: 20px; overflow: auto;">
-          <form
-            @submit="${this.eventListeners['project:createAndSetSession']}"
-          >
-            <h1>create session</h1>
-            <input type="text" name="session-name" />
-            <select name="session-preset">
-              <option value="" selected>select preset</option>
-              ${project.presetNames.map(presetName => {
-                return html`<option value="${presetName}">${presetName}</option>`;
-              })}
-            </select>
-            <input type="submit" value="Create Session" />
-          </form>
-
-          <select
-            @change="${e => this.eventListeners['player:set']({ sessionId: e.target.value || null })}"
-          >
-            <option value="">select session</option>
-            ${project.sessionsOverview.map((session) => {
-              return html`<option value="${session.id}">${session.name}</option>`;
-            })}
-          </select>
-        </div>`;
-
+    if (!this.como.hasDeviceMotion && !MOCK_SENSORS) {
+      screen = views.sorry(viewData, listeners);
+    } else if (this.coMoPlayer.session === null) {
+      screen = views.manageSessions(viewData, listeners, { enableCreation: false });
     } else {
-
-      $screen = html`
-        ${player.loading ? html`
-          <div style="position: absolute; top: 0; left: 0; width: 100%; height: 50px; line-height: 50px; background-color: white; color: #232323; text-align: center">Loading session</div>
-        ` : ''}
-        <div class="screen" style="box-sizing: border-box; padding: 20px; overflow: auto;">
-          <button @click="${() => this.eventListeners['player:set']({ sessionId: null })}">
-            change session
-          </button>
-          <div style="margin: 10px 0;">
-            <label
-              @change="${e => this.eventListeners['player:set']({ label: e.target.value })}"
-            >
-              Recording
-              <!-- @todo - this should also filter "active" files -->
-              <select>
-                ${session.audioFiles
-                  .map(file => file.label)
-                  .filter((label, index, arr) => arr.indexOf(label) === index)
-                  .sort()
-                  .map(label => {
-                    return html`
-                      <option
-                        value="${label}"
-                        ?selected="${player.label === label}"
-                      >${label}</option>`
-                  })
-                }
-              </select>
-            </label>
-
-            ${player.recordingState === 'idle'
-              ? html`<button @click="${e => this.eventListeners['player:set']({ recordingState: 'armed' })}">idle</button>`
-              : ``}
-
-            ${player.recordingState === 'armed'
-              ? html`<button @click="${e => this.eventListeners['player:set']({ recordingState: 'recording' })}">record</button>`
-              : ``}
-
-            ${player.recordingState === 'recording'
-              ? html`<button @click="${e => this.eventListeners['player:set']({ recordingState: 'pending' })}">stop</button>`
-              : ``}
-
-            ${player.recordingState === 'pending'
-              ? html`
-                <button @click="${e => this.eventListeners['player:set']({ recordingState: 'confirm' })}">confirm</button>
-                <button @click="${e => this.eventListeners['player:set']({ recordingState: 'cancel' })}">cancel</button>`
-              : ``}
-
-          </div>
-          <pre>
-            <code>
-> player:
-${JSON.stringify(player, null, 2)}
-            </code>
-            <code>
-${session ? `> session: "${session.name}"` : null}
-${session ? `> graph: \n${JSON.stringify(session.graph, null, 2)}` : null}
-            </code>
-          </pre>
-        </div>`;
+      screen = views[this.client.type](viewData, listeners, { verbose: false });
     }
 
-    render($screen, this.$container);
+    render(html`
+      <div style="
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 100%;
+        padding: 20px;
+      ">
+        ${screen}
+      </div>
+    `, this.$container);
   }
 }
 

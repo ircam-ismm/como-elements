@@ -1,9 +1,9 @@
-import { Experience } from '@soundworks/core/client';
+import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
-import renderAppInitialization from '../views/renderAppInitialization';
+import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer';
 
-class ControllerExperience extends Experience {
+class ControllerExperience extends AbstractExperience {
   constructor(como, config, $container) {
     super(como.client);
 
@@ -18,19 +18,19 @@ class ControllerExperience extends Experience {
     this.localCoMoPlayers = new Map(); // <playerId, CoMoPlayer>
 
     como.configureExperience(this, {
-      // bypass some services if not needed
+      // bypass some plugins if not needed
       checkin: false,
     });
 
-    renderAppInitialization(como.client, config, $container);
+    renderInitializationScreens(como.client, config, $container);
   }
 
   async start() {
     super.start();
 
     // we need these to diplay the list of available scripts
-    this.scriptsDataService = this.como.experience.services['scripts-data'];
-    this.scriptsAudioService = this.como.experience.services['scripts-audio'];
+    this.scriptsDataService = this.como.experience.plugins['scripts-data'];
+    this.scriptsAudioService = this.como.experience.plugins['scripts-audio'];
 
     this.eventListeners = {
       'project:createSession': async e => {
@@ -182,8 +182,6 @@ class ControllerExperience extends Experience {
     const player = await this.como.project.createPlayer(playerId);
     const coMoPlayer = new CoMoPlayer(this.como, player);
 
-    player.set({ sessionId: 'session-1' });
-
     this.localCoMoPlayers.set(playerId, coMoPlayer);
   }
 
@@ -226,10 +224,6 @@ class ControllerExperience extends Experience {
       render(html`
         <!-- GENERAL -->
         <div class="screen" style="box-sizing: border-box; padding: 20px;">
-          ${project.audioFiles.map(file => {
-            // return html`<p>${JSON.stringify(file)}</p>`;
-          })}
-
           <div style="margin: 10px 0;">
             <p># sessions: ${sessions.length}</p>
             <p># players: ${players.length}</p>
@@ -253,10 +247,6 @@ class ControllerExperience extends Experience {
               <input type="submit" value="Create Session" />
             </form>
           </div>
-
-<!--           <div style="margin: 10px 0;">
-            <pre><code>${JSON.stringify(project.sessionsOverview, null, 2)}</code></pre>
-          </div> -->
 
           <hr />
 
@@ -363,16 +353,6 @@ class ControllerExperience extends Experience {
                         `;
                       })
                     }
-
-<!--                     ${Object.keys(session.examples).map(exampleUuid => {
-                      const example = session.examples[exampleUuid];
-                      return html`<p>
-                        - ${exampleUuid} (label: ${example.label}, length: ${example.input.length})
-                        <button
-                          @click="${e => this.eventListeners['session:deleteExample'](session.id, exampleUuid)}"
-                        >delete</button>
-                      </p>`;
-                    })} -->
                   </div>
 
 
@@ -391,7 +371,7 @@ class ControllerExperience extends Experience {
                         <label>
                           attach to session:
                           <select
-                            @change="${e => this.eventListeners['player:set'](player.id, 'sessionId', e.target.value || null)}"
+                            @change="${e => this.eventListeners['player:set'](player.id, 'sessionId', e.target.value || null)}"
                           >
                             <option value="">select session</option>
                             ${sessions.map((session) => {
@@ -413,7 +393,7 @@ class ControllerExperience extends Experience {
                                 min="0"
                                 step="1"
                                 .value="${this.localCoMoPlayers.has(player.id).source && this.localCoMoPlayers.has(player.id).source.streamId}"
-                                @change="${e => this.eventListeners['localPlayer:setSource'](player.id, parseInt(e.target.value) || null)}"
+                                @change="${e => this.eventListeners['localPlayer:setSource'](player.id, parseInt(e.target.value) || null)}"
                               />
                             </label>
                           ` :
@@ -470,13 +450,6 @@ class ControllerExperience extends Experience {
                                 @change="${e => this.eventListeners['player:duplicate'](player.id, !!e.target.checked)}"
                               />
                             </div>
-                            <!-- <div>
-                              record stream
-                              <input type="checkbox"
-                                .checked="${player.streamRecord}"
-                                @change="${e => this.eventListeners['player:set'](player.id, 'streamRecord', !!e.target.checked)}"
-                              />
-                            </div> -->
                           `
                         }
                       `;
@@ -484,40 +457,7 @@ class ControllerExperience extends Experience {
                     <!-- end players -->
                   </div>
 
-                  <!-- AUDIO FILES MANAGEMENT -->
-<!--                   <div style="margin: 10px 0">
-                    <h2 style="font-size: 14px">> audio files</h2>
-                    ${session.audioFiles.map((audioFile, index) => {
-                      return html`
-                        <form
-                          @submit="${this.eventListeners['session:updateAudioFiles']}"
-                        >
-                          <input type="hidden" name="id" value="${session.id}" />
-                          <input type="hidden" name="index" value="${index}" />
-                          <input type="hidden" name="url" value="${audioFile.url}" />
-                          <span>${audioFile.name}</span>
-                          <label>
-                            active
-                            <input
-                              type="checkbox"
-                              name="active"
-                              ?checked="${audioFile.active}"
-                            />
-                          </label>
-                          <label>
-                            label
-                            <input
-                              type="text"
-                              name="label"
-                              .value="${audioFile.label}"
-                            />
-                          </label>
-                          <input type="submit" value="save" />
-                        </form>
-                      `;
-                    })} -->
-
-                    <hr style="outline: 1px #cdcdcd dotted; height: 1px; border: none; margin-top: 10px" />
+                  <hr style="outline: 1px #cdcdcd dotted; height: 1px; border: none; margin-top: 10px" />
                 </li>`;
             })}
             </ul>
@@ -540,7 +480,7 @@ class ControllerExperience extends Experience {
                 <label>
                   attach to session
                   <select
-                    @change="${e => this.eventListeners['player:set'](player.id, 'sessionId', e.target.value || null)}"
+                    @change="${e => this.eventListeners['player:set'](player.id, 'sessionId', e.target.value || null)}"
                   >
                     <option value="">select session</option>
                     ${sessions.map((session) => {

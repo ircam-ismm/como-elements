@@ -51,3 +51,16 @@ export const select = css`
   margin: 4px 0;
 `;
 
+export const loadingBanner = css`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #000000;
+  text-align: center;
+  z-index: 10;
+`;

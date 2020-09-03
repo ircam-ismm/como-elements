@@ -16,5 +16,12 @@
     "script-editor": {
       "target": "browser",
     },
+    // testing
+    "controller-clients": {
+      "target": "browser",
+    },
+    "controller-projects": {
+      "target": "browser",
+    },
   },
 }
