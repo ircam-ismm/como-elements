@@ -61,6 +61,7 @@ class PlayerExperience extends AbstractExperience {
 
     // 4. react to gui controls.
     this.listeners = {
+      // this one is needed for the enableCreation option
       'createSession': async (sessionName, sessionPreset) => {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
         return sessionId;
