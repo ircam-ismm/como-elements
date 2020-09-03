@@ -147,6 +147,9 @@ class ControllerExperience extends AbstractExperience {
     this.scriptsDataService.state.subscribe(() => this.render());
     this.scriptsAudioService.state.subscribe(() => this.render());
 
+    const testPlayer = await this._createLocalPlayer();
+    testPlayer.player.set({ sessionId: 'niap' });
+
     window.addEventListener('resize', () => this.render());
     // initial render
     this.render();
@@ -184,6 +187,7 @@ class ControllerExperience extends AbstractExperience {
     const coMoPlayer = new CoMoPlayer(this.como, player);
 
     this.localCoMoPlayers.set(playerId, coMoPlayer);
+    return coMoPlayer;
   }
 
   async _setLocalPlayerSource(playerId, sourceId = null) {
@@ -405,7 +409,7 @@ class ControllerExperience extends AbstractExperience {
 
                         <!-- override graph options -->
                         <!--
-                        <div style="margin: 10px 0">
+                        <div style="margin: 10px 0 10px 20px">
                         ${session.graph.modules.map(module => {
                           switch (module.type) {
                             case 'AudioDestination':
@@ -417,41 +421,26 @@ class ControllerExperience extends AbstractExperience {
                                     min="-60"
                                     max="6"
                                     .value="${module.options.volume}"
-                                    @input="${e => this.eventListeners['session:updateGraphOption'](session.id, module.id, 'volume', parseInt(e.target.value))}"
+                                    @input="${e => {
+                                      playerState.set({ graphOptionsOverrides: {
+                                        [module.id]: { volume: parseInt(e.target.value) },
+                                      }});
+                                    }}"
                                   />
                                   </select>
                                   | mute
                                   <input
                                     type="checkbox"
                                     .checked="${module.options.mute}"
-                                    @change="${e => this.eventListeners['session:updateGraphOption'](session.id, module.id, 'mute', !!e.target.checked)}"
+                                    @change="${e => {
+                                      playerState.set({ graphOptionsOverrides: {
+                                        [module.id]: { mute: !!e.target.checked },
+                                      }});
+                                    }}"
                                   />
                                 </label>
                               `;
                             break;
-                            case 'ScriptAudio':
-                              return html`
-                                <label style="display: block;">
-                                  ${module.id}
-                                  <select
-                                    @change="${e => this.eventListeners['session:updateGraphOption'](session.id, module.id, 'scriptName', e.target.value)}"
-                                  >
-                                    ${audioScriptList.map(scriptName => {
-                                      return html`<option
-                                        value="${scriptName}"
-                                        ?selected="${scriptName === module.options.scriptName}"
-                                      >${scriptName}</option>`;
-                                    })}
-                                  </select>
-                                  | bypass
-                                  <input
-                                    type="checkbox"
-                                    .checked="${module.options.bypass}"
-                                    @change="${e => this.eventListeners['session:updateGraphOption'](session.id, module.id, 'bypass', !!e.target.checked)}"
-                                  />
-                                </label>
-                              `;
-                              break;
                           }
                         })}
                         </div>
