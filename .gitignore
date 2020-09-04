@@ -4,6 +4,7 @@
 # ignore all config except default
 /config/env/*
 !/config/env/default.json
+/config/como-*.json
 
 # application instance specific
 .build
