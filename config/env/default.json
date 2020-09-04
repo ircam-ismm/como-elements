@@ -9,7 +9,7 @@
   port: 8000,
 
   // domain
-  assetsDomain: "",
+  assetsDomain: '',
 
   // ip of the server,
   // used by node clients to open the socket to the server
