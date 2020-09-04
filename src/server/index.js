@@ -30,6 +30,33 @@ const server = new Server();
 // html template and static files (in most case, this should not be modified)
 server.templateEngine = { compile };
 server.templateDirectory = path.join('.build', 'server', 'tmpl');
+
+// server.router.use((req, res, next) => {
+//   if (config.env.type === 'production' && req.path === '/script-editor') {
+//     // -----------------------------------------------------------------------
+//     // authentication middleware
+//     const auth = config.env.auth;
+//     // parse login and password from headers
+//     const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+//     const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+
+//     // Verify login and password are set and correct
+//     if (login && password && login === auth.login && password === auth.password) {
+//       // access granted...
+//       return next()
+//     }
+
+//     // access denied...
+//     res.writeHead(401, {
+//       'WWW-Authenticate':'Basic',
+//       'Content-Type':'text/plain'
+//     }) // change this
+//     res.end('Authentication required.') // custom message
+//   } else {
+//     return next();
+//   }
+// });
+
 server.router.use(serveStatic('public'));
 server.router.use('build', serveStatic(path.join('.build', 'public')));
 server.router.use('vendors', serveStatic(path.join('.vendors', 'public')));
