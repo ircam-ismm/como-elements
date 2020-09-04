@@ -14,9 +14,9 @@ const experiences = new Set();
 async function launch($container, index) {
   try {
     const client = new Client();
-    const como = new CoMo(client, audioContext);
-
     await client.init(config);
+
+    const como = new CoMo(client, audioContext);
     await como.init();
     initQoS(client);
 
