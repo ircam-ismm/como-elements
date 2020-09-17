@@ -60,8 +60,6 @@ class DesignerExperience extends AbstractExperience {
     //   const sessionId = sessionsOverview[0].id;
     //   this.coMoPlayer.player.set({ sessionId: sessionId });
     // }
-
-    // @todo - should propagate the Promise...
     // await this.coMoPlayer.player.set({ sessionId: 'session-1' });
 
     this.listeners = {
