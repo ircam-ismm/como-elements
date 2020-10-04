@@ -72,6 +72,7 @@ class PlayerExperience extends AbstractExperience {
         this.render();
       },
       updateScript: async (value) => {
+        console.log(value);
         if (this.currentScript) {
           await this.currentScript.setValue(value);
           this.render();
@@ -161,7 +162,7 @@ class PlayerExperience extends AbstractExperience {
               width="${width - sideBarWidth}"
               height="${height - 30}"
               value="${(this.currentScript && this.currentScript.getValue()) || ''}"
-              @save="${this.listeners.saveScript}"
+              @change="${e => this.listeners.updateScript(e.target.value)}"
             ></sc-editor>
           </div>
         </div>
