@@ -99,9 +99,15 @@ class PlayerExperience extends AbstractExperience {
     if (!this.como.hasDeviceMotion && !MOCK_SENSORS) {
       screen = views.sorry(viewData, listeners);
     } else if (this.coMoPlayer.session === null) {
-      screen = views.manageSessions(viewData, listeners, { enableCreation: false });
+      screen = views.manageSessions(viewData, listeners, {
+        enableCreation: false,
+        enableSelection: true,
+      });
     } else {
-      screen = views[this.client.type](viewData, listeners, { verbose: false });
+      screen = views[this.client.type](viewData, listeners, {
+        verbose: false,
+        enableSelection: true,
+      });
     }
 
     render(html`

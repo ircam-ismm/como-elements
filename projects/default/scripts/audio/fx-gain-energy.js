@@ -16,7 +16,7 @@ function fxGainEnergy(graph, helpers, audioInNode, audioOutNode, outputFrame) {
       var avg = movingAverage.process(enhancedIntensity);
 
       // we know that we have a frame every 20ms so a ramp of 10ms should be safe
-      envelop.gain.linearRampToValueAtTime(avg, now + 0.01);
+      envelop.gain.setTargetAtTime(avg, now, 0.05);
     },
     destroy() {
       envelop.gain.setValueAtTime(0, audioContext.currentTime);
