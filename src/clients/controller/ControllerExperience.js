@@ -20,6 +20,10 @@ class ControllerExperience extends AbstractExperience {
     this.duplicatedCoMoPlayers = new Map(); // <playerId, CoMoPlayer>
     this.localCoMoPlayers = new Map(); // <playerId, CoMoPlayer>
 
+    this.viewOptions = {
+      layout: 'full', // 'clients'
+    }
+
     como.configureExperience(this, {
       // bypass some plugins if not needed
       checkin: false,
@@ -36,6 +40,10 @@ class ControllerExperience extends AbstractExperience {
     this.scriptsAudioService = this.como.experience.plugins['scripts-audio'];
 
     this.listeners = {
+      setViewOption: (key, value) => {
+        this.viewOptions[key] = value;
+        this.render();
+      },
       // manager sessions
       createSession: async (sessionName, sessionPreset) => {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
@@ -171,6 +179,7 @@ class ControllerExperience extends AbstractExperience {
     this.render();
   }
 
+  // @note - keep this for later refactor (cf. Iseline)
   // async _createLocalPlayer() {
   //   const playerId = 1000 + this.localCoMoPlayers.size;
   //   const player = await this.como.project.createPlayer(playerId);
@@ -222,6 +231,7 @@ class ControllerExperience extends AbstractExperience {
         dataScriptList: this.scriptsDataService.getList(),
         audioScriptList: this.scriptsAudioService.getList(),
         duplicatedCoMoPlayers: this.duplicatedCoMoPlayers,
+        viewOptions: this.viewOptions,
       };
 
       const listeners = this.listeners;
@@ -229,34 +239,64 @@ class ControllerExperience extends AbstractExperience {
       let screen = html`
 
         ${views.overviewInfos(viewData, listeners)}
-        ${views.createSessions(viewData, listeners)}
 
+        ${this.viewOptions.layout === 'full' ?
+          views.createSessions(viewData, listeners)
+        : ``}
+
+        ${this.viewOptions.layout === 'clients' ?
+          html`<div>
+            <h2>Connected Clients</h2>
+
+            ${Array.from(this.players.keys()).sort((a, b) => a - b).map(playerId => {
+              return views.playerControls(viewData, listeners, {
+                playerId,
+                showMetas: false,
+                showRecordingControls: false,
+                showDuplicate: true,
+                showRecordStream: false,
+              });
+            })}
+          </div>`
+        : ``}
         <div>
           <h2>Sessions</h2>
 
           ${Array.from(this.sessions.keys()).sort().map(sessionId => {
             return html`
               ${views.sessionHeader(viewData, listeners, { sessionId })}
-              ${views.sessionScripts(viewData, listeners, { sessionId })}
-              ${views.sessionMLExamples(viewData, listeners, { sessionId })}
-              ${views.sessionPlayers(viewData, listeners, { sessionId })}
+              ${this.viewOptions.layout === 'full' ?
+                html`
+                  ${views.sessionScripts(viewData, listeners, { sessionId })}
+                  ${views.sessionMLExamples(viewData, listeners, { sessionId })}
+                  ${views.sessionPlayers(viewData, listeners, { sessionId })}
+                `
+              : ``}
             `;
           })}
         <div>
 
-        <div>
-          <h2>Connected Clients</h2>
+        ${this.viewOptions.layout === 'full' ?
+          html`<div>
+            <h2>Connected Clients</h2>
 
-          ${Array.from(this.players.keys()).sort((a, b) => a - b).map(playerId => {
-            return views.playerControls(viewData, listeners, { playerId, expanded: false });
-          })}
-        </div>
+            ${Array.from(this.players.keys()).sort((a, b) => a - b).map(playerId => {
+              return views.playerControls(viewData, listeners, {
+                playerId,
+                showMetas: false,
+                showRecordingControls: false,
+                showDuplicate: false,
+                showRecordStream: false,
+              });
+            })}
+          </div>`
+        : ``}
       `;
 
       render(html`
         <div style="
           box-sizing: border-box;
-          padding: 20px;
+          padding: 10px;
           min-height: 100%;
         ">
           ${screen}

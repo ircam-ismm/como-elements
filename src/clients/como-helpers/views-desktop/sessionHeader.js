@@ -6,7 +6,7 @@ import '@ircam/simple-components/sc-text.js';
 
 export function sessionHeader(data, listeners, {
   sessionId = null,
-}) {
+} = {}) {
   const session = data.sessions.get(sessionId).getValues();
   const audioDestination = session.graph.modules.find(m => m.type === 'AudioDestination');
 

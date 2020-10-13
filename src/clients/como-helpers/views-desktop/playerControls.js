@@ -5,8 +5,11 @@ import '@ircam/simple-components/sc-text.js';
 
 export function playerControls(data, listeners, {
   playerId = null,
-  expanded = true,
-}) {
+  showMetas = true,
+  showRecordingControls = true,
+  showDuplicate = true,
+  showRecordStream = true,
+} = {}) {
   const sessions = Array.from(data.sessions.values());
   const player = data.players.get(playerId).getValues();
   const session = data.sessions.get(player.sessionId);
@@ -24,7 +27,7 @@ export function playerControls(data, listeners, {
         margin: 4px 0;
       ">
         <span style="display: inline-block; width: 300px; font-size: 12px">
-          > ${player.metas.type || 'player'} - (id: ${player.id} })
+          > ${player.metas.type || 'player'} - (id: ${player.id})
         </span>
         <label style="position: absolute; right: 10px;">
           attach to session:
@@ -44,12 +47,15 @@ export function playerControls(data, listeners, {
         </label>
       </h4>
 
-      ${expanded && session ?
+      ${showMetas ?
         html`
           <p style="font-style: italic; margin: 4px 0 8px;">
             metas: ${JSON.stringify(player.metas)}
-          </p>
+          </p>`
+      : ``}
 
+      ${showRecordingControls && session ?
+        html`
           <!-- RECORDING -->
           <div style="margin-bottom: 4px;">
             <sc-text
@@ -120,9 +126,11 @@ export function playerControls(data, listeners, {
                   @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'cancel' })}"
                 ></sc-button>`
               : ``}
+          </div>`
+      : ``}
 
-          </div>
-
+      ${showDuplicate ?
+        html`
           <div style="margin-bottom: 4px;">
             <sc-text
               value="duplicate"
@@ -133,8 +141,11 @@ export function playerControls(data, listeners, {
               .active="${data.duplicatedCoMoPlayers.has(player.id)}"
               @change="${e => listeners.duplicatePlayer(player.id, e.detail.value)}"
             ></sc-toggle>
-          </div>
+          </div>`
+      : ``}
 
+      ${showRecordStream ?
+        html`
           <div style="margin-bottom: 4px;">
             <sc-text
               value="record stream"
@@ -145,8 +156,8 @@ export function playerControls(data, listeners, {
               .active="${player.recordStream}"
               @change="${e => listeners.setPlayerParams(player.id, { recordStream: e.detail.value })}"
             ></sc-toggle>
-          </div>
-        ` : ``}
+          </div>`
+      : ``}
       </div>
   `;
 }

@@ -6,7 +6,7 @@ import '@ircam/simple-components/sc-button.js';
 
 export function sessionScripts(data, listeners, {
   sessionId = null,
-}) {
+} = {}) {
   const session = data.sessions.get(sessionId).getValues();
   const dataScripts = session.graph.modules.filter(m => m.type === 'ScriptData');
   const audioScripts = session.graph.modules.filter(m => m.type === 'ScriptAudio');

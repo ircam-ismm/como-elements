@@ -4,7 +4,7 @@ import '@ircam/simple-components/sc-button.js';
 
 export function sessionMLExamples(data, listeners, {
   sessionId = null,
-}) {
+} = {}) {
   const session = data.sessions.get(sessionId).getValues();
 
   return html`
