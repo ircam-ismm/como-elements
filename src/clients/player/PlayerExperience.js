@@ -2,7 +2,7 @@ import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer';
-import views from '../como-helpers/views/index.js';
+import views from '../como-helpers/views-mobile/index.js';
 
 
 // for simple debugging in browser...
@@ -29,10 +29,10 @@ class PlayerExperience extends AbstractExperience {
 
   async start() {
     super.start();
-    // console.log('hasDeviceMotion', this.como.hasDeviceMotion);
 
     // 1. create a como player instance w/ a unique id (we default to the nodeId)
     const player = await this.como.project.createPlayer(this.como.client.id);
+    player.set({ metas: { type: this.client.type } });
 
     // 2. create a sensor source to be used within the graph.
     // We create a `RandomSource` if deviceMotion is not available for development
@@ -62,14 +62,14 @@ class PlayerExperience extends AbstractExperience {
     // 4. react to gui controls.
     this.listeners = {
       // this one is needed for the enableCreation option
-      'createSession': async (sessionName, sessionPreset) => {
+      createSession: async (sessionName, sessionPreset) => {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
         return sessionId;
       },
       // these 2 ones are only for the designer...
-      // 'clearSessionExamples': async () => this.coMoPlayer.session.clearExamples(),
-      // 'clearSessionLabel': async label => this.coMoPlayer.session.clearLabel(label),
-      'setPlayerParams': async updates => await this.coMoPlayer.player.set(updates),
+      // deleteAllSessionExamples: async () => this.coMoPlayer.session.clearExamples(),
+      // deleteSessionExamplesByLabel: async label => this.coMoPlayer.session.clearLabel(label),
+      setPlayerParams: async updates => await this.coMoPlayer.player.set(updates),
     };
 
 
@@ -86,10 +86,10 @@ class PlayerExperience extends AbstractExperience {
   render() {
     const viewData = {
       config: this.config,
-      boundingClientRect: this.$container.getBoundingClientRect(),
       project: this.como.project.getValues(),
       player: this.coMoPlayer.player.getValues(),
       session: this.coMoPlayer.session ? this.coMoPlayer.session.getValues() : null,
+      boundingClientRect: this.$container.getBoundingClientRect(),
     };
 
     const listeners = this.listeners;

@@ -133,7 +133,7 @@ export function designer(data, listeners) {
                   height: 30px;
                   line-height: 30px;
                 "
-                @click="${e => listeners.clearSessionLabel(label)}"
+                @click="${e => listeners.deleteSessionExamplesByLabel(label)}"
               >delete</button>
             </div>
           `;
@@ -147,7 +147,7 @@ export function designer(data, listeners) {
           height: 30px;
           line-height: 30px;
         "
-        @click="${e => listeners.clearSessionExamples()}"
+        @click="${e => listeners.deleteAllSessionExamples()}"
       >clear all labels</button>
     </div>
   `;

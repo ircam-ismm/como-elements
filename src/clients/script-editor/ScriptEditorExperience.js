@@ -6,6 +6,18 @@ import '@ircam/simple-components/sc-editor';
 import '@ircam/simple-components/sc-text';
 import '@ircam/simple-components/sc-button';
 
+// to open from a link (cf. controller)
+const OPEN_SCRIPT = (function() {
+  const hash = window.location.hash.substring(1);
+  if (hash) {
+    const sep = '___';
+    const parts = hash.split(sep);
+    return { type: parts[0], scriptName: parts[1] };
+  } else {
+    return null;
+  }
+}());
+
 
 class PlayerExperience extends AbstractExperience {
   constructor(como, config = {}, $container) {
@@ -37,13 +49,15 @@ class PlayerExperience extends AbstractExperience {
       data: this.como.experience.plugins['scripts-data'],
     };
 
+    // maintain lists
+    this.scripts.audio.observe(() => this.render());
+    this.scripts.data.observe(() => this.render());
 
-    this.scripts.audio.state.subscribe(updates => this.render());
-    this.scripts.data.state.subscribe(updates => this.render());
+    console.log(this.scripts.audio.getList());
 
     this.listeners = {
       createScript: async (type, scriptName) => {
-        const list = this.scripts[type].getList(scriptName);
+        const list = this.scripts[type].getList();
 
         if (scriptName && list.indexOf(scriptName) === -1) {
           await this.scripts[type].create(scriptName);
@@ -90,6 +104,14 @@ class PlayerExperience extends AbstractExperience {
         this.render();
       },
     };
+
+    // open from controller
+    if (OPEN_SCRIPT) {
+      const { type, scriptName } = OPEN_SCRIPT;
+      if (this.scripts[type] && this.scripts[type].getList().indexOf(scriptName) !== -1) {
+        this.listeners.selectScript(type, scriptName);
+      }
+    }
 
     window.addEventListener('resize', () => this.render());
     this.render();

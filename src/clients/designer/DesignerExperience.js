@@ -2,7 +2,7 @@ import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer.js';
-import views from '../como-helpers/views/index.js';
+import views from '../como-helpers/views-mobile/index.js';
 
 
 // for simple debugging in browser...
@@ -31,7 +31,7 @@ class DesignerExperience extends AbstractExperience {
 
     // 1. create a como player instance w/ a unique id (we default to the nodeId)
     const player = await this.como.project.createPlayer(this.como.client.id);
-    player.set({ metas: { type: 'designer' } });
+    player.set({ metas: { type: this.client.type } });
 
     // the CoMoPlayer abstraction is just a shortcut for binding player,
     // sessions, and graph, triggering events when anything change.
@@ -63,13 +63,13 @@ class DesignerExperience extends AbstractExperience {
     // await this.coMoPlayer.player.set({ sessionId: 'session-1' });
 
     this.listeners = {
-      'createSession': async (sessionName, sessionPreset) => {
+      createSession: async (sessionName, sessionPreset) => {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
         return sessionId;
       },
-      'clearSessionExamples': async () => this.coMoPlayer.session.clearExamples(),
-      'clearSessionLabel': async label => this.coMoPlayer.session.clearLabel(label),
-      'setPlayerParams': async updates => await this.coMoPlayer.player.set(updates),
+      deleteAllSessionExamples: async () => this.coMoPlayer.session.clearExamples(),
+      deleteSessionExamplesByLabel: async label => this.coMoPlayer.session.clearLabel(label),
+      setPlayerParams: async updates => await this.coMoPlayer.player.set(updates),
     };
 
     window.addEventListener('resize', () => this.render());
