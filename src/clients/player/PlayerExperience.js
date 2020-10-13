@@ -79,6 +79,13 @@ class PlayerExperience extends AbstractExperience {
     // e.g. when displaying the session choice screen
     this.como.project.subscribe(() => this.render());
 
+    await this.coMoPlayer.player.set({ sessionId: 'test' });
+    setTimeout(() => {
+      this.coMoPlayer.graph.modules['bridge'].subscribe(frame => {
+        console.log(frame);
+      });
+    }, 100);
+
     window.addEventListener('resize', () => this.render());
     this.render();
   }

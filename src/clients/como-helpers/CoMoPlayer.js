@@ -39,7 +39,6 @@ class CoMoPlayer {
   }
 
   async createSessionAndGraph(sessionId) {
-    console.log(sessionId);
     await this.clearSessionAndGraph();
 
     // if a sessionId is given, attach to the session
