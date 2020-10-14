@@ -17,6 +17,7 @@ function defaultMLDescriptors(graph, helpers, outputFrame) {
   // return the function that will executed on each frame
   return function(inputFrame, outputFrame) {
     const inputData = inputFrame.data;
+    const outputData = outputFrame.data;
 
     // Copy the data that must be sent to the ML module into `outputFrame.data`
     // by default, we only forward the values computed by the `motionDescriptors`.
@@ -25,10 +26,22 @@ function defaultMLDescriptors(graph, helpers, outputFrame) {
     let index = 0;
 
     for (let i = 0; i < filteredKeys.length; i++) {
-      const key = filteredKeys[i];
+      const desc = filteredKeys[i];
 
-      for (let j = 0; j < inputData[key].length; j++) {
-        outputFrame.data[index] = inputData[key][j];
+      if (Array.isArray(inputData[desc])) {
+        for (let j = 0; j < inputData[desc].length; j++) {
+          outputData[index] = inputData[desc][j];
+          index += 1;
+        }
+      // handle objects
+      } else if (Object.prototype.toString.call(inputData[desc]) === '[object Object]') {
+        for (let key in inputData[desc]) {
+          outputData[index] = inputData[desc][key];
+          index += 1;
+        }
+      // consider everything else as a scalar
+      } else {
+        outputData[index] = inputData[desc];
         index += 1;
       }
     }

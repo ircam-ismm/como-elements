@@ -42,7 +42,7 @@ class PlayerExperience extends AbstractExperience {
     if (this.como.hasDeviceMotion) {
       source = new this.como.sources.DeviceMotion(this.como, player.get('id'));
     } else {
-      source = new this.como.sources.RandomValues(this.como, player.get('id'));
+      source = new this.como.sources.RandomValues(this.como, player.get('id'), { period: 0.05 });
     }
 
     // @example - metas is a placeholder for application specific informations
@@ -82,7 +82,7 @@ class PlayerExperience extends AbstractExperience {
     await this.coMoPlayer.player.set({ sessionId: 'test' });
     setTimeout(() => {
       this.coMoPlayer.graph.modules['bridge'].subscribe(frame => {
-        console.log(frame);
+        // console.log(JSON.stringify(frame, null, 2));
       });
     }, 100);
 

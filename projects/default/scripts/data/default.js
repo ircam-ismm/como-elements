@@ -1,10 +1,10 @@
-function descriptorsDefault(graph, helpers, outputFrame) {
+function defaultMLDescriptors(graph, helpers, outputFrame) {
   // reset outputData, here `outputFrame.data` is an array to comply
   // with the data format accepted by the xmm encoder / decoder
   outputFrame.data = [];
 
   // define the keys from `inputFrame.data` to be copied into `outputFrame.data`
-  var filteredKeys = [
+  const filteredKeys = [
     'intensity',
     'accelerationBandpass5hz',
     'orientation',
@@ -16,22 +16,37 @@ function descriptorsDefault(graph, helpers, outputFrame) {
 
   // return the function that will executed on each frame
   return function(inputFrame, outputFrame) {
-    var inputData = inputFrame.data;
+    const inputData = inputFrame.data;
+    const outputData = outputFrame.data;
 
     // Copy the data that must be sent to the ML module into `outputFrame.data`
     // by default, we only forward the values computed by the `motionDescriptors`.
     // As the ML modules requires a flat array as input, we copy values
     // from chosen entries into the `outputFrame.data` array
-    var index = 0;
+    let index = 0;
 
-    for (var i = 0; i < filteredKeys.length; i++) {
-      var key = filteredKeys[i];
+    for (let i = 0; i < filteredKeys.length; i++) {
+      const desc = filteredKeys[i];
 
-      for (var j = 0; j < inputData[key].length; j++) {
-        outputFrame.data[index] = inputData[key][j];
+      if (Array.isArray(inputData[desc])) {
+        for (let j = 0; j < inputData[desc].length; j++) {
+          outputData[index] = inputData[desc][j];
+          index += 1;
+        }
+      // handle objects
+      } else if (Object.prototype.toString.call(inputData[desc]) === '[object Object]') {
+        for (let key in inputData[desc]) {
+          outputData[desc][key] = inputData[desc][key];
+          index += 1;
+        }
+      // consider everything else as a scalar
+      } else {
+        outputData[desc] = inputData[desc];
         index += 1;
       }
     }
+
+    console.log(inputData, outputData);
 
     return outputFrame;
   }
