@@ -15,3 +15,5 @@
 package-lock.json
 .DS_Store
 Thumbs.db
+
+projects/default/recordings/*

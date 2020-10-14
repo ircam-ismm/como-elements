@@ -93,6 +93,10 @@
     ],
     [
       'input-resampler',
+      'stream-recorder',
+    ],
+    [
+      'input-resampler',
       'network-send',
     ],
     [

@@ -153,8 +153,8 @@ export function playerControls(data, listeners, {
               readonly
             ></sc-text>
             <sc-toggle
-              .active="${player.recordStream}"
-              @change="${e => listeners.setPlayerParams(player.id, { recordStream: e.detail.value })}"
+              .active="${player.streamRecord}"
+              @change="${e => listeners.setPlayerParams(player.id, { streamRecord: e.detail.value })}"
             ></sc-toggle>
           </div>`
       : ``}
