@@ -107,7 +107,7 @@
         id: 'script-select-descriptors',
         type: 'ScriptData',
         options: {
-          scriptName: 'default-ml-descriptors',
+          scriptName: 'default',
         },
       },
       {
@@ -142,7 +142,7 @@
         id: 'audio-destination',
         type: 'AudioDestination',
         options: {
-          volume: -12,
+          volume: -22,
           mute: true,
         },
       },

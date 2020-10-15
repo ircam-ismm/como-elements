@@ -53,15 +53,15 @@ class ControllerExperience extends AbstractExperience {
         await this.como.project.deleteSession(sessionId);
       },
 
-      // session graph
-      updateSessionGraphOption: async (sessionId, moduleId, optionName, value) => {
+      // graph options
+      updateSessionGraphOptions: async (sessionId, moduleId, updates) => {
         const session = this.sessions.get(sessionId);
-        session.setGraphOptions(moduleId, { [optionName]: value });
-        // const graph = session.get('graph');
-        // const module = graph.modules.find(m => m.id === moduleId);
-        // module.options[optionName] = value;
+        session.setGraphOptions(moduleId, updates);
+      },
 
-        // session.set({ graph });
+      updatePlayerGraphOptions: async (playerId, moduleId, updates) => {
+        const player = this.players.get(playerId);
+        player.setGraphOptions(moduleId, updates);
       },
 
       // session examples
@@ -256,6 +256,7 @@ class ControllerExperience extends AbstractExperience {
                 showRecordingControls: false,
                 showDuplicate: true,
                 showRecordStream: false,
+                showGraphOptionsControls: false,
               });
             })}
           </div>`
@@ -268,7 +269,7 @@ class ControllerExperience extends AbstractExperience {
               ${views.sessionHeader(viewData, listeners, { sessionId })}
               ${this.viewOptions.layout === 'full' ?
                 html`
-                  ${views.sessionScripts(viewData, listeners, { sessionId })}
+                  ${views.graphOptionsControls(viewData, listeners, { sessionId })}
                   ${views.sessionMLExamples(viewData, listeners, { sessionId })}
                   ${views.sessionPlayers(viewData, listeners, { sessionId })}
                 `
@@ -288,6 +289,7 @@ class ControllerExperience extends AbstractExperience {
                 showRecordingControls: false,
                 showDuplicate: false,
                 showRecordStream: false,
+                showGraphOptionsControls: false,
               });
             })}
           </div>`

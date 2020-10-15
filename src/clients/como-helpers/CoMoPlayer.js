@@ -58,6 +58,7 @@ class CoMoPlayer {
       }
 
       this.session = await this.como.project.sessions.attach(sessionStateId);
+
       // if session is updated when client is attached to it
       this.session.subscribe((updates) => this._emitChange());
       // if the session is deleted
