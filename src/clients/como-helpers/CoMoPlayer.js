@@ -2,6 +2,8 @@
 /**
  * Simple wrapper around low-level CoMo API:
  * Mainly wrap the default logic to bind player, sessions, graphs and sources together
+ *
+ * @note - should think about moving that into CoMo...
  */
 class CoMoPlayer {
   constructor(como, player) {
@@ -44,6 +46,8 @@ class CoMoPlayer {
     // if a sessionId is given, attach to the session
     // and create the related graph
     if (sessionId !== null) {
+      // @note - this is important as it allows to wait for informations needed
+      // about the session sent by server.Project
       await this.player.set({ loading: true });
       this.player.onDelete(() => this.clearSessionAndGraph());
 

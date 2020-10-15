@@ -56,11 +56,12 @@ class ControllerExperience extends AbstractExperience {
       // session graph
       updateSessionGraphOption: async (sessionId, moduleId, optionName, value) => {
         const session = this.sessions.get(sessionId);
-        const graph = session.get('graph');
-        const module = graph.modules.find(m => m.id === moduleId);
-        module.options[optionName] = value;
+        session.setGraphOptions(moduleId, { [optionName]: value });
+        // const graph = session.get('graph');
+        // const module = graph.modules.find(m => m.id === moduleId);
+        // module.options[optionName] = value;
 
-        session.set({ graph });
+        // session.set({ graph });
       },
 
       // session examples

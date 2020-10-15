@@ -28,6 +28,8 @@ export function designer(data, listeners) {
       </button>
     </div>
 
+    <!-- LOCAL OPTIONS -->
+
     <!-- RECORDING MANAGEMENT -->
     <div style="margin: 10px 0;">
       <h2 style="${styles.h2}">Recording</h2>
