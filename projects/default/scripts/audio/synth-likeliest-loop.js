@@ -9,7 +9,7 @@ function synthLikeliestLoop(graph, helpers, audioInNode, audioOutNode, outputFra
 
   return {
     process(inputFrame) {
-      var label = inputFrame.data['ml-decoder'].likeliest;
+      const label = inputFrame.data['ml-decoder'].likeliest;
 
       if (currentLabel !== label) {
         currentLabel = label;

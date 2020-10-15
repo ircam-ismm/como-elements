@@ -108,19 +108,19 @@ class ControllerExperience extends AbstractExperience {
         }
       },
 
-      'session:updateAudioFiles': async e => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
+      // 'session:updateAudioFiles': async e => {
+      //   e.preventDefault();
+      //   const formData = new FormData(e.target);
 
-        const sessionId = formData.get('id');
-        const session = this.sessions.get(sessionId);
+      //   const sessionId = formData.get('id');
+      //   const session = this.sessions.get(sessionId);
 
-        const audioFiles = session.get('audioFiles');
-        const index = formData.get('index');
-        audioFiles[index].active = formData.get('active') ? true : false;
-        audioFiles[index].label = formData.get('label');
-        session.set({ audioFiles });
-      },
+      //   const audioFiles = session.get('audioFiles');
+      //   const index = formData.get('index');
+      //   audioFiles[index].active = formData.get('active') ? true : false;
+      //   audioFiles[index].label = formData.get('label');
+      //   session.set({ audioFiles });
+      // },
 
       // // local players
       // 'localPlayer:create': async () => {
