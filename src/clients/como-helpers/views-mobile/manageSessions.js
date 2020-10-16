@@ -61,7 +61,10 @@ export function manageSessions(data, listeners, {
     ${enableSelection ?
       html`
         <div style="margin-top: 30px;">
-          <h2 style="${styles.h2}">Select Session:</h2>
+          ${data.project.sessionsOverview.length ?
+            html`<h2 style="${styles.h2}">Select Session:</h2>` :
+            html`<h2 style="${styles.h2}">Sorry, <br />no session available</h2>`
+          }
 
           ${data.project.sessionsOverview
             .sort((a, b) => a.name < b.name ? -1 : 1)

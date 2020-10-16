@@ -38,6 +38,7 @@ export const input = css`
   border-radius: 3px;
   padding: 0 6px;
   margin: 4px 0;
+  color: white;
 `;
 
 export const select = css`

@@ -39,6 +39,7 @@ export const input = css`
   padding: 0 6px;
   margin: 4px 0;
   vertical-align: top;
+  color: white;
 `;
 
 export const select = css`
