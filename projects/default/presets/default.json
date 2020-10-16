@@ -66,10 +66,10 @@
       },
     },
     {
-      id: 'fx-gain-energy',
+      id: 'fx-1',
       type: 'ScriptAudio',
       options: {
-        scriptName: 'fx-gain-energy',
+        scriptName: 'fx-1',
         bypass: true,
       },
     },
@@ -137,14 +137,14 @@
     ],
     [
       'merge-mapping',
-      'fx-gain-energy',
+      'fx-1',
     ],
     [
       'synth',
-      'fx-gain-energy',
+      'fx-1',
     ],
     [
-      'fx-gain-energy',
+      'fx-1',
       'audio-destination',
     ],
   ],

@@ -36,17 +36,15 @@ function defaultMLDescriptors(graph, helpers, outputFrame) {
       // handle objects
       } else if (Object.prototype.toString.call(inputData[desc]) === '[object Object]') {
         for (let key in inputData[desc]) {
-          outputData[desc][key] = inputData[desc][key];
+          outputData[index] = inputData[desc][key];
           index += 1;
         }
       // consider everything else as a scalar
       } else {
-        outputData[desc] = inputData[desc];
+        outputData[index] = inputData[desc];
         index += 1;
       }
     }
-
-    console.log(inputData, outputData);
 
     return outputFrame;
   }

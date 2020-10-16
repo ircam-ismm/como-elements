@@ -1,5 +1,6 @@
 import { html } from 'lit-html';
 import * as styles from './styles.js';
+import { graphOptionsControls } from './graphOptionsControls.js'
 import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
 
@@ -9,9 +10,11 @@ export function playerControls(data, listeners, {
   showRecordingControls = true,
   showDuplicate = true,
   showRecordStream = true,
+  showGraphOptionsControls = true,
 } = {}) {
   const sessions = Array.from(data.sessions.values());
   const player = data.players.get(playerId).getValues();
+  const sessionId = player.sessionId;
   const session = data.sessions.get(player.sessionId);
 
   return html`
@@ -157,6 +160,13 @@ export function playerControls(data, listeners, {
               @change="${e => listeners.setPlayerParams(player.id, { streamRecord: e.detail.value })}"
             ></sc-toggle>
           </div>`
+      : ``}
+
+      ${showGraphOptionsControls ?
+        graphOptionsControls(data, listeners, {
+          sessionId,
+          playerId,
+        })
       : ``}
       </div>
   `;

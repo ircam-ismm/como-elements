@@ -67,10 +67,27 @@ class DesignerExperience extends AbstractExperience {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
         return sessionId;
       },
-      deleteAllSessionExamples: async () => this.coMoPlayer.session.clearExamples(),
-      deleteSessionExamplesByLabel: async label => this.coMoPlayer.session.clearLabel(label),
-      setPlayerParams: async updates => await this.coMoPlayer.player.set(updates),
+      deleteAllSessionExamples: async () => {
+        this.coMoPlayer.session.clearExamples();
+      },
+      deleteSessionExamplesByLabel: async label => {
+        this.coMoPlayer.session.clearLabel(label);
+      },
+      setPlayerParams: async updates => {
+        await this.coMoPlayer.player.set(updates);
+      },
+      setPlayerGraphOptions: async (moduleId, updates) => {
+        await this.coMoPlayer.player.setGraphOptions(moduleId, updates);
+      },
     };
+
+    console.warn('--> Attached to "test" session');
+    await this.coMoPlayer.player.set({ sessionId: 'test' });
+    // setTimeout(() => {
+    //   this.coMoPlayer.graph.modules['bridge'].subscribe(frame => {
+    //     // console.log(JSON.stringify(frame, null, 2));
+    //   });
+    // }, 500);
 
     window.addEventListener('resize', () => this.render());
     this.render();
@@ -83,6 +100,7 @@ class DesignerExperience extends AbstractExperience {
       project: this.como.project.getValues(),
       player: this.coMoPlayer.player.getValues(),
       session: this.coMoPlayer.session ? this.coMoPlayer.session.getValues() : null,
+      graph: this.coMoPlayer.graph,
     };
 
     const listeners = this.listeners;

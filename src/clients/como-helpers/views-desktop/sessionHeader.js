@@ -8,7 +8,6 @@ export function sessionHeader(data, listeners, {
   sessionId = null,
 } = {}) {
   const session = data.sessions.get(sessionId).getValues();
-  const audioDestination = session.graph.modules.find(m => m.type === 'AudioDestination');
 
   return html`
     <div style="
@@ -28,31 +27,6 @@ export function sessionHeader(data, listeners, {
         "
         @release="${e => listeners.deleteSession(session.id)}"
       ></sc-button>
-    </div>
-    <div>
-      <sc-text
-        value="volume"
-        width="80"
-        readonly
-      ></sc-text>
-      <sc-slider
-        width="300"
-        min="-60"
-        max="5"
-        step="1"
-        display-number
-        .value="${audioDestination.options.volume}"
-        @input="${e => listeners.updateSessionGraphOption(sessionId, audioDestination.id, 'volume', e.detail.value)}"
-      ></sc-slider>
-      <sc-text
-        value="mute"
-        width="80"
-        readonly
-      ></sc-text>
-      <sc-toggle
-        .active="${audioDestination.options.mute}"
-        @change="${e => listeners.updateSessionGraphOption(sessionId, audioDestination.id, 'mute', e.detail.value)}"
-      ></sc-toggle>
     </div>
   `;
 }

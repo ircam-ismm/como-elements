@@ -1,7 +1,11 @@
 import { html } from 'lit-html';
 import * as styles from './styles.js';
+import '@ircam/simple-components/sc-toggle.js';
+import '@ircam/simple-components/sc-text.js';
 
 export function designer(data, listeners) {
+  const destinationId = data.graph.description.modules.find(m => m.type === 'AudioDestination').id;
+
   return html`
     <!-- LOADER -->
     ${data.player.loading ?
@@ -26,6 +30,18 @@ export function designer(data, listeners) {
         @click="${e => listeners.setPlayerParams({ sessionId: null })}">
         change session
       </button>
+    </div>
+
+    <!-- GRAPH OPTIONS -->
+    <div style="margin: 10px 0;">
+      <sc-text
+        value="mute"
+        readonly
+      ></sc-text>
+      <sc-toggle
+        .active="${data.graph.options[destinationId].mute}"
+        @change="${e => listeners.setPlayerGraphOptions(destinationId, { mute: e.detail.value })}"
+      ></sc-toggle>
     </div>
 
     <!-- RECORDING MANAGEMENT -->

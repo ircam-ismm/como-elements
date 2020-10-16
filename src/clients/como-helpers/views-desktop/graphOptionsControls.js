@@ -4,19 +4,58 @@ import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
 import '@ircam/simple-components/sc-button.js';
 
-export function sessionScripts(data, listeners, {
+export function graphOptionsControls(data, listeners, {
   sessionId = null,
+  playerId = null,
 } = {}) {
   const session = data.sessions.get(sessionId).getValues();
+  const destinationId = session.graph.modules.find(m => m.type === 'AudioDestination').id;
   const dataScripts = session.graph.modules.filter(m => m.type === 'ScriptData');
   const audioScripts = session.graph.modules.filter(m => m.type === 'ScriptAudio');
 
+  let player = null;
+
+  if (playerId) {
+    player = data.players.get(playerId).getValues();
+  }
+
+  const graphOptions = player ? player.graphOptions : session.graphOptions;
+  const updateGraphFunc = player ? listeners.updatePlayerGraphOptions : listeners.updateSessionGraphOptions;
+  const targetId = player ? playerId : sessionId;
+
   return html`
     <div>
+      <div>
+        <sc-text
+          value="volume"
+          width="80"
+          readonly
+        ></sc-text>
+        <sc-slider
+          width="300"
+          min="-60"
+          max="5"
+          step="1"
+          display-number
+          .value="${graphOptions[destinationId].volume}"
+          @input="${e => updateGraphFunc(targetId, destinationId, { volume: e.detail.value })}"
+        ></sc-slider>
+        <sc-text
+          value="mute"
+          width="80"
+          readonly
+        ></sc-text>
+        <sc-toggle
+          .active="${graphOptions[destinationId].mute}"
+          @change="${e => updateGraphFunc(targetId, destinationId, { mute: e.detail.value })}"
+        ></sc-toggle>
+      </div>
 
       <h3 style="${styles.h3}">Data Scripts</h3>
 
       ${dataScripts.map(scriptModule => {
+        const scriptOptions = graphOptions[scriptModule.id];
+
         return html`
           <div style="margin-bottom: 2px">
             <sc-text
@@ -25,12 +64,12 @@ export function sessionScripts(data, listeners, {
             ></sc-text>
             <select
               style="${styles.select}"
-              @change="${e => listeners.updateSessionGraphOption(session.id, scriptModule.id, 'scriptName', e.target.value)}"
+              @change="${e => updateGraphFunc(targetId, scriptModule.id, { scriptName: e.target.value })}"
             >
               ${data.dataScriptList.map(scriptName => {
                 return html`<option
                   value="${scriptName}"
-                  ?selected="${scriptName === scriptModule.options.scriptName}"
+                  ?selected="${scriptName === scriptOptions.scriptName}"
                 >${scriptName}</option>`;
               })}
             </select>
@@ -38,7 +77,7 @@ export function sessionScripts(data, listeners, {
               value="edit"
               width= "100"
               @input="${e => {
-                const url = `../script-editor#data___${scriptModule.options.scriptName}`;
+                const url = `../script-editor#data___${scriptOptions.scriptName}`;
                 window.open(url, '', 'width=1000,height=750,top=200,left=200');
               }}"
             ></sc-button>
@@ -50,6 +89,8 @@ export function sessionScripts(data, listeners, {
       <h3 style="${styles.h3}">Audio Scripts</h3>
 
       ${audioScripts.map(scriptModule => {
+        const scriptOptions = graphOptions[scriptModule.id];
+
         return html`
           <div style="margin-bottom: 2px">
             <sc-text
@@ -58,12 +99,12 @@ export function sessionScripts(data, listeners, {
             ></sc-text>
             <select
               style="${styles.select}"
-              @change="${e => listeners.updateSessionGraphOption(session.id, scriptModule.id, 'scriptName', e.target.value)}"
+              @change="${e => updateGraphFunc(targetId, scriptModule.id, { scriptName: e.target.value })}"
             >
               ${data.audioScriptList.map(scriptName => {
                 return html`<option
                   value="${scriptName}"
-                  ?selected="${scriptName === scriptModule.options.scriptName}"
+                  ?selected="${scriptName === scriptOptions.scriptName}"
                 >${scriptName}</option>`;
               })}
             </select>
@@ -71,7 +112,7 @@ export function sessionScripts(data, listeners, {
               value="edit"
               width= "100"
               @input="${e => {
-                const url = `../script-editor#audio___${scriptModule.options.scriptName}`;
+                const url = `../script-editor#audio___${scriptOptions.scriptName}`;
                 window.open(url, '', 'width=1000,height=750,top=200,left=200');
               }}"
             ></sc-button>
@@ -81,8 +122,8 @@ export function sessionScripts(data, listeners, {
               readonly
             ></sc-text>
             <sc-toggle
-              .active="${scriptModule.options.bypass}"
-              @change="${e => listeners.updateSessionGraphOption(session.id, scriptModule.id, 'bypass', e.detail.value)}"
+              .active="${scriptOptions.bypass}"
+              @change="${e => updateGraphFunc(targetId, scriptModule.id, { bypass: e.detail.value })}"
             ></sc-toggle>
           </div>
         `;
