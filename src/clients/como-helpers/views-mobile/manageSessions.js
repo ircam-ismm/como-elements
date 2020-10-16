@@ -63,7 +63,7 @@ export function manageSessions(data, listeners, {
         <div style="margin-top: 30px;">
           ${data.project.sessionsOverview.length ?
             html`<h2 style="${styles.h2}">Select Session:</h2>` :
-            html`<h2 style="${styles.h2}">Sorry, <br />no session available</h2>`
+            html`<h2 style="${styles.h2}">Sorry,<br />no session available</h2>`
           }
 
           ${data.project.sessionsOverview

@@ -103,7 +103,7 @@
         id: 'script-select-descriptors',
         type: 'ScriptData',
         options: {
-          scriptName: 'default-ml-descriptors',
+          scriptName: 'test-script-params',
         },
       },
       {
@@ -130,8 +130,9 @@
         id: 'fx-1',
         type: 'ScriptAudio',
         options: {
-          scriptName: 'fx-gain-energy',
+          scriptName: 'test-script-params',
           bypass: true,
+          scriptParams: '{ myParam: 1 }',
         },
       },
       {

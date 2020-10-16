@@ -266,9 +266,13 @@ class ControllerExperience extends AbstractExperience {
           ${Array.from(this.sessions.keys()).sort().map(sessionId => {
             return html`
               ${views.sessionHeader(viewData, listeners, { sessionId })}
+              ${views.graphOptionsControls(viewData, listeners, {
+                sessionId,
+                showScriptsControls: (this.viewOptions.layout === 'full'),
+              })}
+
               ${this.viewOptions.layout === 'full' ?
                 html`
-                  ${views.graphOptionsControls(viewData, listeners, { sessionId })}
                   ${views.sessionMLExamples(viewData, listeners, { sessionId })}
                   ${views.sessionPlayers(viewData, listeners, { sessionId })}
                 `
