@@ -16,7 +16,7 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
 
   return {
     process(inputFrame) {
-      const enhancedIntensity = inputFrame.data['intensity'].high;
+      const enhancedIntensity = inputFrame.data['intensity'].compressed;
       const median = movingAverage.process(enhancedIntensity);
       const delta = enhancedIntensity - median;
 
