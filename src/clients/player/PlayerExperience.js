@@ -81,11 +81,11 @@ class PlayerExperience extends AbstractExperience {
 
     console.warn('--> Attached to "test" session');
     await this.coMoPlayer.player.set({ sessionId: 'test' });
-    setTimeout(() => {
-      this.coMoPlayer.graph.modules['bridge'].subscribe(frame => {
-        // console.log(JSON.stringify(frame, null, 2));
-      });
-    }, 500);
+    // setTimeout(() => {
+    //   this.coMoPlayer.graph.modules['bridge'].subscribe(frame => {
+    //     // console.log(JSON.stringify(frame, null, 2));
+    //   });
+    // }, 500);
 
     window.addEventListener('resize', () => this.render());
     this.render();

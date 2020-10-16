@@ -69,7 +69,7 @@
       id: 'fx-1',
       type: 'ScriptAudio',
       options: {
-        scriptName: 'fx-1',
+        scriptName: 'fx-gain-energy',
         bypass: true,
       },
     },

@@ -1,0 +1,259 @@
+{
+  name: 'test',
+  id: 'test',
+  audioFiles: [
+    {
+      name: '5beats.mp3',
+      url: 'audio/5beats.mp3',
+      extension: '.mp3',
+      active: true,
+      label: '5beats.mp3',
+    },
+    {
+      name: 'aerial.mp3',
+      url: 'audio/aerial.mp3',
+      extension: '.mp3',
+      active: true,
+      label: 'aerial.mp3',
+    },
+    {
+      name: 'bubble.mp3',
+      url: 'audio/bubble.mp3',
+      extension: '.mp3',
+      active: true,
+      label: 'bubble.mp3',
+    },
+    {
+      name: 'clicks.mp3',
+      url: 'audio/clicks.mp3',
+      extension: '.mp3',
+      active: true,
+      label: 'clicks.mp3',
+    },
+    {
+      name: 'cluck.mp3',
+      url: 'audio/cluck.mp3',
+      extension: '.mp3',
+      active: true,
+      label: 'cluck.mp3',
+    },
+    {
+      name: 'crashedcan.mp3',
+      url: 'audio/crashedcan.mp3',
+      extension: '.mp3',
+      active: true,
+      label: 'crashedcan.mp3',
+    },
+    {
+      name: 'feu.mp3',
+      url: 'audio/feu.mp3',
+      extension: '.mp3',
+      active: true,
+      label: 'feu.mp3',
+    },
+    {
+      name: 'granular_stuff_09.mp3',
+      url: 'audio/granular_stuff_09.mp3',
+      extension: '.mp3',
+      active: true,
+      label: 'granular_stuff_09.mp3',
+    },
+  ],
+  graph: {
+    name: 'default',
+    metas: {
+      version: '0.0.0',
+    },
+    modules: [
+      {
+        id: 'input',
+        type: 'Input',
+      },
+      {
+        id: 'input-resampler',
+        type: 'InputResampler',
+        options: {
+          resamplingPeriod: 0.02,
+        },
+      },
+      {
+        id: 'example-recorder',
+        type: 'ExampleRecorder',
+      },
+      {
+        id: 'stream-recorder',
+        type: 'StreamRecorder',
+      },
+      {
+        id: 'network-send',
+        type: 'NetworkSend',
+      },
+      {
+        id: 'motion-descriptors',
+        type: 'MotionDescriptors',
+        options: {
+          resamplingPeriod: 0.02,
+        },
+      },
+      {
+        id: 'merge-descriptors',
+        type: 'Merge',
+      },
+      {
+        id: 'script-select-descriptors',
+        type: 'ScriptData',
+        options: {
+          scriptName: 'default-ml-descriptors',
+        },
+      },
+      {
+        id: 'ml-decoder',
+        type: 'MLDecoder',
+      },
+      {
+        id: 'merge-mapping',
+        type: 'Merge',
+      },
+      {
+        id: 'logger',
+        type: 'Logger',
+      },
+      {
+        id: 'synth',
+        type: 'ScriptAudio',
+        options: {
+          scriptName: 'synth-likeliest-loop',
+          bypass: false,
+        },
+      },
+      {
+        id: 'fx-1',
+        type: 'ScriptAudio',
+        options: {
+          scriptName: 'fx-gain-energy',
+          bypass: true,
+        },
+      },
+      {
+        id: 'audio-destination',
+        type: 'AudioDestination',
+        options: {
+          volume: 0,
+          mute: false,
+        },
+      },
+    ],
+    connections: [
+      [
+        'input',
+        'input-resampler',
+      ],
+      [
+        'input-resampler',
+        'example-recorder',
+      ],
+      [
+        'input-resampler',
+        'stream-recorder',
+      ],
+      [
+        'input-resampler',
+        'network-send',
+      ],
+      [
+        'input-resampler',
+        'merge-descriptors',
+      ],
+      [
+        'input-resampler',
+        'motion-descriptors',
+      ],
+      [
+        'motion-descriptors',
+        'merge-descriptors',
+      ],
+      [
+        'merge-descriptors',
+        'script-select-descriptors',
+      ],
+      [
+        'script-select-descriptors',
+        'ml-decoder',
+      ],
+      [
+        'input-resampler',
+        'merge-mapping',
+      ],
+      [
+        'motion-descriptors',
+        'merge-mapping',
+      ],
+      [
+        'ml-decoder',
+        'merge-mapping',
+      ],
+      [
+        'merge-mapping',
+        'synth',
+      ],
+      [
+        'merge-mapping',
+        'fx-1',
+      ],
+      [
+        'synth',
+        'fx-1',
+      ],
+      [
+        'fx-1',
+        'audio-destination',
+      ],
+    ],
+  },
+  model: {
+    docType: 'rapid-mix:ml-model',
+    docVersion: '1.0.0',
+    target: {
+      name: 'xmm',
+      version: '1.0.0',
+    },
+    payload: {
+      configuration: {
+        default_parameters: {
+          absolute_regularization: 0.01,
+          covariance_mode: 0,
+          gaussians: 1,
+          relative_regularization: 0.01,
+        },
+        multiClass_regression_estimator: 0,
+        multithreading: 2,
+      },
+      models: [],
+      shared_parameters: {
+        bimodal: false,
+        dimension: 1,
+        dimension_input: 0,
+        em_algorithm_max_iterations: 0,
+        em_algorithm_min_iterations: 10,
+        em_algorithm_percent_chg: 0.01,
+        likelihood_window: 1,
+      },
+      modelType: 'gmm',
+    },
+  },
+  examples: {},
+  learningConfig: {
+    target: {
+      name: 'xmm',
+    },
+    payload: {
+      modelType: 'gmm',
+      gaussians: 1,
+      absoluteRegularization: 0.01,
+      relativeRegularization: 0.01,
+      covarianceMode: 'full',
+      states: 1,
+      transitionMode: 'ergodic',
+    },
+  },
+}
