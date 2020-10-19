@@ -10,7 +10,7 @@ function fxGainEnergy(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   envelop.gain.setValueAtTime(0, audioContext.currentTime);
 
   return {
-    onParamChange(param = {}) {
+    updateParams(updates) {
 
     },
     process(inputFrame, outputFrame) {

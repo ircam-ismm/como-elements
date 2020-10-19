@@ -86,7 +86,7 @@ export function graphOptionsControls(data, listeners, {
                   }}"
                 ></sc-button>
                 <sc-text
-                  .value="${ifDefined(scriptOptions.scriptParams)}"
+                  .value="${scriptOptions.scriptParams || ''}"
                   @change="${e => updateGraphFunc(targetId, scriptModule.id, { scriptParams: e.detail.value })}"
                 ></sc-text>
               </div>
@@ -134,7 +134,7 @@ export function graphOptionsControls(data, listeners, {
                   @change="${e => updateGraphFunc(targetId, scriptModule.id, { bypass: e.detail.value })}"
                 ></sc-toggle>
                 <sc-text
-                  .value="${ifDefined(scriptOptions.scriptParams)}"
+                  .value="${scriptOptions.scriptParams || ''}"
                   @change="${e => updateGraphFunc(targetId, scriptModule.id, { scriptParams: e.detail.value })}"
                 ></sc-text>
               </div>

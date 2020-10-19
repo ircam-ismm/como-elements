@@ -15,6 +15,9 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   const bufferNames = Object.keys(buffers);
 
   return {
+    updateParams(updates) {
+
+    },
     process(inputFrame) {
       const enhancedIntensity = inputFrame.data['intensity'].compressed;
       // const gain = Math.pow(inputFrame.data['intensity'].high, 1/2) * 10; // to add
