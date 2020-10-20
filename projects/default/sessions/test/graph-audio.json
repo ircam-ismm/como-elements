@@ -1,0 +1,40 @@
+{
+  name: 'default',
+  version: '0.0.0',
+  modules: [
+    {
+      id: 'synth',
+      type: 'ScriptAudio',
+      options: {
+        scriptName: 'synth-likeliest-loop',
+        bypass: false,
+      },
+    },
+    {
+      id: 'fx-1',
+      type: 'ScriptAudio',
+      options: {
+        scriptName: 'fx-gain-energy',
+        bypass: true,
+      },
+    },
+    {
+      id: 'audio-destination',
+      type: 'AudioDestination',
+      options: {
+        volume: -2,
+        mute: true,
+      },
+    },
+  ],
+  connections: [
+    [
+      'synth',
+      'fx-1',
+    ],
+    [
+      'fx-1',
+      'audio-destination',
+    ],
+  ],
+}

@@ -1,0 +1,67 @@
+{
+  name: 'default',
+  version: '0.0.0',
+  modules: [
+    {
+      id: 'input',
+      type: 'Input',
+    },
+    {
+      id: 'motion-descriptors',
+      type: 'MotionDescriptors',
+    },
+    {
+      id: 'merge-ml-data',
+      type: 'Merge',
+    },
+    {
+      id: 'select-ml-data',
+      type: 'ScriptData',
+      options: {
+        scriptName: 'default-ml-descriptors',
+      },
+    },
+    {
+      id: 'ml-decoder',
+      type: 'MLDecoder',
+    },
+    {
+      id: 'output',
+      type: 'Output',
+    },
+  ],
+  connections: [
+    [
+      'input',
+      'merge-ml-data',
+    ],
+    [
+      'input',
+      'motion-descriptors',
+    ],
+    [
+      'motion-descriptors',
+      'merge-ml-data',
+    ],
+    [
+      'merge-ml-data',
+      'select-ml-data',
+    ],
+    [
+      'select-ml-data',
+      'ml-decoder',
+    ],
+    [
+      'input',
+      'output',
+    ],
+    [
+      'motion-descriptors',
+      'output',
+    ],
+    [
+      'ml-decoder',
+      'output',
+    ],
+  ],
+}
