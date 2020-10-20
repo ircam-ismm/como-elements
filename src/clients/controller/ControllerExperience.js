@@ -93,7 +93,7 @@ class ControllerExperience extends AbstractExperience {
 
           if (created) {
             const source = new this.como.sources.Network(this.como, playerId);
-            const coMoPlayer = new CoMoPlayer(this.como, player);
+            const coMoPlayer = new CoMoPlayer(this.como, player, true);
             coMoPlayer.setSource(source);
             coMoPlayer.createSessionAndGraph(player.get('sessionId'));
 

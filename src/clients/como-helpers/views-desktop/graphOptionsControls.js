@@ -11,9 +11,9 @@ export function graphOptionsControls(data, listeners, {
   showScriptsControls = true,
 } = {}) {
   const session = data.sessions.get(sessionId).getValues();
-  const destinationId = session.graph.modules.find(m => m.type === 'AudioDestination').id;
-  const dataScripts = session.graph.modules.filter(m => m.type === 'ScriptData');
-  const audioScripts = session.graph.modules.filter(m => m.type === 'ScriptAudio');
+  const destinationId = session.graph.audio.modules.find(m => m.type === 'AudioDestination').id;
+  const dataScripts = session.graph.data.modules.filter(m => m.type === 'ScriptData');
+  const audioScripts = session.graph.audio.modules.filter(m => m.type === 'ScriptAudio');
 
   let player = null;
 

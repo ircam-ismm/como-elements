@@ -4,7 +4,7 @@ import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
 
 export function designer(data, listeners) {
-  const destinationId = data.graph.description.modules.find(m => m.type === 'AudioDestination').id;
+  const destinationId = data.graph.description.audio.modules.find(m => m.type === 'AudioDestination').id;;
 
   return html`
     <!-- LOADER -->

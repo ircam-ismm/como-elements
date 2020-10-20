@@ -1,151 +1,116 @@
 {
-  name: 'default',
-  metas: {
+  data: {
+    name: 'default',
     version: '0.0.0',
+    modules: [
+      {
+        id: 'input',
+        type: 'Input',
+      },
+      {
+        id: 'motion-descriptors',
+        type: 'MotionDescriptors',
+        options: {
+          resamplingPeriod: 0.02,
+        },
+      },
+      {
+        id: 'merge-ml-data',
+        type: 'Merge',
+      },
+      {
+        id: 'select-ml-data',
+        type: 'ScriptData',
+        options: {
+          scriptName: 'default-ml-descriptors',
+        },
+      },
+      {
+        id: 'ml-decoder',
+        type: 'MLDecoder',
+      },
+      {
+        id: 'output',
+        type: 'Output',
+      },
+      {
+        id: 'logger',
+        type: 'Logger',
+      },
+    ],
+    connections: [
+      [
+        'input',
+        'merge-ml-data',
+      ],
+      [
+        'input',
+        'motion-descriptors',
+      ],
+      [
+        'motion-descriptors',
+        'merge-ml-data',
+      ],
+      [
+        'merge-ml-data',
+        'select-ml-data',
+      ],
+      [
+        'select-ml-data',
+        'ml-decoder',
+      ],
+      [
+        'input',
+        'output',
+      ],
+      [
+        'motion-descriptors',
+        'output',
+      ],
+      [
+        'ml-decoder',
+        'output',
+      ],
+    ],
   },
-  modules: [
-    {
-      id: 'input',
-      type: 'Input',
-    },
-    {
-      id: 'input-resampler',
-      type: 'InputResampler',
-      options: {
-        resamplingPeriod: 0.02,
+  audio: {
+    name: 'default',
+    version: '0.0.0',
+    modules: [
+      {
+        id: 'synth',
+        type: 'ScriptAudio',
+        options: {
+          scriptName: 'synth-likeliest-loop',
+          bypass: false,
+        },
       },
-    },
-    {
-      id: 'example-recorder',
-      type: 'ExampleRecorder',
-    },
-    {
-      id: 'stream-recorder',
-      type: 'StreamRecorder',
-    },
-    {
-      id: 'network-send',
-      type: 'NetworkSend',
-    },
-    {
-      id: 'motion-descriptors',
-      type: 'MotionDescriptors',
-      options: {
-        resamplingPeriod: 0.02,
+      {
+        id: 'fx-1',
+        type: 'ScriptAudio',
+        options: {
+          scriptName: 'fx-gain-energy',
+          bypass: true,
+        },
       },
-    },
-    {
-      id: 'merge-descriptors',
-      type: 'Merge',
-    },
-    {
-      id: 'script-select-descriptors',
-      type: 'ScriptData',
-      options: {
-        scriptName: 'default-ml-descriptors',
+      {
+        id: 'audio-destination',
+        type: 'AudioDestination',
+        options: {
+          volume: -20,
+          mute: true,
+        },
       },
-    },
-    {
-      id: 'ml-decoder',
-      type: 'MLDecoder',
-    },
-    {
-      id: 'merge-mapping',
-      type: 'Merge',
-    },
-    {
-      id: 'logger',
-      type: 'Logger',
-    },
-    {
-      id: 'synth',
-      type: 'ScriptAudio',
-      options: {
-        scriptName: 'synth-likeliest-loop',
-        bypass: false,
-      },
-    },
-    {
-      id: 'fx-1',
-      type: 'ScriptAudio',
-      options: {
-        scriptName: 'fx-gain-energy',
-        bypass: true,
-      },
-    },
-    {
-      id: 'audio-destination',
-      type: 'AudioDestination',
-      options: {
-        volume: 0,
-        mute: false,
-      },
-    },
-  ],
-  connections: [
-    [
-      'input',
-      'input-resampler',
     ],
-    [
-      'input-resampler',
-      'example-recorder',
+    connections: [
+      [
+        'synth',
+        'fx-1',
+      ],
+      [
+        'fx-1',
+        'audio-destination',
+      ],
     ],
-    [
-      'input-resampler',
-      'stream-recorder',
-    ],
-    [
-      'input-resampler',
-      'network-send',
-    ],
-    [
-      'input-resampler',
-      'merge-descriptors',
-    ],
-    [
-      'input-resampler',
-      'motion-descriptors',
-    ],
-    [
-      'motion-descriptors',
-      'merge-descriptors',
-    ],
-    [
-      'merge-descriptors',
-      'script-select-descriptors',
-    ],
-    [
-      'script-select-descriptors',
-      'ml-decoder',
-    ],
-    [
-      'input-resampler',
-      'merge-mapping',
-    ],
-    [
-      'motion-descriptors',
-      'merge-mapping',
-    ],
-    [
-      'ml-decoder',
-      'merge-mapping',
-    ],
-    [
-      'merge-mapping',
-      'synth',
-    ],
-    [
-      'merge-mapping',
-      'fx-1',
-    ],
-    [
-      'synth',
-      'fx-1',
-    ],
-    [
-      'fx-1',
-      'audio-destination',
-    ],
-  ],
+  },
 }
