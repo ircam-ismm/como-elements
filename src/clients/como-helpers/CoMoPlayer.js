@@ -15,7 +15,7 @@ class CoMoPlayer {
     this.isDuplicated = isDuplicated;
     this._subscriptions = new Set();
 
-    this.player.subscribe(async updates => {
+    this._unsubscribePlayer = this.player.subscribe(async updates => {
       for (let name in updates) {
         switch (name) {
           case 'sessionId': {
@@ -27,6 +27,11 @@ class CoMoPlayer {
 
       this._emitChange();
     });
+  }
+
+  async delete() {
+    await this.clearSessionAndGraph();
+    this._unsubscribePlayer();
   }
 
   setSource(source) {
@@ -49,6 +54,7 @@ class CoMoPlayer {
     if (sessionId !== null) {
       // @note - this is important as it allows to wait for informations needed
       // about the session sent by server.Project
+      // @note - this should be fixed when we have reducers in soundworks/core
       await this.player.set({ loading: true });
       this.player.onDelete(() => this.clearSessionAndGraph());
 

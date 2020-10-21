@@ -6,6 +6,8 @@ import CoMoPlayer from '../como-helpers/CoMoPlayer';
 import views from '../como-helpers/views-desktop/index.js';
 // import stylesDesktop from '../como-helpers/views/stylesDesktop.js';
 
+const HASH = window.location.hash.substring(1);
+
 class ControllerExperience extends AbstractExperience {
   constructor(como, config, $container) {
     super(como.client);
@@ -21,7 +23,7 @@ class ControllerExperience extends AbstractExperience {
     this.localCoMoPlayers = new Map(); // <playerId, CoMoPlayer>
 
     this.viewOptions = {
-      layout: 'full', // 'clients'
+      layout: HASH === 'clients' ? 'clients' : 'full',
     }
 
     como.configureExperience(this, {
@@ -108,7 +110,7 @@ class ControllerExperience extends AbstractExperience {
           await this.como.project.deleteStreamRoute(playerId, this.como.client.id);
 
           const coMoPlayer = this.duplicatedCoMoPlayers.get(playerId);
-          await coMoPlayer.clearSessionAndGraph();
+          await coMoPlayer.delete();
 
           this.duplicatedCoMoPlayers.delete(playerId);
         }
