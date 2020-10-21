@@ -4,6 +4,7 @@ import * as styles from './styles.js';
 import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
 import '@ircam/simple-components/sc-button.js';
+import '@ircam/simple-components/sc-slider.js';
 
 export function graphOptionsControls(data, listeners, {
   sessionId = null,
