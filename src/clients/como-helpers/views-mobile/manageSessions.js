@@ -15,12 +15,11 @@ export function manageSessions(data, listeners, {
 
             const formData = new FormData(e.target);
             const sessionName = formData.get('session-name').trim();
-            const sessionPreset = formData.get('session-preset');
+            const graphPreset = formData.get('graph-preset');
 
-            if (sessionName && sessionPreset) {
-              const sessionId = await listeners.createSession(sessionName, sessionPreset);
+            if (sessionName && graphPreset) {
+              const sessionId = await listeners.createSession(sessionName, graphPreset);
               e.target.reset(); // do we need that or can we reset at rendering
-              listeners.setPlayerParams({ sessionId }); // set newly created session to player
             }
           }}"
         >
@@ -34,17 +33,17 @@ export function manageSessions(data, listeners, {
           />
           <!-- only display select if more that one preset -->
           <select
-            name="session-preset"
+            name="graph-preset"
             style="
-              display: ${data.project.presetNames.length === 1 ? 'none' : 'block'};
+              display: ${data.project.graphPresets.length === 1 ? 'none' : 'block'};
             "
           >
             <option>select preset</option>
 
-            ${data.project.presetNames.map(presetName => {
+            ${data.project.graphPresets.map(presetName => {
               return html`<option
                 value="${presetName}"
-                ?selected="${data.project.presetNames.length === 1}"
+                ?selected="${data.project.graphPresets.length === 1}"
               >${presetName}</option>`;
             })}
           </select>

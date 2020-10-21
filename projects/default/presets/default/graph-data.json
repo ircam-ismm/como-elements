@@ -18,7 +18,7 @@
       id: 'select-ml-data',
       type: 'ScriptData',
       options: {
-        scriptName: 'default-ml-descriptors',
+        scriptName: 'ml-select-all',
       },
     },
     {
