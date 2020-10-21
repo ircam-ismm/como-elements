@@ -29,6 +29,7 @@ export function createSessions(data, listeners) {
       <select
         name="graph-preset"
         style="
+          ${styles.select}
           display: ${data.project.graphPresets.length === 1 ? 'none' : 'block'};
         "
       >

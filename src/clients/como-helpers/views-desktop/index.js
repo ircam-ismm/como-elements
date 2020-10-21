@@ -3,7 +3,7 @@ import { createSessions } from './createSessions.js';
 import { overviewInfos } from './overviewInfos.js';
 
 import { sessionHeader } from './sessionHeader.js';
-import { sessionMLExamples } from './sessionMLExamples.js';
+import { sessionLearning } from './sessionLearning.js';
 import { sessionPlayers } from './sessionPlayers.js';
 
 import { graphOptionsControls } from './graphOptionsControls.js';
@@ -15,7 +15,7 @@ export default {
   overviewInfos,
 
   sessionHeader,
-  sessionMLExamples,
+  sessionLearning,
   sessionPlayers,
 
   graphOptionsControls,

@@ -53,6 +53,11 @@ class ControllerExperience extends AbstractExperience {
         await this.como.project.deleteSession(sessionId);
       },
 
+      setSessionParams: async(sessionId, updates) => {
+        const session = this.sessions.get(sessionId);
+        await session.set(updates);
+      },
+
       // graph options
       updateSessionGraphOptions: async (sessionId, moduleId, updates) => {
         const session = this.sessions.get(sessionId);
@@ -273,7 +278,7 @@ class ControllerExperience extends AbstractExperience {
 
               ${this.viewOptions.layout === 'full' ?
                 html`
-                  ${views.sessionMLExamples(viewData, listeners, { sessionId })}
+                  ${views.sessionLearning(viewData, listeners, { sessionId })}
                   ${views.sessionPlayers(viewData, listeners, { sessionId })}
                 `
               : ``}
