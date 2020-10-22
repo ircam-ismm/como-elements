@@ -58,13 +58,11 @@ class CoMoPlayer {
       await this.player.set({ loading: true });
       this.player.onDelete(() => this.clearSessionAndGraph());
 
-      const sessionStateId = this.como.project.sessions.getStateId(sessionId);
+      this.session = await this.como.project.sessions.attach(sessionId);
       // if the requested sessionId does not exists, abort
-      if (sessionStateId === null) {
+      if (this.session === null) {
         return;
       }
-
-      this.session = await this.como.project.sessions.attach(sessionStateId);
 
       // if session is updated when client is attached to it
       this.session.subscribe((updates) => this._emitChange());

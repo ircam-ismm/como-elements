@@ -1,9 +1,8 @@
 function synthLikeliestLoop(graph, helpers, audioInNode, audioOutNode, outputFrame) {
-
-  const buffers = graph.session.audioFilesByLabel;
+  console.log(graph.session.audioBuffers);
   const audioContext = graph.como.audioContext;
-
-  let currentLabel = null;
+  let currentBuffer = undefined;
+  
   const synth = new helpers.synth.BufferPlayer(audioContext);
   synth.connect(audioOutNode);
 
@@ -13,17 +12,18 @@ function synthLikeliestLoop(graph, helpers, audioInNode, audioOutNode, outputFra
     },
     process(inputFrame) {
       const label = inputFrame.data['ml-decoder'].likeliest;
+      // query all buffers related to the label, and pick a random buffer one
+      const filenames = graph.session.labelAudioFileTable.query(label);
+      const buffers = graph.session.labelAudioFileTable.queryBuffers(label);
+//       console.log(filenames, buffers);      
+      const index = Math.floor(Math.random() * buffers.length);
+      const buffer = buffers[index];
 
-      if (currentLabel !== label) {
-        currentLabel = label;
+      if (currentBuffer !== buffer) {
+        currentBuffer = buffer;
         synth.stop({ fadeOutDuration: 1 });
 
-        if (label !== null && buffers[label]) {
-          // choose a buffer in the list related to the label
-          const labelBuffers = buffers[label];
-          const index = Math.floor(Math.random() * labelBuffers.length);
-          const buffer = labelBuffers[index];
-
+        if (buffer) {
           synth.start(buffer, { fadeInDuration: 0.2, loop: true });
         }
       }
@@ -32,5 +32,5 @@ function synthLikeliestLoop(graph, helpers, audioInNode, audioOutNode, outputFra
       synth.stop({ fadeOutDuration: 0 });
       synth.disconnect();
     },
-  }
+  };  
 }

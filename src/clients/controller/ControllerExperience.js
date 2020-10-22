@@ -71,6 +71,36 @@ class ControllerExperience extends AbstractExperience {
         player.setGraphOptions(moduleId, updates);
       },
 
+      createSessionLabel: async (sessionId, label) => {
+        const session = this.sessions.get(sessionId);
+        session.createLabel(label);
+      },
+
+      updateSessionLabel: async (sessionId, oldLabel, newLabel) => {
+        const session = this.sessions.get(sessionId);
+        session.updateLabel(oldLabel, newLabel);
+      },
+
+      deleteSessionLabel: async (sessionId, label) => {
+        const session = this.sessions.get(sessionId);
+        session.deleteLabel(label);
+      },
+
+      toggleSessionAudioFile: async (sessionId, filename, active) => {
+        const session = this.sessions.get(sessionId);
+        session.toggleAudioFile(filename, active);
+      },
+
+      createSessionLabelAudioFileRow: async (sessionId, row) => {
+        const session = this.sessions.get(sessionId);
+        session.createLabelAudioFileRow(row);
+      },
+
+      deleteSessionLabelAudioFileRow: async (sessionId, row) => {
+        const session = this.sessions.get(sessionId);
+        session.deleteLabelAudioFileRow(row);
+      },
+
       // session examples
       deleteSessionExample: async (sessionId, exampleUuid) => {
         const session = this.sessions.get(sessionId);
@@ -143,9 +173,8 @@ class ControllerExperience extends AbstractExperience {
     // ----------------------------------------------------
     // TRACK ALL SESSIONS
     // ----------------------------------------------------
-    this.como.project.sessions.observe(async (stateId) => {
-      const session = await this.como.project.sessions.attach(stateId);
-      const sessionId = session.get('id');
+    this.como.project.sessions.observe(async sessionId => {
+      const session = await this.como.project.sessions.attach(sessionId);
 
       session.onDetach(() => {
         this.sessions.delete(sessionId);
@@ -281,6 +310,7 @@ class ControllerExperience extends AbstractExperience {
               ${this.viewOptions.layout === 'full' ?
                 html`
                   ${views.sessionLearning(viewData, listeners, { sessionId })}
+                  ${views.sessionLabelsAndAudioFiles(viewData, listeners, { sessionId })}
                   ${views.sessionPlayers(viewData, listeners, { sessionId })}
                 `
               : ``}

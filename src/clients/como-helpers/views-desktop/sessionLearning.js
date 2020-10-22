@@ -24,15 +24,7 @@ export function sessionLearning(data, listeners, {
         })}
       </div>
 
-      <a
-        style="
-          display: inline-block;
-          padding: 4px 4px 4px 0;
-          margin-top: 12px;
-          color: #cdcdcd;
-          text-decoration: underline;
-          cursor: pointer;
-        "
+      <a style="${styles.openCloseLink}"
         @click="${e => {
           e.preventDefault();
           const $nextSibling = e.target.nextElementSibling;
@@ -66,15 +58,7 @@ export function sessionLearning(data, listeners, {
           })}
       </div>
 
-      <a
-        style="
-          display: inline-block;
-          padding: 4px 4px 4px 0;
-          margin-top: 12px;
-          color: #cdcdcd;
-          text-decoration: underline;
-          cursor: pointer;
-        "
+      <a style="${styles.openCloseLink}"
         @click="${e => {
           e.preventDefault();
           const $nextSibling = e.target.nextElementSibling;

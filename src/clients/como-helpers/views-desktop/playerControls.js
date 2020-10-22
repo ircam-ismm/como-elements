@@ -71,9 +71,7 @@ export function playerControls(data, listeners, {
               @change="${e => listeners.setPlayerParams(player.id, { label: e.target.value })}"
             >
               <!-- @TODO - change when files and labels are decoupled -->
-              ${session.get('audioFiles')
-                .map(file => file.label)
-                .filter((label, index, arr) => arr.indexOf(label) === index)
+              ${session.get('labels')
                 .sort()
                 .map(label => {
                   return html`

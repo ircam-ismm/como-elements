@@ -4,7 +4,7 @@ import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
 
 export function designer(data, listeners) {
-  const destinationId = data.graph.description.audio.modules.find(m => m.type === 'AudioDestination').id;;
+  const destinationId = data.graph.description.audio.modules.find(m => m.type === 'AudioDestination').id;
 
   return html`
     <!-- LOADER -->
@@ -53,9 +53,7 @@ export function designer(data, listeners) {
           style="${styles.select}"
           @change="${e => listeners.setPlayerParams({ label: e.target.value })}"
         >
-          ${data.session.audioFiles
-            .map(file => file.label)
-            .filter((label, index, arr) => arr.indexOf(label) === index)
+          ${data.session.labels
             .sort()
             .map(label => {
               return html`

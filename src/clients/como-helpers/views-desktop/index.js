@@ -5,6 +5,7 @@ import { overviewInfos } from './overviewInfos.js';
 import { sessionHeader } from './sessionHeader.js';
 import { sessionLearning } from './sessionLearning.js';
 import { sessionPlayers } from './sessionPlayers.js';
+import { sessionLabelsAndAudioFiles } from './sessionLabelsAndAudioFiles.js';
 
 import { graphOptionsControls } from './graphOptionsControls.js';
 import { playerControls } from './playerControls.js';
@@ -17,6 +18,7 @@ export default {
   sessionHeader,
   sessionLearning,
   sessionPlayers,
+  sessionLabelsAndAudioFiles,
 
   graphOptionsControls,
   playerControls,

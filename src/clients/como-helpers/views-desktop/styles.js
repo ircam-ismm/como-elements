@@ -18,14 +18,14 @@ export const h3 = css`
 `;
 
 export const button = css`
-  width: 120px;
+  width: 200px;
   height: 30px;
   line-height: 30px;
   font-size: 12px;
   color: #ffffff;
   background-color: rgb(39, 40, 34);
   border: 1px solid rgb(61, 62, 57);
-  margin: 4px 0;
+  margin: 0;
   vertical-align: top;
 `;
 
@@ -37,7 +37,7 @@ export const input = css`
   background-color: rgb(39, 40, 34);
   border: 1px solid rgb(61, 62, 57);
   padding: 0 6px;
-  margin: 4px 0;
+  margin: 0;
   vertical-align: top;
   color: white;
 `;
@@ -66,6 +66,15 @@ export const loadingBanner = css`
   color: #000000;
   text-align: center;
   z-index: 10;
+`;
+
+export const openCloseLink = css`
+  display: inline-block;
+  padding: 4px 4px 4px 0;
+  margin-top: 12px;
+  color: #cdcdcd;
+  text-decoration: underline;
+  cursor: pointer;
 `;
 
 export const colorDanger = css`#dc3545`;
