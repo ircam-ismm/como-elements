@@ -42,7 +42,7 @@ export function sessionLearning(data, listeners, {
       <div>
         <sc-button
           value="clear all examples"
-          @input="${e => listeners.deleteAllSessionExamples(sessionId)}"
+          @input="${e => listeners.deleteSessionExamples(sessionId)}"
         ></sc-button>
 
         ${Object.values(session.examples)
@@ -52,7 +52,7 @@ export function sessionLearning(data, listeners, {
             return html`
               <sc-button
                 value="clear ${label}"
-                @input="${e => listeners.deleteSessionExamplesByLabel(sessionId, label)}"
+                @input="${e => listeners.deleteSessionExamples(sessionId, label)}"
               ></sc-button>
             `;
           })}

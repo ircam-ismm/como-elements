@@ -106,13 +106,9 @@ class ControllerExperience extends AbstractExperience {
         const session = this.sessions.get(sessionId);
         session.deleteExample(exampleUuid);
       },
-      deleteAllSessionExamples: async (sessionId) => {
-        const session = this.sessions.get(sessionId);
-        session.clearExamples();
-      },
-      deleteSessionExamplesByLabel: async (sessionId, label) => {
-        const session = this.sessions.get(sessionId);
-        session.clearLabel(label);
+      deleteSessionExamples: async (sessionId, label = null) => {
+        const session = this.sessions.get(sessionId, label);
+        session.clearExamples(label);
       },
 
       // player

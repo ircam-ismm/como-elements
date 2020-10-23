@@ -60,15 +60,13 @@ class PlayerExperience extends AbstractExperience {
     this.coMoPlayer.setSource(source);
 
     // 4. react to gui controls.
+    // @note - thse could be shared with the `designer`
     this.listeners = {
       // this one is needed for the enableCreation option
       createSession: async (sessionName, sessionPreset) => {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
         return sessionId;
       },
-      // these 2 ones are only for the designer...
-      // deleteAllSessionExamples: async () => this.coMoPlayer.session.clearExamples(),
-      // deleteSessionExamplesByLabel: async label => this.coMoPlayer.session.clearLabel(label),
       setPlayerParams: async updates => await this.coMoPlayer.player.set(updates),
     };
 

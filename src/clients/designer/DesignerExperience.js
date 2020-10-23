@@ -67,11 +67,8 @@ class DesignerExperience extends AbstractExperience {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
         return sessionId;
       },
-      deleteAllSessionExamples: async () => {
-        this.coMoPlayer.session.clearExamples();
-      },
-      deleteSessionExamplesByLabel: async label => {
-        this.coMoPlayer.session.clearLabel(label);
+      deleteSessionExamples: async (label = null) => {
+        this.coMoPlayer.session.clearExamples(label);
       },
       setPlayerParams: async updates => {
         await this.coMoPlayer.player.set(updates);
