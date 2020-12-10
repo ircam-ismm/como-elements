@@ -1,8 +1,8 @@
 function synthLikeliestLoop(graph, helpers, audioInNode, audioOutNode, outputFrame) {
-  console.log(graph.session.audioBuffers);
+  // console.log(graph.session.audioBuffers);
   const audioContext = graph.como.audioContext;
   let currentBuffer = undefined;
-  
+
   const synth = new helpers.synth.BufferPlayer(audioContext);
   synth.connect(audioOutNode);
 
@@ -15,7 +15,7 @@ function synthLikeliestLoop(graph, helpers, audioInNode, audioOutNode, outputFra
       // query all buffers related to the label, and pick a random buffer one
       const filenames = graph.session.labelAudioFileTable.query(label);
       const buffers = graph.session.labelAudioFileTable.queryBuffers(label);
-//       console.log(filenames, buffers);      
+//       console.log(filenames, buffers);
       const index = Math.floor(Math.random() * buffers.length);
       const buffer = buffers[index];
 
@@ -32,5 +32,5 @@ function synthLikeliestLoop(graph, helpers, audioInNode, audioOutNode, outputFra
       synth.stop({ fadeOutDuration: 0 });
       synth.disconnect();
     },
-  };  
+  };
 }

@@ -1,5 +1,5 @@
 function fxGainEnergy(graph, helpers, audioInNode, audioOutNode, outputFrame) {
-  
+
   const audioContext = graph.como.audioContext;
   const movingAverage = new helpers.algo.MovingAverage(12);
   const envelop = audioContext.createGain();
@@ -13,7 +13,7 @@ function fxGainEnergy(graph, helpers, audioInNode, audioOutNode, outputFrame) {
     updateParams(updates) {
 
     },
-    process(inputFrame, outputFrame) {
+    process(inputFrame) {
       var now = audioContext.currentTime;
       var enhancedIntensity = inputFrame.data['intensity'].compressed;
       var avg = movingAverage.process(enhancedIntensity);

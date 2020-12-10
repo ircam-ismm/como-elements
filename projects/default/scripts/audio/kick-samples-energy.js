@@ -40,7 +40,7 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
           src.connect(gain);
           src.buffer = buffer;
           src.start(audioContext.currentTime);
-          //synth.start(buffer, { fadeInDuration: 0.2, loop: false });
+          // synth.start(buffer, { fadeInDuration: 0.2, loop: false });
         }
       } else {
         triggered = false;
