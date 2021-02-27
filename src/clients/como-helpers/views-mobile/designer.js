@@ -1,7 +1,11 @@
 import { html } from 'lit-html';
 import * as styles from './styles.js';
+import '@ircam/simple-components/sc-toggle.js';
+import '@ircam/simple-components/sc-text.js';
 
 export function designer(data, listeners) {
+  const destinationId = data.graph.description.audio.modules.find(m => m.type === 'AudioDestination').id;
+
   return html`
     <!-- LOADER -->
     ${data.player.loading ?
@@ -28,6 +32,18 @@ export function designer(data, listeners) {
       </button>
     </div>
 
+    <!-- GRAPH OPTIONS -->
+    <div style="margin: 10px 0;">
+      <sc-text
+        value="mute"
+        readonly
+      ></sc-text>
+      <sc-toggle
+        .active="${data.graph.options[destinationId].mute}"
+        @change="${e => listeners.setPlayerGraphOptions(destinationId, { mute: e.detail.value })}"
+      ></sc-toggle>
+    </div>
+
     <!-- RECORDING MANAGEMENT -->
     <div style="margin: 10px 0;">
       <h2 style="${styles.h2}">Recording</h2>
@@ -37,9 +53,7 @@ export function designer(data, listeners) {
           style="${styles.select}"
           @change="${e => listeners.setPlayerParams({ label: e.target.value })}"
         >
-          ${data.session.audioFiles
-            .map(file => file.label)
-            .filter((label, index, arr) => arr.indexOf(label) === index)
+          ${data.session.labels
             .sort()
             .map(label => {
               return html`
@@ -133,7 +147,7 @@ export function designer(data, listeners) {
                   height: 30px;
                   line-height: 30px;
                 "
-                @click="${e => listeners.clearSessionLabel(label)}"
+                @click="${e => listeners.deleteSessionExamples(label)}"
               >delete</button>
             </div>
           `;
@@ -147,7 +161,7 @@ export function designer(data, listeners) {
           height: 30px;
           line-height: 30px;
         "
-        @click="${e => listeners.clearSessionExamples()}"
+        @click="${e => listeners.deleteSessionExamples()}"
       >clear all labels</button>
     </div>
   `;

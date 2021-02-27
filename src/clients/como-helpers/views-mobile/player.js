@@ -3,6 +3,7 @@ import * as styles from './styles.js';
 
 export function player(data, listeners, {
   verbose = false,
+  enableSelection = true,
 } = {}) {
   return html`
     <!-- LOADER -->
@@ -16,18 +17,22 @@ export function player(data, listeners, {
     <div style="position: relative; min-height: 50px">
       <h3 style="${styles.h3}">PlayerId: ${data.player.id}</h3>
 
-      <button
-        style="
-          ${styles.button}
-          width: 200px;
-          position: absolute;
-          top: 0px;
-          right: 0px;
-          margin: 0;
-        "
-        @click="${e => listeners.setPlayerParams({ sessionId: null })}">
-        change session
-      </button>
+      ${enableSelection ?
+        html`
+          <button
+            style="
+              ${styles.button}
+              width: 200px;
+              position: absolute;
+              top: 0px;
+              right: 0px;
+              margin: 0;
+            "
+            @click="${e => listeners.setPlayerParams({ sessionId: null })}">
+            change session
+          </button>
+        ` : ``
+      }
     </div>
 
     ${verbose ?
@@ -45,4 +50,3 @@ export function player(data, listeners, {
       ` : ``}
   `;
 }
-

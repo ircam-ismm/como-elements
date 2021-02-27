@@ -2,7 +2,7 @@ import { AbstractExperience } from '@soundworks/core/client';
 import { render, html } from 'lit-html';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer';
-import views from '../como-helpers/views/index.js';
+import views from '../como-helpers/views-mobile/index.js';
 
 
 // for simple debugging in browser...
@@ -29,10 +29,10 @@ class PlayerExperience extends AbstractExperience {
 
   async start() {
     super.start();
-    // console.log('hasDeviceMotion', this.como.hasDeviceMotion);
 
     // 1. create a como player instance w/ a unique id (we default to the nodeId)
     const player = await this.como.project.createPlayer(this.como.client.id);
+    player.set({ metas: { type: this.client.type } });
 
     // 2. create a sensor source to be used within the graph.
     // We create a `RandomSource` if deviceMotion is not available for development
@@ -42,7 +42,7 @@ class PlayerExperience extends AbstractExperience {
     if (this.como.hasDeviceMotion) {
       source = new this.como.sources.DeviceMotion(this.como, player.get('id'));
     } else {
-      source = new this.como.sources.RandomValues(this.como, player.get('id'));
+      source = new this.como.sources.RandomValues(this.como, player.get('id'), { period: 0.05 });
     }
 
     // @example - metas is a placeholder for application specific informations
@@ -60,16 +60,14 @@ class PlayerExperience extends AbstractExperience {
     this.coMoPlayer.setSource(source);
 
     // 4. react to gui controls.
+    // @note - thse could be shared with the `designer`
     this.listeners = {
       // this one is needed for the enableCreation option
-      'createSession': async (sessionName, sessionPreset) => {
+      createSession: async (sessionName, sessionPreset) => {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
         return sessionId;
       },
-      // these 2 ones are only for the designer...
-      // 'clearSessionExamples': async () => this.coMoPlayer.session.clearExamples(),
-      // 'clearSessionLabel': async label => this.coMoPlayer.session.clearLabel(label),
-      'setPlayerParams': async updates => await this.coMoPlayer.player.set(updates),
+      setPlayerParams: async updates => await this.coMoPlayer.player.set(updates),
     };
 
 
@@ -79,6 +77,14 @@ class PlayerExperience extends AbstractExperience {
     // e.g. when displaying the session choice screen
     this.como.project.subscribe(() => this.render());
 
+    console.warn('--> Attached to "test" session');
+    await this.coMoPlayer.player.set({ sessionId: 'test' });
+    // setTimeout(() => {
+    //   this.coMoPlayer.graph.modules['bridge'].subscribe(frame => {
+    //     // console.log(JSON.stringify(frame, null, 2));
+    //   });
+    // }, 500);
+
     window.addEventListener('resize', () => this.render());
     this.render();
   }
@@ -86,10 +92,10 @@ class PlayerExperience extends AbstractExperience {
   render() {
     const viewData = {
       config: this.config,
-      boundingClientRect: this.$container.getBoundingClientRect(),
       project: this.como.project.getValues(),
       player: this.coMoPlayer.player.getValues(),
       session: this.coMoPlayer.session ? this.coMoPlayer.session.getValues() : null,
+      boundingClientRect: this.$container.getBoundingClientRect(),
     };
 
     const listeners = this.listeners;
@@ -99,9 +105,15 @@ class PlayerExperience extends AbstractExperience {
     if (!this.como.hasDeviceMotion && !MOCK_SENSORS) {
       screen = views.sorry(viewData, listeners);
     } else if (this.coMoPlayer.session === null) {
-      screen = views.manageSessions(viewData, listeners, { enableCreation: false });
+      screen = views.manageSessions(viewData, listeners, {
+        enableCreation: false,
+        enableSelection: true,
+      });
     } else {
-      screen = views[this.client.type](viewData, listeners, { verbose: false });
+      screen = views[this.client.type](viewData, listeners, {
+        verbose: false,
+        enableSelection: true,
+      });
     }
 
     render(html`

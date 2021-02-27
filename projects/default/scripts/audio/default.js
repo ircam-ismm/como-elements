@@ -4,8 +4,12 @@ function audioDefault(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   // @example
   // var synth = new helpers.synths.LoopSynth();
   // synth.connect(audioOutNode);
+  // let myParam = 0;
 
   return {
+    updateParams(updates) {
+      // myParam = updates.myParam;
+    },
     process(inputFrame, outputFrame) {
       // called on each sensor frame
     },

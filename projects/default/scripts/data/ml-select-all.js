@@ -17,7 +17,7 @@ function defaultMLDescriptors(graph, helpers, outputFrame) {
   // return the function that will executed on each frame
   return {
     updateParams(updates) {
-      // console.log(updates);
+      console.log('[test-data-script] updates', updates);
     },
     process(inputFrame, outputFrame) {
       const inputData = inputFrame.data;

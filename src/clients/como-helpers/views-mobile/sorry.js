@@ -2,8 +2,6 @@ import { html } from 'lit-html';
 import * as styles from './styles.js'
 
 export function sorry(data, listeners) {
-  console.log(data.config);
-
   return html`<div>
     <h1 style="
         ${styles.h1}
