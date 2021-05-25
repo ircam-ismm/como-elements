@@ -34,7 +34,12 @@ export function sessionLearning(data, listeners, {
       >> show config</a>
 
       <div style="display: none">
-        <pre><code>${JSON.stringify(session.learningConfig, null, 2)}</code></pre>
+        <sc-text
+          height="250"
+          width="400"
+          value="${JSON.stringify(session.learningConfig, null, 2)}"
+          @change="${e => listeners.setSessionParams(sessionId, { learningConfig: JSON.parse(e.detail.value) })}"
+        ></sc-text>
       </div>
 
       <h3 style="${styles.h3}">ML Examples</h3>
