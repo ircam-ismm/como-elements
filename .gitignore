@@ -17,3 +17,12 @@ package-lock.json
 Thumbs.db
 
 projects/default/recordings/*
+
+certs
+
+dns/bin
+dns/log
+dns/dnsmasq.leases
+
+/projects
+!/projects/default

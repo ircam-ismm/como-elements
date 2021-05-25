@@ -13,7 +13,7 @@
 
   // ip of the server,
   // used by node clients to open the socket to the server
-  serverIp: '10.0.0.1',
+  // serverIp: '10.0.0.1',
 
   // websockets configuration
   websockets: {
@@ -33,8 +33,8 @@
   // server. Both entries are required otherwise a self-signed certificate
   // is generated.
   httpsInfos: {
-    key: null,
-    cert: null,
+    cert: './certs/fullchain.pem',
+    key: './certs/privkey.pem',
   },
 
   // auth: {

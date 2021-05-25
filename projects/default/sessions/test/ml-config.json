@@ -8,7 +8,7 @@
     absoluteRegularization: 0.1,
     relativeRegularization: 0.1,
     covarianceMode: 'full',
-    states: 4,
+    states: 10,
     transitionMode: 'leftright',
   },
 }
