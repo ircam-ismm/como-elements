@@ -1,12 +1,13 @@
 function fxGainGyro(graph, helpers, audioInNode, audioOutNode, outputFrame) {
  
   // user const
-  const adjustLevelDB = 6; // [db]:  < 0 softer, > 0 louder
+  const adjustLevelDB = 0; // [db]:  < 0 softer, > 0 louder
   const thresholdIntensity = 5e-6;  // old value 1e-5 without /3 in sqrt
   const scalingShape = 1; //coeff in power function
+  const scalingFactor = 2;
 
   // initialization
-  const adjustLevelLin = helper.math.decibelToLinear(adjustLevelDB); 
+  const adjustLevelLin = helpers.math.decibelToLinear(adjustLevelDB); 
   const audioContext = graph.como.audioContext;
   const movingAverage = new helpers.algo.MovingAverage(4);
   const envelop = audioContext.createGain();
@@ -17,18 +18,21 @@ function fxGainGyro(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   envelop.gain.setValueAtTime(0, audioContext.currentTime);
 
   return {
-    process(inputFrame, outputFrame) {
+    updateParams(updates) {
+
+    },
+    process(inputFrame) {
       const now = audioContext.currentTime;
-      const alpha = inputFrame.data['rotationRate'][0];
-      const beta = inputFrame.data['rotationRate'][1];
-      const gamma = inputFrame.data['rotationRate'][2];
+      const alpha = inputFrame.data['rotationRate'].alpha;
+      const beta = inputFrame.data['rotationRate'].beta;
+      const gamma = inputFrame.data['rotationRate'].gamma;
 
       // better to use let and modify instead of several const ?
       const intensityGyro = Math.sqrt((alpha*alpha + beta*beta + gamma*gamma)/3) / 360; 
-      const clipped = Math.max(thresholdIntensity, intensityGyro) - thresholdIntensity;
-      const scaled = Math.pow(clipped, scalingShape) * adjustLevelLin;
+      const gated = Math.max(thresholdIntensity, intensityGyro) - thresholdIntensity;
+      const scaled = Math.min(Math.pow(gated, scalingShape) * scalingFactor, 1) * adjustLevelLin;
       const avg = movingAverage.process(scaled); 
-      
+
       //
       envelop.gain.setTargetAtTime(avg, now, 0.01); 
 

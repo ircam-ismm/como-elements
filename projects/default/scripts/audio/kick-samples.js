@@ -1,18 +1,27 @@
 function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
-
-  const buffers = graph.session.audioFilesByLabel;
-  const audioContext = graph.como.audioContext;
-
+  
   //for kick detection
   const movingAverage = new helpers.algo.MovingMedian(5);
   const threshold = 0.05;
   let triggered = false;
-  let peak = 0;
+  let peak = 0;  //for kick detection
 
+  
+
+  const audioFiles = graph.session.get('audioFiles') 
+  const audioFilesSorted = audioFiles.sort();
+  const bufferNames = graph.session.audioBuffers
+  //const labels = graph.session.get('labels')
+  //const labelAudioFileTable = graph.session.get('labelAudioFileTable')  // array of array
+  
+  //const audioFileNames = graph.session.labelAudioFileTable.query(labels[0])
+  //const audioBuffers = graph.session.labelAudioFileTable.queryBuffers(labels[0])
+
+
+  const audioContext = graph.como.audioContext;
   const synth = new helpers.synth.BufferPlayer(audioContext);
   synth.connect(audioOutNode);
 
-  const bufferNames = Object.keys(buffers);
 
   return {
     updateParams(updates) {
@@ -28,8 +37,9 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
         if (enhancedIntensity > peak && !triggered) {
           peak = enhancedIntensity;
           triggered = true;
-          const bufferName = bufferNames[Math.floor(bufferNames.length * Math.random())];
-          const buffer = buffers[bufferName][0];
+          const audioFile = audioFilesSorted[Math.floor(audioFilesSorted.length * Math.random())];
+          const buffer = bufferNames[audioFile.name]
+
 
           synth.start(buffer, { fadeInDuration: 0.2, loop: false });
         }
