@@ -8,9 +8,9 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   const fadeOutDuration = 0.2;
   const loop = false;
   const order = 'random';  // ascending or random
-  const minNumBuffer = 0; // start at 0
-  const maxNumBuffer = 9; //
-  const synthMode = 'long'; //short or long
+  const minAudioFiles = 0; // start at 0
+  const maxAudioFiles = 9; //
+  const synthMode = 'short'; //short or long
 
 
   // initialization
@@ -46,7 +46,7 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
     },
     process(inputFrame) {      
       const enhancedIntensity = inputFrame.data['intensity'].compressed;
-      const gain = inputFrame.data['intensity'].linear;
+      const gain = Math.min(inputFrame.data['intensity'].linear, 1);
       const median = movingAverage.process(enhancedIntensity); // changr to median
       const delta = enhancedIntensity - median;       
       //console.log(delta);
