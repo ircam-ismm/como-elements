@@ -21,7 +21,7 @@ export function sessionLabelsAndAudioFiles(data, listeners, {
     <div style="
       position: relative;
       margin-top: 20px;
-      display: none;
+      display: block;
     ">
       <h3 style="${styles.h3}">labels</h3>
 
