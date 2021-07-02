@@ -34,12 +34,15 @@ function fxGainGyro(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   filter.frequency.setValueAtTime(2000, audioContext.currentTime);
 
   return {
-    process(inputFrame, outputFrame) {
+    updateParams(updates) {
+
+    },
+    process(inputFrame) {
       const now = audioContext.currentTime;
 
-      const alpha = inputFrame.data['rotationRate'][0];
-      const beta = inputFrame.data['rotationRate'][1];
-      const gamma = inputFrame.data['rotationRate'][2];
+      const alpha = inputFrame.data['rotationRate'].alpha;
+      const beta = inputFrame.data['rotationRate'].beta;
+      const gamma = inputFrame.data['rotationRate'].gamma;
       const intensityGyro = Math.sqrt((alpha*alpha + beta*beta + gamma*gamma)/3); 
       const avg = movingAverage.process(intensityGyro); 
       const scaled = Math.pow(avg, scalingShape);

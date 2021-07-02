@@ -1,57 +1,69 @@
-function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
+function kickRotation(graph, helpers, audioInNode, audioOutNode, outputFrame) {
 
   // user const 
   const adjustLevelDB = 0; // [db]:  < 0 softer, > 0 louder
-  const threshold = 0.05;
-  const minTimeInterval = 0.1;
-  const fadeInDuration = 0.2;
-  const fadeOutDuration = 0.2;
+  const threshold = 0.01;
+  const minTimeInterval = 0.5;
+  const fadeInDuration = 0.05;
+  const fadeOutDuration = 0.5;
   const loop = false;
-  const order = 'random';  // ascending or random
-  const minNumBuffer = 0; // start at 0
-  const maxNumBuffer = 9; //
+  const order = 'ascending';  // ascending or random
+  const minAudioFiles = 1; // start at 0
+  const maxAudioFiles = 5; //
+  const synthMode = 'short'; //short or long
+  const thresholdIntensity = 1e-3;
+
 
   // initialization
   const adjustLevelLin = helpers.math.decibelToLinear(adjustLevelDB); 
-  const buffers = graph.session.audioFilesByLabel;
   const audioContext = graph.como.audioContext;
   
   
   //for kick detection 
-  const movingAverage = new helpers.algo.MovingAverage(5); //to change to median !!!
+  const movingAverage = new helpers.algo.MovingAverage(3); //to change to median !!!
   let triggered = false;
   let peak = 0;
   let triggerTime = 0;
 
   let currentLabel = null;
   const synth = new helpers.synth.BufferPlayer(audioContext);
-  const gain = audioContext.createGain();
-  //synth.connect(gain); // to add other gain
-  //gain.connect(audioOutNode);
   synth.connect(audioOutNode);
   
   // buffers managements
-  const bufferNames = Object.keys(buffers);
-  bufferNames.sort();
-  const totalNumBuffers = bufferNames.length;
-  const bufferNamesSelection = bufferNames.slice(minNumBuffer, Math.min(maxNumBuffer + 1, totalNumBuffers));
-  console.log(bufferNamesSelection);
+  const audioFiles = graph.session.get('audioFiles') 
+  const audioFilesSorted = audioFiles.sort();  // necessary ?
+  const totalAudioFiles = audioFilesSorted.length;
+  const bufferNamesSelection = audioFilesSorted.slice(minAudioFiles, Math.min(maxAudioFiles + 1, totalAudioFiles));
+  //console.log(bufferNamesSelection);
+  const bufferNames = graph.session.audioBuffers
   let bufferNamesTemp = '';
   let bufferName = '';
 
 
   return {
-    process(inputFrame) {      
-      const enhancedIntensity = inputFrame.data['intensity'][1];
-      const gain = inputFrame.data['intensity'][0];
-      const median = movingAverage.process(enhancedIntensity); // changr to median
-      const delta = enhancedIntensity - median;       
+    updateParams(updates) {
+
+    },
+    process(inputFrame) {
+      //const enhancedIntensity = inputFrame.data['intensity'][1];
+      //const gain = inputFrame.data['intensity'][0];
+      const alpha = inputFrame.data['rotationRate'].alpha;
+      const beta = inputFrame.data['rotationRate'].beta;
+      const gamma = inputFrame.data['rotationRate'].gamma;
+      const intensityGyro = Math.sqrt((alpha*alpha + beta*beta + gamma*gamma)/3) / 360; 
+      const clipped = Math.max(thresholdIntensity, intensityGyro) - thresholdIntensity;
+      
+      const signal = clipped; //to trigger
+      const gain = signal; //to adjust volume at start
+      
+      const median = movingAverage.process(signal); // changr to median
+      const delta = signal - median;       
       //console.log(delta);
 
       const timeInterval = audioContext.currentTime - triggerTime;
       if (delta > threshold) {
-        if (enhancedIntensity > peak && !triggered && timeInterval > minTimeInterval) {
-          peak = enhancedIntensity;
+        if (signal > peak && !triggered && timeInterval > minTimeInterval) {
+          peak = signal;
           triggerTime = audioContext.currentTime;
           triggered = true;
           
@@ -78,18 +90,19 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
               bufferName = bufferNamesTemp[0];
               bufferNamesTemp.splice(0,1);  
             }
-          };
-          const buffer = buffers[bufferName][0];
-          //console.log(bufferName);
-          
+          }
+          const buffer = bufferNames[bufferName.name]; 
+          //console.log(bufferName);       
           // playing buffer
           synth.start(buffer, { fadeInDuration: fadeInDuration, loop: loop, gain: gain * adjustLevelLin }); 
   
         } 
       }  else {
-      triggered = false;
-      peak = 0;  
-      //synth.stop({ fadeOutDuration: fadeOutDuration });  
+        triggered = false;
+        peak = 0;  
+        if (synthMode === 'short') {
+          synth.stop({ fadeOutDuration: fadeOutDuration });  
+        }
       }   
     },
     destroy() {

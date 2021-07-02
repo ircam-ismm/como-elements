@@ -2,7 +2,7 @@ function fxGainGyro(graph, helpers, audioInNode, audioOutNode, outputFrame) {
 
     // user const
   const adjustLevelDB = 0; // [db]:  < 0 softer, > 0 louder
-  const adjustCutoff = 1; // adjusting bandpass frequency
+  const adjustCutoff = 100; // adjusting bandpass frequency
   const adjustQ = 5; // adjusting bandpass Q
 
   const thresholdIntensity = 1e-5;  // old value 1e-5  
@@ -15,7 +15,7 @@ function fxGainGyro(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   // initialization
   const adjustLevelLin = helpers.math.decibelToLinear(adjustLevelDB); 
   const audioContext = graph.como.audioContext;
-  const movingAverage = new helpers.algo.MovingAverage(20);
+  const movingAverage = new helpers.algo.MovingAverage(12);
   const filter = audioContext.createBiquadFilter();
   const gain = audioContext.createGain();
 
@@ -32,24 +32,27 @@ function fxGainGyro(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   filter.frequency.setValueAtTime(2000, audioContext.currentTime);
 
   return {
-    process(inputFrame, outputFrame) {
+    updateParams(updates) {
+
+    },
+    process(inputFrame) {
       const now = audioContext.currentTime;
 
-      const alpha = inputFrame.data['rotationRate'][0];
-      const beta = inputFrame.data['rotationRate'][1];
-      const gamma = inputFrame.data['rotationRate'][2];
+      const alpha = inputFrame.data['rotationRate'].alpha;
+      const beta = inputFrame.data['rotationRate'].beta;
+      const gamma = inputFrame.data['rotationRate'].gamma;
       const intensityGyro = Math.sqrt((alpha*alpha + beta*beta + gamma*gamma)/3); 
 
       //maybe remove
-      const clipped = Math.max((thresholdIntensity / coeffOldVersion), intensityGyro) - (thresholdIntensity / coeffOldVersion);
-      const scaled = Math.pow(clipped, scalingShape); 
+      const gated = Math.max((thresholdIntensity / coeffOldVersion), intensityGyro) - (thresholdIntensity / coeffOldVersion);
+      const scaled = Math.pow(gated, scalingShape); 
       
       //not used
       const avg = movingAverage.process(scaled); 
-      //console.log(coeffOldVersion);
+      console.log(scaled);
       
       // set to 10
-      filter.Q.setTargetAtTime(15 * adjustQ * Math.max(0.0001, 1 - (scaled * 2 * coeffOldVersion)), audioContext.currentTime, 0.01); // * 2 // * 6
+      filter.Q.setTargetAtTime(15* adjustQ * Math.max(0.0001, 1 - (avg * 20 * coeffOldVersion)), now, 0.05); // * 2 // * 6
 
     },
     destroy() {

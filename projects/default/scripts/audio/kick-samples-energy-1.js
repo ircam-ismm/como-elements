@@ -8,9 +8,9 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   const fadeOutDuration = 0.2;
   const loop = false;
   const order = 'random';  // ascending or random
-  const minNumBuffer = 0; // start at 0
-  const maxNumBuffer = 9; //
-  const synthMode = 'long'; //short or long
+  const minAudioFiles = 0; // start at 0
+  const maxAudioFiles = 9; //
+  const synthMode = 'short'; //short or long
 
 
   // initialization
@@ -30,19 +30,23 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   synth.connect(audioOutNode);
   
   // buffers managements
-  const bufferNames = Object.keys(buffers);
-  bufferNames.sort();
-  const totalNumBuffers = bufferNames.length;
-  const bufferNamesSelection = bufferNames.slice(minNumBuffer, Math.min(maxNumBuffer + 1, totalNumBuffers));
-  console.log(bufferNamesSelection);
+  const audioFiles = graph.session.get('audioFiles') 
+  const audioFilesSorted = audioFiles.sort();  // necessary ?
+  const totalAudioFiles = audioFilesSorted.length;
+  const bufferNamesSelection = audioFilesSorted.slice(minAudioFiles, Math.min(maxAudioFiles + 1, totalAudioFiles));
+  //console.log(bufferNamesSelection);
+  const bufferNames = graph.session.audioBuffers
   let bufferNamesTemp = '';
   let bufferName = '';
 
 
   return {
+    updateParams(updates) {
+
+    },
     process(inputFrame) {      
-      const enhancedIntensity = inputFrame.data['intensity'][1];
-      const gain = inputFrame.data['intensity'][0];
+      const enhancedIntensity = inputFrame.data['intensity'].compressed;
+      const gain = Math.min(inputFrame.data['intensity'].linear, 1);
       const median = movingAverage.process(enhancedIntensity); // changr to median
       const delta = enhancedIntensity - median;       
       //console.log(delta);
@@ -78,8 +82,7 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
               bufferNamesTemp.splice(0,1);  
             }
           }
-          const buffer = buffers[bufferName][0];
-          //console.log(bufferName);
+          const buffer = bufferNames[bufferName.name]; 
           
           // playing buffer
           synth.start(buffer, { fadeInDuration: fadeInDuration, loop: loop, gain: gain * adjustLevelLin }); 
