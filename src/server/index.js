@@ -18,7 +18,7 @@ try {
   // if a config file specific to the environment exists
   // it take precedence over the default one.
   // (usefull for launching several apps from the same source)
-  const comoEnvConfigPath = path.join('config', `como-${ENV}.json`);
+  const comoEnvConfigPath = path.join('config', `project-${ENV}.json`);
   if (fs.existsSync(comoEnvConfigPath)) {
     comoConfigPath = comoEnvConfigPath;
   }
