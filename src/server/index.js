@@ -92,8 +92,8 @@ const como = new CoMo(server, projectsDirectory, projectName);
       return {
         clientType: clientType,
         app: {
-          name: config.app.name,
-          author: config.app.author,
+          name: config.como.name || config.app.name,
+          author: config.como.author || config.app.author,
         },
         env: {
           type: config.env.type,
