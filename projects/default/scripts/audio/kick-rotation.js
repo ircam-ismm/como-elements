@@ -5,12 +5,12 @@ function kickRotation(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   const threshold = 0.01;
   const minTimeInterval = 0.5;
   const fadeInDuration = 0.05;
-  const fadeOutDuration = 0.5;
+  const fadeOutDuration = 0.2;
   const loop = false;
   const order = 'ascending';  // ascending or random
   const minAudioFiles = 1; // start at 0
   const maxAudioFiles = 5; //
-  const synthMode = 'short'; //short or long
+  const synthMode = 'long'; //short or long
   const thresholdIntensity = 1e-3;
 
 

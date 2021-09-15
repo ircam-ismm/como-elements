@@ -14,16 +14,16 @@
       id: 'fx-1',
       type: 'ScriptAudio',
       options: {
-        scriptName: 'fx-gain-energy',
-        bypass: true,
+        scriptName: 'kick-rotation-cl-1',
+        bypass: false,
       },
     },
     {
       id: 'audio-destination',
       type: 'AudioDestination',
       options: {
-        volume: -30,
-        mute: true,
+        volume: -2,
+        mute: false,
       },
     },
   ],
