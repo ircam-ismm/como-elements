@@ -1,4 +1,6 @@
 import { AbstractExperience } from '@soundworks/core/server';
+import path from 'path';
+import open from 'open';
 
 class CoMoExperience extends AbstractExperience {
   constructor(como) {
@@ -14,6 +16,12 @@ class CoMoExperience extends AbstractExperience {
 
   enter(client) {
     this.como.addClient(client);
+
+    if (client.type === 'controller') {
+      client.socket.addListener('open-directory', name => {
+        open(path.join(this.como.projectDirectory, name));
+      });
+    }
 
     super.enter(client);
   }

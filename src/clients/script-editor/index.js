@@ -18,7 +18,9 @@ async function launch($container, index) {
 
     const como = new CoMo(client, audioContext);
     await como.init();
-    initQoS(client);
+    initQoS(client, {
+      visibilityChange: false,
+    });
 
     const experience = new ScriptEditorExperience(como, config, $container);
     experiences.add(experience);

@@ -14,19 +14,21 @@ const ENV = process.env.ENV || 'default';
 const config = getConfig(ENV);
 // get CoMo specific config
 try {
-  let comoConfigPath = path.join('config', 'como.json');
+  let projectConfigPath = path.join('config', 'project-default.json');
   // if a config file specific to the environment exists
   // it take precedence over the default one.
   // (usefull for launching several apps from the same source)
-  const comoEnvConfigPath = path.join('config', `como-${ENV}.json`);
-  if (fs.existsSync(comoEnvConfigPath)) {
-    comoConfigPath = comoEnvConfigPath;
+  const projectEnvConfigPath = path.join('config', `project-${ENV}.json`);
+
+  if (fs.existsSync(projectEnvConfigPath)) {
+    projectConfigPath = projectEnvConfigPath;
   }
 
-  config.como = JSON5.parse(fs.readFileSync(comoConfigPath, 'utf-8'));
+  console.log('>> Using project config file:', projectConfigPath)
+  config.como = JSON5.parse(fs.readFileSync(projectConfigPath, 'utf-8'));
 } catch(err) {
   console.log(err);
-  console.log(`Invalid "como.json" config file`);
+  console.log(`Invalid project config file`);
   process.exit(0);
 }
 
@@ -92,13 +94,13 @@ const como = new CoMo(server, projectsDirectory, projectName);
       return {
         clientType: clientType,
         app: {
-          name: config.app.name,
-          author: config.app.author,
+          name: config.como.name || config.app.name,
+          author: config.como.author || config.app.author,
         },
         env: {
           type: config.env.type,
           websockets: config.env.websockets,
-          assetsDomain: config.env.assetsDomain,
+          subpath: config.env.subpath,
         }
       };
     });
