@@ -115,6 +115,12 @@ class ControllerExperience extends AbstractExperience {
         session.clearExamples(label);
       },
 
+      assignPlayersToSession: async (sessionId) => {
+        for (let [id, player] of this.players.entries()) {
+          player.set({ sessionId })
+        }
+      },
+
       // player
       setPlayerParams: async (playerId, updates) => {
         const player = this.players.get(playerId);
@@ -258,7 +264,8 @@ class ControllerExperience extends AbstractExperience {
                 showRecordingControls: false,
                 showDuplicate: true,
                 showRecordStream: false,
-                showGraphOptionsControls: false,
+                showAudioControls: true,
+                showScriptsControls: false,
               });
             })}
           </div>`
@@ -268,6 +275,11 @@ class ControllerExperience extends AbstractExperience {
 
           ${Array.from(this.sessions.keys()).sort().map(sessionId => {
             return html`
+              <div style="
+                background-color: #181818;
+                padding: 4px;
+                margin-top: 20px;
+              ">
               ${views.sessionHeader(viewData, listeners, { sessionId })}
               ${views.graphOptionsControls(viewData, listeners, {
                 sessionId,
@@ -281,6 +293,7 @@ class ControllerExperience extends AbstractExperience {
                   ${views.sessionPlayers(viewData, listeners, { sessionId })}
                 `
               : ``}
+              </div>
             `;
           })}
         <div>
@@ -296,7 +309,8 @@ class ControllerExperience extends AbstractExperience {
                 showRecordingControls: false,
                 showDuplicate: false,
                 showRecordStream: false,
-                showGraphOptionsControls: false,
+                showAudioControls: false,
+                showScriptsControls: false,
               });
             })}
           </div>`

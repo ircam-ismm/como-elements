@@ -4,18 +4,24 @@ import { graphOptionsControls } from './graphOptionsControls.js'
 import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
 
+import colors from '../gui-colors.js';
+console.log(colors);
+
 export function playerControls(data, listeners, {
   playerId = null,
   showMetas = true,
   showRecordingControls = true,
   showDuplicate = true,
   showRecordStream = true,
-  showGraphOptionsControls = true,
+  showAudioControls = true,
+  showScriptsControls = true,
 } = {}) {
   const sessions = Array.from(data.sessions.values());
   const player = data.players.get(playerId).getValues();
   const sessionId = player.sessionId;
   const session = data.sessions.get(player.sessionId);
+
+  console.log('showAudioControls', showAudioControls);
 
   return html`
     <div style="
@@ -29,8 +35,19 @@ export function playerControls(data, listeners, {
         line-height: 30px;
         margin: 4px 0;
       ">
-        <span style="display: inline-block; width: 300px; font-size: 12px">
-          > ${player.metas.type || 'player'} - (id: ${player.id})
+        <div
+          style="
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            margin-right: 20px;
+            background-color: ${player.metas.type === 'player' ?
+              colors[player.id % colors.length] : '#000000'
+            };
+          "
+        ></div>
+        <span style="display: inline-block; width: 300px; font-size: 12px; vertical-align: top">
+          ${player.metas.type || 'player'} - (id: ${player.id})
         </span>
         <label style="position: absolute; right: 10px;">
           attach to session:
@@ -96,7 +113,7 @@ export function playerControls(data, listeners, {
               ? html`
                 <sc-button
                   value="arm"
-                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'armed' })}"
+                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'armed' })}"
                 ></sc-button>`
               : ``}
 
@@ -104,7 +121,7 @@ export function playerControls(data, listeners, {
               ? html`
                 <sc-button
                   value="start recording"
-                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'recording' })}"
+                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'recording' })}"
                 ></sc-button>`
               : ``}
 
@@ -112,7 +129,7 @@ export function playerControls(data, listeners, {
               ? html`
                 <sc-button
                   value="stop recording"
-                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'pending' })}"
+                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'pending' })}"
                 ></sc-button>`
               : ``}
 
@@ -120,11 +137,11 @@ export function playerControls(data, listeners, {
               ? html`
                 <sc-button
                   value="confirm"
-                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'confirm' })}"
+                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'confirm' })}"
                 ></sc-button>
                 <sc-button
                   value="cancel"
-                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'cancel' })}"
+                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'cancel' })}"
                 ></sc-button>`
               : ``}
           </div>`
@@ -160,12 +177,12 @@ export function playerControls(data, listeners, {
           </div>`
       : ``}
 
-      ${showGraphOptionsControls ?
-        graphOptionsControls(data, listeners, {
-          sessionId,
-          playerId,
-        })
-      : ``}
+      ${graphOptionsControls(data, listeners, {
+        sessionId,
+        playerId,
+        showAudioControls,
+        showScriptsControls,
+      })}
       </div>
   `;
 }

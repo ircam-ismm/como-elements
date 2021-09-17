@@ -9,8 +9,14 @@ import '@ircam/simple-components/sc-slider.js';
 export function graphOptionsControls(data, listeners, {
   sessionId = null,
   playerId = null,
+  showAudioControls = true,
   showScriptsControls = true,
 } = {}) {
+  // this might be called by a player attached to a session before the session is actually attached
+  if (!data.sessions.has(sessionId)) {
+    return ``;
+  }
+
   const session = data.sessions.get(sessionId).getValues();
   const destinationId = session.graph.audio.modules.find(m => m.type === 'AudioDestination').id;
   const dataScripts = session.graph.data.modules.filter(m => m.type === 'ScriptData');
@@ -22,37 +28,42 @@ export function graphOptionsControls(data, listeners, {
     player = data.players.get(playerId).getValues();
   }
 
-  const graphOptions = player ? player.graphOptions : session.graphOptions;
-  const updateGraphFunc = player ? listeners.updatePlayerGraphOptions : listeners.updateSessionGraphOptions;
   const targetId = player ? playerId : sessionId;
+  const graphOptions = player ? player.graphOptions : session.graphOptions;
+  const updateGraphFunc = player ?
+    listeners.updatePlayerGraphOptions : listeners.updateSessionGraphOptions;
 
   return html`
     <div>
-      <div>
-        <sc-text
-          value="volume"
-          width="80"
-          readonly
-        ></sc-text>
-        <sc-slider
-          width="300"
-          min="-60"
-          max="5"
-          step="1"
-          display-number
-          .value="${graphOptions[destinationId].volume}"
-          @input="${e => updateGraphFunc(targetId, destinationId, { volume: e.detail.value })}"
-        ></sc-slider>
-        <sc-text
-          value="mute"
-          width="80"
-          readonly
-        ></sc-text>
-        <sc-toggle
-          .active="${graphOptions[destinationId].mute}"
-          @change="${e => updateGraphFunc(targetId, destinationId, { mute: e.detail.value })}"
-        ></sc-toggle>
-      </div>
+      ${showAudioControls ?
+        html`
+          <div>
+            <sc-text
+              value="volume"
+              width="80"
+              readonly
+            ></sc-text>
+            <sc-slider
+              width="300"
+              min="-60"
+              max="5"
+              step="1"
+              display-number
+              .value="${graphOptions[destinationId].volume}"
+              @input="${e => updateGraphFunc(targetId, destinationId, { volume: e.detail.value })}"
+            ></sc-slider>
+            <sc-text
+              value="mute"
+              width="80"
+              readonly
+            ></sc-text>
+            <sc-toggle
+              .active="${graphOptions[destinationId].mute}"
+              @change="${e => updateGraphFunc(targetId, destinationId, { mute: e.detail.value })}"
+            ></sc-toggle>
+          </div>
+        ` : ``
+      }
 
       ${showScriptsControls ?
         html`

@@ -3,7 +3,9 @@ import { render, html } from 'lit-html';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer';
 import views from '../como-helpers/views-mobile/index.js';
+import colors from '../como-helpers/gui-colors.js';
 
+console.log(colors);
 
 // for simple debugging in browser...
 const MOCK_SENSORS = window.location.hash === '#mock-sensors';
@@ -77,13 +79,8 @@ class PlayerExperience extends AbstractExperience {
     // e.g. when displaying the session choice screen
     this.como.project.subscribe(() => this.render());
 
-    console.warn('--> Attached to "test" session');
-    await this.coMoPlayer.player.set({ sessionId: 'test' });
-    // setTimeout(() => {
-    //   this.coMoPlayer.graph.modules['bridge'].subscribe(frame => {
-    //     // console.log(JSON.stringify(frame, null, 2));
-    //   });
-    // }, 500);
+    // console.warn('--> Attached to "test" session');
+    // await this.coMoPlayer.player.set({ sessionId: 'test' });
 
     window.addEventListener('resize', () => this.render());
     this.render();
@@ -99,6 +96,8 @@ class PlayerExperience extends AbstractExperience {
     };
 
     const listeners = this.listeners;
+    const color = colors[this.coMoPlayer.player.get('id') % colors.length];
+    console.log(color);
 
     let screen = ``;
 
@@ -122,6 +121,7 @@ class PlayerExperience extends AbstractExperience {
         width: 100%;
         min-height: 100%;
         padding: 20px;
+        background-color: ${color};
       ">
         ${screen}
       </div>

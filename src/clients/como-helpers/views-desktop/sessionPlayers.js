@@ -20,6 +20,8 @@ export function sessionPlayers(data, listeners, {
       showRecordingControls: true,
       showDuplicate: true,
       showRecordStream: true,
+      showAudioControls: true,
+      showScriptsControls: true,
     }))}
   `;
 }
