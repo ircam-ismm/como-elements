@@ -2,4 +2,7 @@
   // name: 'override app name',
   // author: 'John Doe',
   project: 'default',
+
+  // test
+  // preloadAudioFiles: true,
 }
