@@ -24,7 +24,7 @@ export function graphOptionsControls(data, listeners, {
 
   let player = null;
 
-  if (playerId) {
+  if (Number.isFinite(playerId)) {
     player = data.players.get(playerId).getValues();
   }
 

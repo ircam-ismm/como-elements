@@ -149,7 +149,7 @@ export function playerControls(data, listeners, {
 
       ${showDuplicate ?
         html`
-          <div style="margin-bottom: 4px;">
+          <div style="margin-bottom: 4px; ${data.viewOptions.layout === 'clients' ? 'float:left; margin-right: 12px' : ''}">
             <sc-text
               value="duplicate"
               width="200"

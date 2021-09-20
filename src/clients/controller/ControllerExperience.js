@@ -225,6 +225,7 @@ class ControllerExperience extends AbstractExperience {
         dataScriptList: this.scriptsDataService.getList(),
         audioScriptList: this.scriptsAudioService.getList(),
         duplicatedCoMoPlayers: this.duplicatedCoMoPlayers,
+        viewOptions: this.viewOptions,
       };
 
       const listeners = this.listeners;
