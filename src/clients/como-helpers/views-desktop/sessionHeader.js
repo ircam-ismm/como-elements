@@ -30,7 +30,7 @@ export function sessionHeader(data, listeners, {
         style="
           position: absolute;
           top: 4px;
-          right: 240px;
+          left: 300px;
         "
       >
         <sc-text

@@ -97,7 +97,7 @@ class PlayerExperience extends AbstractExperience {
 
     const listeners = this.listeners;
     const color = colors[this.coMoPlayer.player.get('id') % colors.length];
-    console.log(color);
+    //console.log(color);
 
     let screen = ``;
 
@@ -106,12 +106,12 @@ class PlayerExperience extends AbstractExperience {
     } else if (this.coMoPlayer.session === null) {
       screen = views.manageSessions(viewData, listeners, {
         enableCreation: false,
-        enableSelection: true,
+        enableSelection: false,
       });
     } else {
       screen = views[this.client.type](viewData, listeners, {
         verbose: false,
-        enableSelection: true,
+        enableSelection: false,
       });
     }
 

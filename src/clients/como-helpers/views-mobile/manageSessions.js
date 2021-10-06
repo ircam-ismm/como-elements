@@ -2,8 +2,8 @@ import { html } from 'lit-html';
 import * as styles from './styles.js'
 
 export function manageSessions(data, listeners, {
-  enableCreation = true,
-  enableSelection = true,
+  enableCreation = false,
+  enableSelection = false,
 } = {}) {
   return html`
     <!-- CREATE SESSION -->

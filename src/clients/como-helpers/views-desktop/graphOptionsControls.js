@@ -24,7 +24,7 @@ export function graphOptionsControls(data, listeners, {
 
   let player = null;
 
-  if (playerId) {
+  if (Number.isFinite(playerId)) {
     player = data.players.get(playerId).getValues();
   }
 
@@ -67,12 +67,13 @@ export function graphOptionsControls(data, listeners, {
 
       ${showScriptsControls ?
         html`
+          <!-- 
           <h3 style="${styles.h3}">Data Scripts</h3>
 
           ${dataScripts.map(scriptModule => {
             const scriptOptions = graphOptions[scriptModule.id];
 
-            return html`
+            return html` <!--
               <div style="margin-bottom: 2px">
                 <sc-text
                   value="${scriptModule.id}"
@@ -101,18 +102,18 @@ export function graphOptionsControls(data, listeners, {
                   .value="${scriptOptions.scriptParams || ''}"
                   @change="${e => updateGraphFunc(targetId, scriptModule.id, { scriptParams: e.detail.value })}"
                 ></sc-text>
-              </div>
+              </div>  -->
             `;
           })}
 
 
-          <h3 style="${styles.h3}">Audio Scripts</h3>
+          <h3 style="${styles.h3}">Audio Scripts</h3> -->
 
           ${audioScripts.map(scriptModule => {
             const scriptOptions = graphOptions[scriptModule.id];
 
             return html`
-              <div style="margin-bottom: 2px">
+              <div style="margin-bottom: 2px; clear : both; ">
                 <sc-text
                   value="${scriptModule.id}"
                   readonly

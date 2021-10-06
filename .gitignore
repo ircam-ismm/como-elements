@@ -28,3 +28,6 @@ dns/dnsmasq.leases
 !/projects/default
 projects/default/recordings/*
 projects/default/sessions
+
+02-launch-*.command
+!02-launch-app.command
