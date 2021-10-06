@@ -97,7 +97,10 @@ class PlayerExperience extends AbstractExperience {
 
     const listeners = this.listeners;
     const color = colors[this.coMoPlayer.player.get('id') % colors.length];
+<<<<<<< HEAD
     //console.log(color);
+=======
+>>>>>>> 6f27178c43722e548cd181067f609f03ef8b7676
 
     let screen = ``;
 

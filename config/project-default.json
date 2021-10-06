@@ -1,5 +1,8 @@
 {
-  // name: 'override app name',
-  // author: 'John Doe',
+  name: 'Como-Elements',
+  author: 'ISMM-IRCAM',
   project: 'default',
+
+  // test
+  // preloadAudioFiles: true,
 }
