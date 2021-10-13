@@ -17,18 +17,20 @@ or
 
 
 #### https certificates
-Secure https is necessary to use sensors over webpages with iOS, and set on by default. Certificates matching the DNS name must be added to a folder `/certs` (not in this repository). See `/config/env/default.json` for changing default.
+Secure https is necessary to use sensors over webpages with iOS, and set on by default. Certificates matching the DNS name must be added to a folder `/certs` (not in this repository). See `/config/env/default.json` for changing default settings.
 
 
 ## Projects and Sessions
 
-### You can create different `projects` with different audio files and scripts, strored in the folder `/projects`.
-Each projects can have different `sessions` with specfic gestures and a selection of the audio files. 
-The project `default` is here to facilitate initial testing of the application. We strongly advise to duplicate it and start you own project.
+### Projects
+- You can create different `projects` with different audio files and scripts, strored in the folder `/projects`.
+- The project `default` is here to facilitate initial testing of the application. We strongly advise to duplicate it and start you own project.
+- The project loaded by the application is set in `/config/project-default.json`
 
-The project loaded by the application is set in `/config/project-default.json`
+### Sesssion
+- Each project can have different `sessions` with specfic gestures and a selection of the audio files. 
 
-**Basic project structure**: 
+### Overall structure
 
 - **project_A** with a set of audio files stored in `/projects/project_A/audio`
   - **session_A1** with a specific gestures set
@@ -43,50 +45,40 @@ etc.
 
 ## Clients and Controller
 
-Each devices connects to the server opening a webpage. Different type of clients can be used
+Each devices connects to the server opening a webpage. Different type of clients can be used. The default port is 8000, other port value can be set in `/config/env/default.json`
 
-#### Device with motion sensors (smartphone, tablet)
+#### Device with motion sensors (smartphones, tablets)
 - **`designer`**, using `https://myserver:8000/designer` allows for recording gesture template to be recognized, each linked to specific sound
 - **`player`**, using `https://myserver:8000/` allows for playing  gesture template to be recognized, playing the corresponding sound
 
-####  Device with or without motion sensors, preferably with a big screen
+####  Device w/ or w/o motion sensors, preferably with a big screen
 - **`controller`** using `https://myserver:8000/controller` for managing in real-time all connected devices and run different session and scripts.
 On the comptuer running the node server, you can use `https://127.0.0.1:8000/controller`
-
-The default port is 8000, other port value can be set in `/config/env/default.json`
 
 ## Audio and Data Scripts
 
 Data processing and sound sunthesis can be set using scripts in each projects, see in folder `/projects/script`
-Find below some examples:
 
-in `/projects/script/audio`
+#### Some examples in `/projects/script/audio`
 - `synth-likeliest-loop.js`audio samples are selected according to the "likeliest" gesture return by the recognizer. The playing is looped, but this can be changed in the script.
 - `fx-gain-energy.js` enables to vary the audio intensity according to the gestures "energy" (computed from the accelerometers)
 
 
 ## To faciliate testing and development
 
-### To test client on a laptop
-
+#### To test client on a laptop
 ```
 https://127.0.0.1:8000/#mock-sensors
 ```
-
-### emulate several clients at once
-
+#### emulate several clients at once
 ```
 https://127.0.0.1:8000/?emulate=4#mock-sensors
 ```
-
-### Invalid certificates in chrome
-
+#### Invalid certificates in chrome
 for development purpose, you might allow invalid certificates in chrome:
-
 ```
 chrome://flags/#allow-insecure-localhost
 ```
-
 ## License
 
 BSD-3-Clause
