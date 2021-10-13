@@ -70,4 +70,4 @@ It includes the XMM library developed by Jules Françoise and Soundworks V2 by B
 
 ### Acknowledgments
 The CoMo ecosystem was initiated within the framework of the RAPID-MIX project, an Innovation Action funded by the European Commision (H2020-ICT-2014-1 Project ID 644862). Current supports include the ELEMENT project (ANR-18-CE33-0002). It uses the Collective Soundworks framework developed in the CoSiMa project (ANR-13-CORD-0010), developed by Benjamin Matuszweski, Norbert Schnell and Sébastien Robaszkiewicz and Waves libraries developed in the Wave project (ANR-12-CORD-0027).
-Special thanks to: Roland Cahen, Olivier Houix, Anne Dubos, Jan Schacher, Jean-François Jégo, Xavier Boissarie, Michelle Agnes Magalhaes
+Special thanks to: Roland Cahen, Andrea Cera, Olivier Houix, Anne Dubos, Jan Schacher, Jean-François Jégo, Michelle Agnes Magalhaes
