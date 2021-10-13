@@ -2,24 +2,23 @@
 
 ## Install
 
-run
-`npm install`
+run `npm install` then `npm run dev`  (transpiling and running checking for changes)
 
-`npm run dev'  (transpiling and running checking for changes)
+Alternatively you can first transpile once `npm run build` and then 'npm run start` (faster if the code hasn't been changed)
 
-Alternatively you can first transpile
-`npm run build`
-and
-`'npm run start` (faster if the code has been changed)
-
-If changes occurs in the node modules:
-`rm -rf node_modules` and then `npm install`
+If changes occurs in the node modules: `rm -rf node_modules` and then `npm install`
 
 
 ## Projects and Sessions
 
-### You can create different `projects` with different audio files and scripts. They are all strored in the folder `projects`.
-Each projects can have different `sessions` with specfic gestures and a selection of the audio files
+### You can create different `projects` with different audio files and scripts, strored in the folder `/projects`).
+Each projects can have different `sessions` with specfic gestures and a selection of the audio files. 
+
+The project `default` is here to facilitate initial testing of the application. We strongly advise to duplicate it and start you own project.
+
+The project loaded by the application is set in `/config/project-default.json`
+
+**Basic project structure**: 
 
 - project_A
   - session_A1
@@ -31,8 +30,6 @@ Each projects can have different `sessions` with specfic gestures and a selectio
   - session_B2
 etc.
 
-The project `default` is here to facilitate initial testing of the application. We strongly advise to duplicate it and start you own
-The project loaded by the application is set in `/config/project-default.json`
 
 ###
 
