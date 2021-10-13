@@ -11,7 +11,7 @@ If changes occurs in the node modules: `rm -rf node_modules` and then `npm insta
 
 ## Projects and Sessions
 
-### You can create different `projects` with different audio files and scripts, strored in the folder `/projects`).
+### You can create different `projects` with different audio files and scripts, strored in the folder `/projects`.
 Each projects can have different `sessions` with specfic gestures and a selection of the audio files. 
 
 The project `default` is here to facilitate initial testing of the application. We strongly advise to duplicate it and start you own project.
@@ -31,7 +31,14 @@ The project loaded by the application is set in `/config/project-default.json`
 etc.
 
 
-###
+### Clients and Controller
+
+Each smartphone connects to the server opening a webpage. Different type of clients can be used
+
+- `designer`, using `https://myserver:8000/designer` allows for recording gesture template to be recognized, each linked to specific sound
+- `player`, `using https://myserver:8000/` allows for playing  gesture template to be recognized, playing the corresponding sound
+
+- Other device, possibly without motion server, can run the 'controller' for managing in real-time all connected devices and run different session and scripts
 
 
 ## To faciliate testing and development purpose
