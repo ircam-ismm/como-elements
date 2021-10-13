@@ -106,6 +106,8 @@ class DesignerExperience extends AbstractExperience {
 
     if (!this.como.hasDeviceMotion && !MOCK_SENSORS) {
       screen = views.sorry(viewData, listeners);
+    } else if (viewData.player.loading) {
+      screen = views.loading(viewData, listeners);
     } else if (this.coMoPlayer.session === null) {
       screen = views.manageSessions(viewData, listeners, {
         enableCreation: true,

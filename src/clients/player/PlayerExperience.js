@@ -5,8 +5,6 @@ import CoMoPlayer from '../como-helpers/CoMoPlayer';
 import views from '../como-helpers/views-mobile/index.js';
 import colors from '../como-helpers/gui-colors.js';
 
-console.log(colors);
-
 // for simple debugging in browser...
 const MOCK_SENSORS = window.location.hash === '#mock-sensors';
 console.info('> to mock sensors for debugging purpose, use https://127.0.0.1:8000/designer#mock-sensors');
@@ -34,6 +32,8 @@ class PlayerExperience extends AbstractExperience {
 
     // 1. create a como player instance w/ a unique id (we default to the nodeId)
     const player = await this.como.project.createPlayer(this.como.client.id);
+    player.subscribe(() => this.render());
+
     player.set({ metas: { type: this.client.type } });
 
     // 2. create a sensor source to be used within the graph.
@@ -97,19 +97,16 @@ class PlayerExperience extends AbstractExperience {
 
     const listeners = this.listeners;
     const color = colors[this.coMoPlayer.player.get('id') % colors.length];
-<<<<<<< HEAD
-    //console.log(color);
-=======
->>>>>>> 6f27178c43722e548cd181067f609f03ef8b7676
-
     let screen = ``;
 
     if (!this.como.hasDeviceMotion && !MOCK_SENSORS) {
       screen = views.sorry(viewData, listeners);
+    } else if (viewData.player.loading) {
+      screen = views.loading(viewData, listeners);
     } else if (this.coMoPlayer.session === null) {
       screen = views.manageSessions(viewData, listeners, {
         enableCreation: false,
-        enableSelection: false,
+        enableSelection: true,
       });
     } else {
       screen = views[this.client.type](viewData, listeners, {

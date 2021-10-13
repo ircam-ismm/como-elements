@@ -3,6 +3,7 @@ import { manageSessions } from './manageSessions.js';
 import { sorry } from './sorry.js';
 import { designer } from './designer.js';
 import { player } from './player.js';
+import { loading } from './loading.js';
 
 export default {
   styles,
@@ -10,4 +11,5 @@ export default {
   sorry,
   designer,
   player,
+  loading,
 };
