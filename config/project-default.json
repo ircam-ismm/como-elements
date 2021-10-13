@@ -1,8 +1,8 @@
 {
-  name: 'Como-Elements',
-  author: 'ISMM-IRCAM',
+  name: 'CoMo Elements',
+  author: 'Ircam - ISMM',
   project: 'default',
 
   // test
-  // preloadAudioFiles: true,
+  preloadAudioFiles: true,
 }

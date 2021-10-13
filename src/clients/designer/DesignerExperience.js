@@ -54,14 +54,6 @@ class DesignerExperience extends AbstractExperience {
     // e.g. when displaying the session choice screen
     this.como.project.subscribe(() => this.render());
 
-    // force loading first session of the list
-    // const sessionsOverview = this.como.project.get('sessionsOverview');
-    // if (sessionsOverview[0]) {
-    //   const sessionId = sessionsOverview[0].id;
-    //   this.coMoPlayer.player.set({ sessionId: sessionId });
-    // }
-    // await this.coMoPlayer.player.set({ sessionId: 'session-1' });
-
     this.listeners = {
       createSession: async (sessionName, sessionPreset) => {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
@@ -77,14 +69,6 @@ class DesignerExperience extends AbstractExperience {
         await this.coMoPlayer.player.setGraphOptions(moduleId, updates);
       },
     };
-
-    console.warn('--> Attached to "test" session');
-    await this.coMoPlayer.player.set({ sessionId: 'test' });
-    // setTimeout(() => {
-    //   this.coMoPlayer.graph.modules['bridge'].subscribe(frame => {
-    //     // console.log(JSON.stringify(frame, null, 2));
-    //   });
-    // }, 500);
 
     window.addEventListener('resize', () => this.render());
     this.render();
