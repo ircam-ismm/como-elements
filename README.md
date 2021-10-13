@@ -81,7 +81,12 @@ BSD-3-Clause
 ## Full credits and Acknowledgements
 ### Research and Development: 
 Benjamin Matuszweski (main developer), Joseph Larralde, Jean-Philippe Lambert, Frederic Bevilacqua (coordination)
-It includes the XMM library developed by Jules Françoise and Soundworks V2 by Benjamin Matuszweski
+It includes the XMM library developed by Jules Françoise and Soundworks-V2 by Benjamin Matuszweski
+
+### References
+- Matuszewski, B., Larralde, J., & Bevilacqua, F. (2018, September). Designing movement driven audio applications using a web-based interactive machine learning toolkit. In Web Audio Conference (WAC). https://hal.archives-ouvertes.fr/hal-01874966/document
+- Matuszewski, B., Systèmes musicaux distribués et technologies Web - Motivations, design et implémentation d’un système expérimental. PhD thesis. UNiverstiy Paris 8. 2020.
+
 
 ### Acknowledgments
 The CoMo ecosystem was initiated within the framework of the RAPID-MIX project, an Innovation Action funded by the European Commision (H2020-ICT-2014-1 Project ID 644862). Current supports include the ELEMENT project (ANR-18-CE33-0002). It uses the Collective Soundworks framework developed in the CoSiMa project (ANR-13-CORD-0010), developed by Benjamin Matuszweski, Norbert Schnell and Sébastien Robaszkiewicz and Waves libraries developed in the Wave project (ANR-12-CORD-0027).
