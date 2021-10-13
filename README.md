@@ -2,13 +2,21 @@
 
 ## Install
 
-run `npm install` then `npm run dev`  (transpiling and running checking for changes)
+#### First time after cloning the project
+`npm install` 
 
-Alternatively you can first transpile once `npm run build` and then 'npm run start` (faster if the code hasn't been changed)
+If case of changes in node modules: `rm -rf node_modules` and then `npm install`
 
-If changes occurs in the node modules: `rm -rf node_modules` and then `npm install`
+#### Running
+`npm run dev`  (transpiling and running checking for changes)
 
-#### certificates
+or
+
+`npm run build` once and then `npm run start` (faster if the code hasn't changed)
+
+
+
+#### https certificates
 Secure https is necessary to use sensors over webpages with iOS, and set on by default. Certificates matching the DNS name must be added to a folder `/certs` (not in this repository). See `/config/env/default.json` for changing default.
 
 
@@ -50,6 +58,11 @@ The default port is 8000, other port value can be set in `/config/env/default.js
 ## Audio and Data Scripts
 
 Data processing and sound sunthesis can be set using scripts in each projects, see in folder `/projects/script`
+Find below some examples:
+
+in `/projects/script/audio`
+- `synth-likeliest-loop.js`audio samples are selected according to the "likeliest" gesture return by the recognizer. The playing is looped, but this can be changed in the script.
+- `fx-gain-energy.js` enables to vary the audio intensity according to the gestures "energy" (computed from the accelerometers)
 
 
 ## To faciliate testing and development purpose
@@ -90,4 +103,5 @@ It includes the XMM library developed by Jules Françoise and Soundworks-V2 by B
 
 ### Acknowledgments
 The CoMo ecosystem was initiated within the framework of the RAPID-MIX project, an Innovation Action funded by the European Commision (H2020-ICT-2014-1 Project ID 644862). Current supports include the ELEMENT project (ANR-18-CE33-0002). It uses the Collective Soundworks framework developed in the CoSiMa project (ANR-13-CORD-0010), developed by Benjamin Matuszweski, Norbert Schnell and Sébastien Robaszkiewicz and Waves libraries developed in the Wave project (ANR-12-CORD-0027).
-Special thanks to: Roland Cahen, Andrea Cera, Olivier Houix, Anne Dubos, Jan Schacher, Jean-François Jégo, Michelle Agnes Magalhaes
+Audio files in the default application by Roland Cahen, Andrea Cera, Olivier Houix, Jan Schacher.
+Special thanks to: Anne Dubos, Bertha Bermudez, Michelle Agnes Magalhaes and Marion Voillot
