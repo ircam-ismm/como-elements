@@ -1,8 +1,24 @@
 # `como-elements`
 
+## Install
+
+run
+`npm install`
+
+`npm run dev'  (transpiling and running checking for changes)
+
+Alternatively you can first transpile
+`npm run build`
+and
+`'npm run start` (faster if the code has been changed)
+
+If changes occurs in the node modules:
+`rm -rf node_modules` and then `npm install`
+
+
 ## Projects and Sessions
 
-You can create different `projects` with different audio files and scripts. They are all strored in the folder `projects`.
+### You can create different `projects` with different audio files and scripts. They are all strored in the folder `projects`.
 Each projects can have different `sessions` with specfic gestures and a selection of the audio files
 
 - project_A
@@ -15,6 +31,10 @@ Each projects can have different `sessions` with specfic gestures and a selectio
   - session_B2
 etc.
 
+The project `default` is here to facilitate initial testing of the application. We strongly advise to duplicate it and start you own
+The project loaded by the application is set in `/config/project-default.json`
+
+###
 
 
 ## To faciliate testing and development purpose
@@ -42,3 +62,12 @@ chrome://flags/#allow-insecure-localhost
 ## License
 
 BSD-3-Clause
+
+## Full credits and Acknowledgements
+### Research and Development: 
+Benjamin Matuszweski, Joseph Larralde, Jean-Philippe Lambert, Frederic Bevilacqua (coordination)
+It includes the XMM library developed by Jules Françoise and Soundworks V2 by Benjamin Matuszweski
+
+### Acknowledgments
+The CoMo ecosystem was initiated within the framework of the RAPID-MIX project, an Innovation Action funded by the European Commision (H2020-ICT-2014-1 Project ID 644862). Current supports include the ELEMENT project (ANR-18-CE33-0002). It uses the Collective Soundworks framework developed in the CoSiMa project (ANR-13-CORD-0010), developed by Benjamin Matuszweski, Norbert Schnell and Sébastien Robaszkiewicz and Waves libraries developed in the Wave project (ANR-12-CORD-0027).
+Special thanks to: Roland Cahen, Olivier Houix, Anne Dubos, Jan Schacher, Jean-François Jégo, Xavier Boissarie, Michelle Agnes Magalhaes
