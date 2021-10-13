@@ -4,5 +4,5 @@
   project: 'default',
 
   // test
-  preloadAudioFiles: true,
+  preloadAudioFiles: false,
 }
