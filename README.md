@@ -65,7 +65,7 @@ in `/projects/script/audio`
 - `fx-gain-energy.js` enables to vary the audio intensity according to the gestures "energy" (computed from the accelerometers)
 
 
-## To faciliate testing and development purpose
+## To faciliate testing and development
 
 ### To test client on a laptop
 
