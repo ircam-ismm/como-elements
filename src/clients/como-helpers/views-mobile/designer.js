@@ -2,9 +2,15 @@ import { html } from 'lit-html';
 import * as styles from './styles.js';
 import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
+import '@ircam/simple-components/sc-slider.js';
 
-export function designer(data, listeners) {
-  const destinationId = data.graph.description.audio.modules.find(m => m.type === 'AudioDestination').id;
+export function designer(data, listeners, context) {
+  const destinationId = data.session.graph.audio.modules.find(m => m.type === 'AudioDestination').id;
+  const dataScripts = data.session.graph.data.modules.filter(m => m.type === 'ScriptData');
+  const audioScripts = data.session.graph.audio.modules.filter(m => m.type === 'ScriptAudio');
+  const playerId = data.player.id;
+  const graphOptions = data.player.graphOptions;
+
 
   return html`
     <!-- LOADER -->
@@ -21,8 +27,9 @@ export function designer(data, listeners) {
       <button
         style="
           ${styles.button}
-          width: 200px;
+          width: 150px;
           position: absolute;
+          font-size: 14px;
           top: 0px;
           right: 0px;
           margin: 0;
@@ -39,7 +46,7 @@ export function designer(data, listeners) {
         readonly
       ></sc-text>
       <sc-toggle
-        .active="${data.graph.options[destinationId].mute}"
+        .active="${context.coMoPlayer.player.get('graphOptions')[destinationId].mute}"
         @change="${e => listeners.setPlayerGraphOptions(destinationId, { mute: e.detail.value })}"
       ></sc-toggle>
     </div>
@@ -47,24 +54,26 @@ export function designer(data, listeners) {
     <!-- RECORDING MANAGEMENT -->
     <div style="margin: 10px 0;">
       <h2 style="${styles.h2}">Recording</h2>
-      <label>
-        <!-- @todo - this should also filter "active" files -->
-        <select
-          style="${styles.select}"
-          @change="${e => listeners.setPlayerParams({ label: e.target.value })}"
-        >
-          ${data.session.labels
-            .sort()
-            .map(label => {
-              return html`
-                <option
-                  value="${label}"
-                  ?selected="${data.player.label === label}"
-                >${label}</option>`
-            })
-          }
-        </select>
-      </label>
+      ${data.session.labels.length === 0
+        ? html`<p>No label available</p>`
+        : html`
+          <select
+            style="${styles.select}"
+            @change="${e => listeners.setPlayerParams({ label: e.target.value })}"
+          >
+            ${data.session.labels
+              .sort()
+              .map(label => {
+                return html`
+                  <option
+                    value="${label}"
+                    ?selected="${data.player.label === label}"
+                  >${label}</option>`
+              })
+            }
+          </select>
+        `
+      }
 
       <div style="height: 96px">
         ${data.player.recordingState === 'idle'
@@ -163,6 +172,56 @@ export function designer(data, listeners) {
         "
         @click="${e => listeners.deleteSessionExamples()}"
       >clear all labels</button>
+
+      <!-- SWITCH / MUTE SCRIPTS -->
+      <button
+        style="
+          ${styles.button}
+          /*background-color: #dc3545;*/
+          height: 30px;
+          line-height: 30px;
+        "
+        @click="${e => {
+          const $next = e.currentTarget.nextElementSibling;
+          const display = $next.style.display === 'none' ? 'block' : 'none';
+          $next.style.display = display;
+        }}"
+      >advanced options</button>
+      <div style="display: none; margin-top: 10px;">
+        <div style="margin-bottom: 4px;">
+          <sc-text
+            value="volume"
+            width="80"
+            readonly
+          ></sc-text>
+          <sc-slider
+            width="150"
+            min="-60"
+            max="5"
+            step="1"
+            .value="${graphOptions[destinationId].volume}"
+            @input="${e => listeners.setPlayerGraphOptions(destinationId, { volume: e.detail.value })}"
+          ></sc-slider>
+        </div>
+        <div>
+          ${audioScripts.map(scriptModule => {
+            const scriptOptions = graphOptions[scriptModule.id];
+
+            return html`
+              <div style="margin-bottom: 2px; clear : both; ">
+                <sc-text
+                  value="bypass ${scriptModule.id}"
+                  readonly
+                ></sc-text>
+                <sc-toggle
+                  .active="${scriptOptions.bypass}"
+                  @change="${e => listeners.setPlayerGraphOptions(scriptModule.id, { bypass: e.detail.value })}"
+                ></sc-toggle>
+              </div>
+            `;
+          })}
+        </div>
+      </div>
     </div>
   `;
 }

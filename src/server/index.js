@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 import { Server } from '@soundworks/core/server';
-import CoMo from 'como/server';
+import CoMo from '@ircam/como/server';
 import path from 'path';
 import fs from 'fs';
 import serveStatic from 'serve-static';

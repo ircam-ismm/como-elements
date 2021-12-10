@@ -84,6 +84,8 @@ class DesignerExperience extends AbstractExperience {
       graph: this.coMoPlayer.graph,
     };
 
+    // console.log(this.coMoPlayer.graph && this.coMoPlayer.graph.options['audio-destination']);
+
     const listeners = this.listeners;
 
     let screen = ``;
@@ -98,7 +100,7 @@ class DesignerExperience extends AbstractExperience {
         enableSelection: true,
       });
     } else {
-      screen = views[this.client.type](viewData, listeners);
+      screen = views[this.client.type](viewData, listeners, this);
     }
 
     render(html`

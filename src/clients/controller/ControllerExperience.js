@@ -243,7 +243,8 @@ class ControllerExperience extends AbstractExperience {
             ">
               <sc-button
                 @input=${e => this.listeners.openDirectory('audio')}
-                value="open /audio"
+                value="open audio directory"
+                width="300"
               ></sc-button>
             </div>
           ` : nothing}
@@ -323,6 +324,7 @@ class ControllerExperience extends AbstractExperience {
           box-sizing: border-box;
           padding: 10px;
           min-height: 100%;
+          padding-bottom: 100px;
         ">
           ${screen}
         </div>

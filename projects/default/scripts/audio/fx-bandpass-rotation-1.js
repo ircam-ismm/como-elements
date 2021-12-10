@@ -49,7 +49,7 @@ function fxGainGyro(graph, helpers, audioInNode, audioOutNode, outputFrame) {
       
       //not used
       const avg = movingAverage.process(scaled); 
-      console.log(scaled);
+      // console.log(scaled);
       
       // set to 10
       filter.Q.setTargetAtTime(15* adjustQ * Math.max(0.0001, 1 - (avg * 20 * coeffOldVersion)), now, 0.05); // * 2 // * 6

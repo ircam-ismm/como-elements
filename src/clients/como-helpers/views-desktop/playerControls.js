@@ -5,7 +5,6 @@ import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
 
 import colors from '../gui-colors.js';
-console.log(colors);
 
 export function playerControls(data, listeners, {
   playerId = null,
@@ -20,8 +19,6 @@ export function playerControls(data, listeners, {
   const player = data.players.get(playerId).getValues();
   const sessionId = player.sessionId;
   const session = data.sessions.get(player.sessionId);
-
-  console.log('showAudioControls', showAudioControls);
 
   return html`
     <div style="
