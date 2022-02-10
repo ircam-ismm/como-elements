@@ -1,0 +1,44 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf600
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgray\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww25520\viewh13680\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0     - re-load nginx (`nginx -s reload`)\
+\
+One this is done, you can launch the script `/var/www/node/.admin/update-app.mjs` (cf. next paragraph)\
+\
+_**Important**_\
+\
+If for whatever reason, you prefer not using this script make sure to register your application in the `/var/www/node/sw3-apps.json` file, as it will be used to regenerate important files (e.g. `/var/www/node/sw3-apps.json` and `/etc/nginx/node-apps.map`) next time the script is used.\
+\
+## Launching / Updating an existing application\
+\
+To launch and / or update an application, laucnh the script `/var/www/node/.admin/update-app.mjs`. \
+\
+```sh\
+/var/www/node/.admin/update-app.mjs\
+```\
+\
+This script will perform the following actions:\
+    - ask you which app you want to update, then\
+    - pull the master branch (i.e. `git pull origin master`)\
+    - re-install dependencies (i.e. `npm install`)\
+    - build the app for production (i.e. `npm run build:production`)\
+    - make sure the application is owned by `ismm:www-data`\
+    - re-launch all processes associated to the application (i.e. `sudo -u ismm pm2 start ecosystem.config.js --only your-app`)\
+    *NOTE: if you use the same codebase to launch several apps (e.g. como, square), all associated processes will be relaunched.\
+    - save the pm2 processes, (i.e. `sudo -u ismm pm2 save`), this step is important to make sure the applications are re-launched when the server is rebooted.\
+\
+### Legacy soundworks#v2 applications\
+\
+Theese are declared in the `/var/www/node/.admin/.db-sw2.json` file which is used to generate both:\
+- the `/var/www/node/sw2-apps.json` which is consumed by `pm2` and, \
+- the `/etc/nginx/node-apps.map` file that is consumed by `/etc/nginx/nginx.conf`.\
+\
+If one of the application is updated to `soundworks#v3`, the configuration file should be updated accordingly. (__note__: this must be done by editing the `/var/www/node/.admin/.db-sw2.json` file manually and regenerating the )\
+\
+The script `/var/www/node/.admin/generate-sw2-ecosystem.mjs` allows for generating the `/var/www/node/sw2-apps.json` file for the `/var/www/admin/.db-sw2.json` file.\
+\
+}
