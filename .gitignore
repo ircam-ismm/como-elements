@@ -24,8 +24,9 @@ dns/bin
 dns/log
 dns/dnsmasq.leases
 
-/projects
+/projects/*
 !/projects/default
+
 projects/default/recordings/*
 projects/default/sessions
 
