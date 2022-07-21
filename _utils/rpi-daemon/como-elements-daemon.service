@@ -1,0 +1,17 @@
+[Unit]
+Description=Launch CoMo Element application
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=idle
+ExecStart=ENV=rpi /usr/bin/node /home/pi/como-elements/.build/server/index.js
+WorkingDirectory=/home/pi/como-elements
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+Group=audio
+
+[Install]
+WantedBy=multi-user.target
