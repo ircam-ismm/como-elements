@@ -22,7 +22,7 @@
     "url": "https://github.com/ircam-ismm/como-elements"
   },
   "dependencies": {
-    "@ircam/como": "^0.1.4",
+    "@ircam/como": "^1.0.0-beta.1",
     "@ircam/simple-components": "^2.2.1",
     "@soundworks/core": "^3.2.0",
     "@soundworks/template-helpers": "^2.0.1",
