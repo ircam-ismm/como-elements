@@ -1,0 +1,17 @@
+{
+  target: {
+    name: 'xmm',
+  },
+  payload: {
+    modelType: 'hhmm',
+    gaussians: 1,
+    absoluteRegularization: 0.01,
+    relativeRegularization: 0.01,
+    covarianceMode: 'full',
+    hierarchical: true,
+    states: 4,
+    transitionMode: 'leftright',
+    regressionEstimator: 'full',
+    likelihoodWindow: 10,
+  },
+}

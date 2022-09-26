@@ -20,9 +20,14 @@
   // paths to the key and certificate to be used in order to launch the https
   // server. Both entries are required otherwise a self-signed certificate
   // is generated.
+  // httpsInfos: {
+  //   key: 'certs/privkey.pem',
+  //   cert: 'certs/fullchain.pem',
+  // },
+
   httpsInfos: {
-    key: 'certs/privkey.pem',
-    cert: 'certs/fullchain.pem',
+    key: null, // 'certs/privkey.pem',
+    cert: null, // 'certs/fullchain.pem',
   },
 
   // @important: for node clients only, Ip of the server

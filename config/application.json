@@ -16,5 +16,8 @@
     "script-editor": {
       "target": "browser",
     },
+    "audio-file-manager": {
+      "target": "browser",
+    },
   },
 }

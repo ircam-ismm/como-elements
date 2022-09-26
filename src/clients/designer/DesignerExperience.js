@@ -1,5 +1,5 @@
 import { AbstractExperience } from '@soundworks/core/client';
-import { render, html } from 'lit-html';
+import { render, html } from 'lit/html.js';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer.js';
 import views from '../como-helpers/views-mobile/index.js';

@@ -1,5 +1,5 @@
-import { html } from 'lit-html';
-import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { html } from 'lit/html.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import * as styles from './styles.js';
 import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
@@ -67,7 +67,7 @@ export function graphOptionsControls(data, listeners, {
 
       ${showScriptsControls ?
         html`
-          <!-- 
+          <!--
           <h3 style="${styles.h3}">Data Scripts</h3>
 
           ${dataScripts.map(scriptModule => {

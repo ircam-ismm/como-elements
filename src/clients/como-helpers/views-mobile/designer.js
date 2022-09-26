@@ -1,4 +1,4 @@
-import { html } from 'lit-html';
+import { html } from 'lit/html.js';
 import * as styles from './styles.js';
 import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
