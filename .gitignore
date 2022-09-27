@@ -34,3 +34,5 @@ projects/default/sessions
 
 02-launch-*.command
 !02-launch-app.command
+
+NOTES.md
