@@ -22,8 +22,8 @@
       id: 'audio-destination',
       type: 'AudioDestination',
       options: {
-        volume: -14,
-        mute: true,
+        volume: -23,
+        mute: false,
       },
     },
   ],

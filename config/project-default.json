@@ -2,7 +2,5 @@
   name: 'CoMo Elements',
   author: 'Ircam - ISMM',
   project: 'default',
-
-  // test
   preloadAudioFiles: false,
 }

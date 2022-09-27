@@ -30,6 +30,13 @@ export function overviewInfos(data, listeners) {
         height="20"
       >#sessions: ${data.sessions.size}</span>
       |
+      <sc-button
+        width="200"
+        height="20"
+        value="manage sound files"
+        @input="${e => window.open(`./audio-file-manager`, 'audio-file-manager', 'width=1000,height=700')}"
+      ></sc-button>
+      |
       <span
         style="
           display: inline-block;
