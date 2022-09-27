@@ -29,7 +29,7 @@ from own computer
 scp -r /path/to/certs pi@como-elements-xxx.local:/home/pi/certs
 ```
 
-_**valid until 30/11/2022**_
+_**valid until 20/11/2022**_
 
 ## install como-elements
 
@@ -46,10 +46,12 @@ npm install
 npm run build
 
 # configure elements and daemon
-node _utils/create-config-files.js
+node _rpi/create-config-files.js
 ./_rpi/install-daemon.sh
 
-# systemctl status como-elements-daemon.service
+# check service
+systemctl status como-elements-daemon.service
+
 sudo shutdown now
 ```
 
