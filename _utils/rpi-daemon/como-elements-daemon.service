@@ -5,13 +5,13 @@ After=network-online.target
 
 [Service]
 Type=idle
-ExecStart=ENV=rpi /usr/bin/node /home/pi/como-elements/.build/server/index.js
+Environment="ENV=rpi"
+ExecStart=/usr/bin/node /home/pi/como-elements/.build/server/index.js
 WorkingDirectory=/home/pi/como-elements
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
-User=pi
-Group=audio
+User=root
 
 [Install]
 WantedBy=multi-user.target
