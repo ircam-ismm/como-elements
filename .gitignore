@@ -4,9 +4,11 @@
 # ignore all config except default
 /config/env/*
 !/config/env/default.json
+!/config/env/dev.json
 
 /config/project-*.json
 !/config/project-default.json
+!/config/env/project-dev.json
 
 # application instance specific
 .build
