@@ -22,7 +22,7 @@
       id: 'audio-destination',
       type: 'AudioDestination',
       options: {
-        volume: -2,
+        volume: 0,
         mute: false,
       },
     },
