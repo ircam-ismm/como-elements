@@ -23,7 +23,7 @@
       type: 'AudioDestination',
       options: {
         volume: -2,
-        mute: true,
+        mute: false,
       },
     },
   ],
