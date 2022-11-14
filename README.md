@@ -94,6 +94,6 @@ It includes the XMM library developed by Jules Françoise and Soundworks-V2 by B
 
 
 ### Acknowledgments
-The CoMo ecosystem was initiated within the framework of the RAPID-MIX project, an Innovation Action funded by the European Commision (H2020-ICT-2014-1 Project ID 644862). Current supports include the ELEMENT project (ANR-18-CE33-0002). It uses the Collective Soundworks framework developed in the CoSiMa project (ANR-13-CORD-0010), developed by Benjamin Matuszweski, Norbert Schnell and Sébastien Robaszkiewicz and Waves libraries developed in the Wave project (ANR-12-CORD-0027).
+The CoMo applications and ecosystem has been developed in 2019 in the ANR-ELEMENT project (ANR-18-CE33-0002), as a generalized framework of a prototype initially developed in 2017, called Elements during the H2020 Rapid-Mix (Innovation Action funded by the European Commision H2020-ICT-2014-1 Project ID 644862). It uses the Collective Soundworks framework developed in the CoSiMa project (ANR-13-CORD-0010), developed by Benjamin Matuszweski, Norbert Schnell and Sébastien Robaszkiewicz and Waves libraries developed in the Wave project (ANR-12-CORD-0027).
 Audio files in the default application by Roland Cahen, Andrea Cera, Olivier Houix, Jan Schacher.
 Special thanks to: Anne Dubos, Bertha Bermudez, Michelle Agnes Magalhaes and Marion Voillot
