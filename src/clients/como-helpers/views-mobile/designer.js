@@ -1,5 +1,6 @@
 import { html } from 'lit/html.js';
 import * as styles from './styles.js';
+import '@ircam/simple-components/sc-button.js';
 import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
 import '@ircam/simple-components/sc-slider.js';
@@ -22,7 +23,16 @@ export function designer(data, listeners, context) {
     <h2 style="${styles.h2}">Session: ${data.session.name}</h2>
 
     <div style="position: relative; min-height: 50px">
-      <h3 style="${styles.h3}">PlayerId: ${data.player.id}</h3>
+      <div style="
+        background-color: #000000;
+        display: inline-block;
+        line-height: 40px;
+        height: 40px;
+        width: 40px;
+        border: 1px solid #efefef;
+        text-align: center;
+        font-size: 14px;
+      ">${data.player.id}</div>
 
       <button
         style="
@@ -54,26 +64,36 @@ export function designer(data, listeners, context) {
     <!-- RECORDING MANAGEMENT -->
     <div style="margin: 10px 0;">
       <h2 style="${styles.h2}">Recording</h2>
-      ${data.session.labels.length === 0
-        ? html`<p>No label available</p>`
-        : html`
-          <select
-            style="${styles.select}"
-            @change="${e => listeners.setPlayerParams({ label: e.target.value })}"
-          >
-            ${data.session.labels
-              .sort()
-              .map(label => {
-                return html`
-                  <option
-                    value="${label}"
-                    ?selected="${data.player.label === label}"
-                  >${label}</option>`
-              })
-            }
-          </select>
-        `
-      }
+      <div>
+        ${data.session.labels.length === 0
+          ? html`<p>No label available</p>`
+          : html`
+            <select
+              style="${styles.select}; width: calc(100% - 118px);"
+              @change="${e => listeners.setPlayerParams({ label: e.target.value })}"
+            >
+              ${data.session.labels
+                .sort()
+                .map(label => {
+                  return html`
+                    <option
+                      value="${label}"
+                      ?selected="${data.player.label === label}"
+                    >${label}</option>`
+                })
+              }
+            </select>
+          `
+        }
+        <sc-button
+          style="position: relative; top: 3px;"
+          width="110"
+          height="40"
+          value="preview"
+          .selected="${data.player.preview}"
+          @input="${e => listeners.setPlayerParams({ preview: !data.player.preview })}"
+        >preview</sc-button>
+      </div>
 
       <div style="height: 96px">
         ${data.player.recordingState === 'idle'

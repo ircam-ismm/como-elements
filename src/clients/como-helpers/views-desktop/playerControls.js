@@ -37,13 +37,16 @@ export function playerControls(data, listeners, {
           style="
             display: inline-block;
             height: 30px;
+            line-height: 30px;
             width: 30px;
+            text-align: center;
+            font-size: 12px;
             margin-right: 20px;
             background-color: ${player.metas.type === 'player' ?
               colors[player.id % colors.length] : '#000000'
             };
           "
-        ></div>
+        >${player.metas.type === 'player' ? '' : player.id}</div>
         <span style="display: inline-block; width: 300px; font-size: 12px; vertical-align: top">
           ${player.metas.type || 'player'} - (id: ${player.id})
         </span>
@@ -65,12 +68,14 @@ export function playerControls(data, listeners, {
         </label>
       </h4>
 
+      <!--
       ${showMetas ?
         html`
           <p style="font-style: italic; margin: 4px 0 8px;">
             metas: ${JSON.stringify(player.metas)}
           </p>`
       : ``}
+      -->
 
       ${showRecordingControls && session ?
         html`
