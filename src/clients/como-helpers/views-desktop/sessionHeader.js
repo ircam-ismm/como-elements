@@ -42,6 +42,15 @@ export function sessionHeader(data, listeners, {
         ></sc-bang>
       </div>
       <sc-button
+        value="Duplicate Session"
+        style="
+          position: absolute;
+          right: 200px;
+          top: 4px;
+        "
+        @release="${e => listeners.duplicateSession(session.id)}"
+      ></sc-button>
+      <sc-button
         value="Delete Session"
         style="
           position: absolute;

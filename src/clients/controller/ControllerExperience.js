@@ -50,10 +50,14 @@ class ControllerExperience extends AbstractExperience {
         this.viewOptions[key] = value;
         this.render();
       },
-      // manager sessions
+
+      // manage sessions
       createSession: async (sessionName, sessionPreset) => {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
         return sessionId;
+      },
+      duplicateSession: async (sessionId) => {
+        await this.como.project.duplicateSession(sessionId);
       },
       deleteSession: async sessionId => {
         await this.como.project.deleteSession(sessionId);
