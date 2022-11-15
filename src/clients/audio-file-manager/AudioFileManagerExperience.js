@@ -33,8 +33,6 @@ class AudioFileManagerExperience extends AbstractExperience {
   async start() {
     super.start();
 
-    console.log(this.como.project.get('metas'));
-
     this.filesystem = this.plugins['filesystem'];
 
     this.filesystem.subscribe(updates => {

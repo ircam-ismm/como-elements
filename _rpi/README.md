@@ -29,7 +29,7 @@ from own computer
 scp -r /path/to/certs pi@como-elements-xxx.local:/home/pi/certs
 ```
 
-_**valid until 20/11/2022**_
+_**valid until 19/01/2023**_
 
 ## install como-elements
 
@@ -41,7 +41,6 @@ _**branch develop**_
 cd /home/pi
 git clone https://github.com/ircam-ismm/como-elements.git
 cd como-elements
-git checkout develop
 npm install
 npm run build
 
