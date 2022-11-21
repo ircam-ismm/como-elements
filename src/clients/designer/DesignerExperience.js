@@ -1,5 +1,5 @@
 import { AbstractExperience } from '@soundworks/core/client';
-import { render, html } from 'lit-html';
+import { render, html } from 'lit/html.js';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer.js';
 import views from '../como-helpers/views-mobile/index.js';
@@ -54,14 +54,6 @@ class DesignerExperience extends AbstractExperience {
     // e.g. when displaying the session choice screen
     this.como.project.subscribe(() => this.render());
 
-    // force loading first session of the list
-    // const sessionsOverview = this.como.project.get('sessionsOverview');
-    // if (sessionsOverview[0]) {
-    //   const sessionId = sessionsOverview[0].id;
-    //   this.coMoPlayer.player.set({ sessionId: sessionId });
-    // }
-    // await this.coMoPlayer.player.set({ sessionId: 'session-1' });
-
     this.listeners = {
       createSession: async (sessionName, sessionPreset) => {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
@@ -78,14 +70,6 @@ class DesignerExperience extends AbstractExperience {
       },
     };
 
-    console.warn('--> Attached to "test" session');
-    await this.coMoPlayer.player.set({ sessionId: 'test' });
-    // setTimeout(() => {
-    //   this.coMoPlayer.graph.modules['bridge'].subscribe(frame => {
-    //     // console.log(JSON.stringify(frame, null, 2));
-    //   });
-    // }, 500);
-
     window.addEventListener('resize', () => this.render());
     this.render();
   }
@@ -100,16 +84,23 @@ class DesignerExperience extends AbstractExperience {
       graph: this.coMoPlayer.graph,
     };
 
+    // console.log(this.coMoPlayer.graph && this.coMoPlayer.graph.options['audio-destination']);
+
     const listeners = this.listeners;
 
     let screen = ``;
 
     if (!this.como.hasDeviceMotion && !MOCK_SENSORS) {
       screen = views.sorry(viewData, listeners);
+    } else if (viewData.player.loading) {
+      screen = views.loading(viewData, listeners);
     } else if (this.coMoPlayer.session === null) {
-      screen = views.manageSessions(viewData, listeners);
+      screen = views.manageSessions(viewData, listeners, {
+        enableCreation: true,
+        enableSelection: true,
+      });
     } else {
-      screen = views[this.client.type](viewData, listeners);
+      screen = views[this.client.type](viewData, listeners, this);
     }
 
     render(html`

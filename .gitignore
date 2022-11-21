@@ -4,7 +4,11 @@
 # ignore all config except default
 /config/env/*
 !/config/env/default.json
-/config/como-*.json
+!/config/env/dev.json
+
+/config/project-*.json
+!/config/project-default.json
+!/config/env/project-dev.json
 
 # application instance specific
 .build
@@ -16,4 +20,19 @@ package-lock.json
 .DS_Store
 Thumbs.db
 
+certs
+
+dns/bin
+dns/log
+dns/dnsmasq.leases
+
+/projects/*
+!/projects/default
+
 projects/default/recordings/*
+projects/default/sessions
+
+02-launch-*.command
+!02-launch-app.command
+
+NOTES.md

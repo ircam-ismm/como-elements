@@ -1,5 +1,5 @@
 import { AbstractExperience } from '@soundworks/core/client';
-import { render, html } from 'lit-html';
+import { render, html, nothing } from 'lit/html.js';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer';
 
@@ -24,6 +24,10 @@ class ControllerExperience extends AbstractExperience {
 
     this.viewOptions = {
       layout: HASH === 'clients' ? 'clients' : 'full',
+      openDirectories: (
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname === 'localhost'
+      ),
     }
 
     como.configureExperience(this, {
@@ -46,10 +50,14 @@ class ControllerExperience extends AbstractExperience {
         this.viewOptions[key] = value;
         this.render();
       },
-      // manager sessions
+
+      // manage sessions
       createSession: async (sessionName, sessionPreset) => {
         const sessionId = await this.como.project.createSession(sessionName, sessionPreset);
         return sessionId;
+      },
+      duplicateSession: async (sessionId) => {
+        await this.como.project.duplicateSession(sessionId);
       },
       deleteSession: async sessionId => {
         await this.como.project.deleteSession(sessionId);
@@ -111,6 +119,12 @@ class ControllerExperience extends AbstractExperience {
         session.clearExamples(label);
       },
 
+      assignPlayersToSession: async (sessionId) => {
+        for (let [id, player] of this.players.entries()) {
+          player.set({ sessionId })
+        }
+      },
+
       // player
       setPlayerParams: async (playerId, updates) => {
         const player = this.players.get(playerId);
@@ -142,28 +156,9 @@ class ControllerExperience extends AbstractExperience {
         }
       },
 
-      // 'session:updateAudioFiles': async e => {
-      //   e.preventDefault();
-      //   const formData = new FormData(e.target);
-
-      //   const sessionId = formData.get('id');
-      //   const session = this.sessions.get(sessionId);
-
-      //   const audioFiles = session.get('audioFiles');
-      //   const index = formData.get('index');
-      //   audioFiles[index].active = formData.get('active') ? true : false;
-      //   audioFiles[index].label = formData.get('label');
-      //   session.set({ audioFiles });
-      // },
-
-      // // local players
-      // 'localPlayer:create': async () => {
-      //   this._createLocalPlayer();
-      // },
-
-      // 'localPlayer:setSource': async (playerId, sourceId) => {
-      //   this._setLocalPlayerSource(playerId, sourceId);
-      // },
+      openDirectory: (name) => {
+        this.client.socket.send('open-directory', name);
+      },
     };
 
     // ----------------------------------------------------
@@ -212,36 +207,6 @@ class ControllerExperience extends AbstractExperience {
     this.render();
   }
 
-  // @note - keep this for later refactor (cf. Iseline)
-  // async _createLocalPlayer() {
-  //   const playerId = 1000 + this.localCoMoPlayers.size;
-  //   const player = await this.como.project.createPlayer(playerId);
-  //   const coMoPlayer = new CoMoPlayer(this.como, player);
-
-  //   this.localCoMoPlayers.set(playerId, coMoPlayer);
-  //   return coMoPlayer;
-  // }
-
-  // async _setLocalPlayerSource(playerId, sourceId = null) {
-  //   const coMoPlayer = this.localCoMoPlayers.get(playerId);
-  //   // delete old route if any
-  //   if (coMoPlayer.source) {
-  //     const prevSourceId = coMoPlayer.source.streamId;
-  //     await this.como.project.deleteStreamRoute(prevSourceId, this.como.client.id);
-  //   }
-
-  //   if (sourceId) {
-  //     // console.log('create stream', sourceId, this.como.client.id);
-  //     const created = await this.como.project.createStreamRoute(sourceId, this.como.client.id);
-
-  //     if (created) {
-  //       // console.log('create created');
-  //       const source = new this.como.sources.Network(this.como, sourceId);
-  //       coMoPlayer.setSource(source);
-  //     }
-  //   }
-  // }
-
   render() {
     window.cancelAnimationFrame(this.rafId);
 
@@ -264,11 +229,29 @@ class ControllerExperience extends AbstractExperience {
         dataScriptList: this.scriptsDataService.getList(),
         audioScriptList: this.scriptsAudioService.getList(),
         duplicatedCoMoPlayers: this.duplicatedCoMoPlayers,
+        viewOptions: this.viewOptions,
       };
 
       const listeners = this.listeners;
 
       let screen = html`
+        ${
+          this.viewOptions.openDirectories ? html`
+            <div style="
+              position: fixed;
+              bottom: 0;
+              right: 0;
+              padding: 10px;
+              background-color: rgba(255, 255, 255, 0.2);
+              z-index: 10;
+            ">
+              <sc-button
+                @input=${e => this.listeners.openDirectory('audio')}
+                value="open audio directory"
+                width="300"
+              ></sc-button>
+            </div>
+          ` : nothing}
 
         ${views.overviewInfos(viewData, listeners)}
 
@@ -287,7 +270,8 @@ class ControllerExperience extends AbstractExperience {
                 showRecordingControls: false,
                 showDuplicate: true,
                 showRecordStream: false,
-                showGraphOptionsControls: false,
+                showAudioControls: true,
+                showScriptsControls: true,
               });
             })}
           </div>`
@@ -297,6 +281,11 @@ class ControllerExperience extends AbstractExperience {
 
           ${Array.from(this.sessions.keys()).sort().map(sessionId => {
             return html`
+              <div style="
+                background-color: #181818;
+                padding: 4px;
+                margin-top: 20px;
+              ">
               ${views.sessionHeader(viewData, listeners, { sessionId })}
               ${views.graphOptionsControls(viewData, listeners, {
                 sessionId,
@@ -310,6 +299,7 @@ class ControllerExperience extends AbstractExperience {
                   ${views.sessionPlayers(viewData, listeners, { sessionId })}
                 `
               : ``}
+              </div>
             `;
           })}
         <div>
@@ -325,7 +315,8 @@ class ControllerExperience extends AbstractExperience {
                 showRecordingControls: false,
                 showDuplicate: false,
                 showRecordStream: false,
-                showGraphOptionsControls: false,
+                showAudioControls: false,
+                showScriptsControls: false,
               });
             })}
           </div>`
@@ -337,6 +328,7 @@ class ControllerExperience extends AbstractExperience {
           box-sizing: border-box;
           padding: 10px;
           min-height: 100%;
+          padding-bottom: 100px;
         ">
           ${screen}
         </div>
@@ -345,38 +337,5 @@ class ControllerExperience extends AbstractExperience {
   }
 }
 
-/*
-  <div style="margin: 10px 0">
-    <h2 style="font-size: 14px">> audio files</h2>
-    ${session.audioFiles.map((audioFile, index) => {
-      return html`
-        <form
-          @submit="${this.listeners['session:updateAudioFiles']}"
-        >
-          <input type="hidden" name="id" value="${session.id}" />
-          <input type="hidden" name="index" value="${index}" />
-          <input type="hidden" name="url" value="${audioFile.url}" />
-          <span>${audioFile.name}</span>
-          <label>
-            active
-            <input
-              type="checkbox"
-              name="active"
-              ?checked="${audioFile.active}"
-            />
-          </label>
-          <label>
-            label
-            <input
-              type="text"
-              name="label"
-              .value="${audioFile.label}"
-            />
-          </label>
-          <input type="submit" value="save" />
-        </form>
-      `;
-    })}
-*/
 
 export default ControllerExperience;

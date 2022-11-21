@@ -1,7 +1,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { Client } from '@soundworks/core/client';
-import CoMo from 'como/client'
+import CoMo from '@ircam/como/client'
 import initQoS from '@soundworks/template-helpers/client/init-qos.js';
 import ControllerExperience from './ControllerExperience.js';
 
@@ -18,7 +18,9 @@ async function launch($container, index) {
 
     const como = new CoMo(client, audioContext);
     await como.init();
-    initQoS(client);
+    initQoS(client, {
+      visibilityChange: false,
+    });
 
     const experience = new ControllerExperience(como, config, $container);
     experiences.add(experience);

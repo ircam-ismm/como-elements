@@ -1,9 +1,9 @@
 import { AbstractExperience } from '@soundworks/core/client';
-import { render, html } from 'lit-html';
+import { render, html } from 'lit/html.js';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import CoMoPlayer from '../como-helpers/CoMoPlayer';
 import views from '../como-helpers/views-mobile/index.js';
-
+import colors from '../como-helpers/gui-colors.js';
 
 // for simple debugging in browser...
 const MOCK_SENSORS = window.location.hash === '#mock-sensors';
@@ -32,6 +32,8 @@ class PlayerExperience extends AbstractExperience {
 
     // 1. create a como player instance w/ a unique id (we default to the nodeId)
     const player = await this.como.project.createPlayer(this.como.client.id);
+    player.subscribe(() => this.render());
+
     player.set({ metas: { type: this.client.type } });
 
     // 2. create a sensor source to be used within the graph.
@@ -77,13 +79,8 @@ class PlayerExperience extends AbstractExperience {
     // e.g. when displaying the session choice screen
     this.como.project.subscribe(() => this.render());
 
-    console.warn('--> Attached to "test" session');
-    await this.coMoPlayer.player.set({ sessionId: 'test' });
-    // setTimeout(() => {
-    //   this.coMoPlayer.graph.modules['bridge'].subscribe(frame => {
-    //     // console.log(JSON.stringify(frame, null, 2));
-    //   });
-    // }, 500);
+    // console.warn('--> Attached to "test" session');
+    // await this.coMoPlayer.player.set({ sessionId: 'test' });
 
     window.addEventListener('resize', () => this.render());
     this.render();
@@ -99,11 +96,13 @@ class PlayerExperience extends AbstractExperience {
     };
 
     const listeners = this.listeners;
-
+    const color = colors[this.coMoPlayer.player.get('id') % colors.length];
     let screen = ``;
 
     if (!this.como.hasDeviceMotion && !MOCK_SENSORS) {
       screen = views.sorry(viewData, listeners);
+    } else if (viewData.player.loading) {
+      screen = views.loading(viewData, listeners);
     } else if (this.coMoPlayer.session === null) {
       screen = views.manageSessions(viewData, listeners, {
         enableCreation: false,
@@ -112,7 +111,7 @@ class PlayerExperience extends AbstractExperience {
     } else {
       screen = views[this.client.type](viewData, listeners, {
         verbose: false,
-        enableSelection: true,
+        enableSelection: false,
       });
     }
 
@@ -122,6 +121,7 @@ class PlayerExperience extends AbstractExperience {
         width: 100%;
         min-height: 100%;
         padding: 20px;
+        background-color: ${color};
       ">
         ${screen}
       </div>

@@ -46,7 +46,7 @@ export const select = css`
   width: 200px;
   height: 30px;
   line-height: 30px;
-  font-size: 12px;
+  font-size: 14px;
   border: 1px solid #686868;
   border-radius: 3px;
   padding: 0 6px;

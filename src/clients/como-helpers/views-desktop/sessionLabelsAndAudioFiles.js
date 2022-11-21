@@ -1,4 +1,4 @@
-import { html } from 'lit-html';
+import { html } from 'lit/html.js';
 import * as styles from './styles.js';
 import '@ircam/simple-components/sc-button.js';
 import '@ircam/simple-components/sc-text.js';
@@ -22,6 +22,7 @@ export function sessionLabelsAndAudioFiles(data, listeners, {
       position: relative;
       margin-top: 20px;
       display: none;
+      /*display: block;*/
     ">
       <h3 style="${styles.h3}">labels</h3>
 

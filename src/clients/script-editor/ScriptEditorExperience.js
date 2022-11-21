@@ -1,6 +1,6 @@
 import { AbstractExperience } from '@soundworks/core/client';
-import { ifDefined } from 'lit-html/directives/if-defined';
-import { render, html } from 'lit-html';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { render, html } from 'lit/html.js';
 import renderInitializationScreens from '@soundworks/template-helpers/client/render-initialization-screens.js';
 import '@ircam/simple-components/sc-editor';
 import '@ircam/simple-components/sc-text';

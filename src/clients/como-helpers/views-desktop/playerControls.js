@@ -1,8 +1,10 @@
-import { html } from 'lit-html';
+import { html } from 'lit/html.js';
 import * as styles from './styles.js';
 import { graphOptionsControls } from './graphOptionsControls.js'
 import '@ircam/simple-components/sc-toggle.js';
 import '@ircam/simple-components/sc-text.js';
+
+import colors from '../gui-colors.js';
 
 export function playerControls(data, listeners, {
   playerId = null,
@@ -10,7 +12,8 @@ export function playerControls(data, listeners, {
   showRecordingControls = true,
   showDuplicate = true,
   showRecordStream = true,
-  showGraphOptionsControls = true,
+  showAudioControls = true,
+  showScriptsControls = true,
 } = {}) {
   const sessions = Array.from(data.sessions.values());
   const player = data.players.get(playerId).getValues();
@@ -23,14 +26,29 @@ export function playerControls(data, listeners, {
       background-color: #464646;
       margin-bottom: 6px;
       position: relative;
+      overflow: auto;
     ">
       <h4 style="
         height: 30px;
         line-height: 30px;
         margin: 4px 0;
       ">
-        <span style="display: inline-block; width: 300px; font-size: 12px">
-          > ${player.metas.type || 'player'} - (id: ${player.id})
+        <div
+          style="
+            display: inline-block;
+            height: 30px;
+            line-height: 30px;
+            width: 30px;
+            text-align: center;
+            font-size: 12px;
+            margin-right: 20px;
+            background-color: ${player.metas.type === 'player' ?
+              colors[player.id % colors.length] : '#000000'
+            };
+          "
+        >${player.metas.type === 'player' ? '' : player.id}</div>
+        <span style="display: inline-block; width: 300px; font-size: 12px; vertical-align: top">
+          ${player.metas.type || 'player'} - (id: ${player.id})
         </span>
         <label style="position: absolute; right: 10px;">
           attach to session:
@@ -50,12 +68,14 @@ export function playerControls(data, listeners, {
         </label>
       </h4>
 
+      <!--
       ${showMetas ?
         html`
           <p style="font-style: italic; margin: 4px 0 8px;">
             metas: ${JSON.stringify(player.metas)}
           </p>`
       : ``}
+      -->
 
       ${showRecordingControls && session ?
         html`
@@ -96,7 +116,7 @@ export function playerControls(data, listeners, {
               ? html`
                 <sc-button
                   value="arm"
-                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'armed' })}"
+                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'armed' })}"
                 ></sc-button>`
               : ``}
 
@@ -104,7 +124,7 @@ export function playerControls(data, listeners, {
               ? html`
                 <sc-button
                   value="start recording"
-                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'recording' })}"
+                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'recording' })}"
                 ></sc-button>`
               : ``}
 
@@ -112,7 +132,7 @@ export function playerControls(data, listeners, {
               ? html`
                 <sc-button
                   value="stop recording"
-                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'pending' })}"
+                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'pending' })}"
                 ></sc-button>`
               : ``}
 
@@ -120,11 +140,11 @@ export function playerControls(data, listeners, {
               ? html`
                 <sc-button
                   value="confirm"
-                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'confirm' })}"
+                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'confirm' })}"
                 ></sc-button>
                 <sc-button
                   value="cancel"
-                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'cancel' })}"
+                  @click="${e => listeners.setPlayerParams(player.id, { recordingState: 'cancel' })}"
                 ></sc-button>`
               : ``}
           </div>`
@@ -132,7 +152,7 @@ export function playerControls(data, listeners, {
 
       ${showDuplicate ?
         html`
-          <div style="margin-bottom: 4px;">
+          <div style="margin-bottom: 4px; ${data.viewOptions.layout === 'clients' ? 'float:left; margin-right: 12px' : ''}">
             <sc-text
               value="duplicate"
               width="200"
@@ -160,12 +180,12 @@ export function playerControls(data, listeners, {
           </div>`
       : ``}
 
-      ${showGraphOptionsControls ?
-        graphOptionsControls(data, listeners, {
-          sessionId,
-          playerId,
-        })
-      : ``}
+      ${graphOptionsControls(data, listeners, {
+        sessionId,
+        playerId,
+        showAudioControls,
+        showScriptsControls,
+      })}
       </div>
   `;
 }

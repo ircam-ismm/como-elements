@@ -1,0 +1,6 @@
+{
+  name: 'CoMo Elements',
+  author: 'Ircam - ISMM',
+  project: 'default',
+  preloadAudioFiles: false,
+}

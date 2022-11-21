@@ -1,8 +1,8 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { Client } from '@soundworks/core/client';
-import CoMo from 'como/client'
 import initQoS from '@soundworks/template-helpers/client/init-qos.js';
+import CoMo from '@ircam/como/client'
 import ScriptEditorExperience from './ScriptEditorExperience.js';
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -18,7 +18,9 @@ async function launch($container, index) {
 
     const como = new CoMo(client, audioContext);
     await como.init();
-    initQoS(client);
+    initQoS(client, {
+      visibilityChange: false,
+    });
 
     const experience = new ScriptEditorExperience(como, config, $container);
     experiences.add(experience);

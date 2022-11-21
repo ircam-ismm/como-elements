@@ -1,4 +1,4 @@
-import { html } from 'lit-html';
+import { html } from 'lit/html.js';
 import * as styles from './styles.js';
 import { playerControls } from './playerControls';
 
@@ -20,6 +20,8 @@ export function sessionPlayers(data, listeners, {
       showRecordingControls: true,
       showDuplicate: true,
       showRecordStream: true,
+      showAudioControls: true,
+      showScriptsControls: true,
     }))}
   `;
 }
