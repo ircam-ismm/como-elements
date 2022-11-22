@@ -1,5 +1,12 @@
-function synthLikeliestLoop(graph, helpers, audioInNode, audioOutNode, outputFrame) {
-  // console.log(graph.session.audioBuffers);
+function synthGestureRecognition(graph, helpers, audioInNode, audioOutNode, outputFrame) {
+  
+  // user parameters
+  const fadeInDuration = 0.2; // [s]
+  const fadeOutDuration = 1;  // [s]
+  const loop = true;
+
+  // if you think you want to touch that, create a new script
+  // in your prefered editor or at https://10.10.0.1/script-editor
   const audioContext = graph.como.audioContext;
   let currentBuffer = undefined;
 
@@ -13,23 +20,21 @@ function synthLikeliestLoop(graph, helpers, audioInNode, audioOutNode, outputFra
     process(inputFrame) {
       const label = inputFrame.data['ml-decoder'].likeliest;
       // query all buffers related to the label, and pick a random buffer one
-      const filenames = graph.session.labelAudioFileTable.query(label);
       const buffers = graph.session.labelAudioFileTable.queryBuffers(label);
-//       console.log(filenames, buffers);
       const index = Math.floor(Math.random() * buffers.length);
       const buffer = buffers[index];
 
       if (currentBuffer !== buffer) {
         currentBuffer = buffer;
-        synth.stop({ fadeOutDuration: 1 });
+        synth.stop({ fadeOutDuration });
 
         if (buffer) {
-          synth.start(buffer, { fadeInDuration: 0.2, loop: true });
+          synth.start(buffer, { fadeInDuration, loop });
         }
       }
     },
     destroy() {
-      synth.stop({ fadeOutDuration: 0 });
+      synth.stop({ fadeOutDuration : 0});
       synth.disconnect();
     },
   };

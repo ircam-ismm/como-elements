@@ -1,26 +1,28 @@
 function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
 
-  // user const 
+  // user parameters
   const adjustLevelDB = 0; // [db]:  < 0 softer, > 0 louder
-  const threshold = 0.05;
-  const minTimeInterval = 0.5;
-  const fadeInDuration = 0.1;
-  const fadeOutDuration = 1;
+  const order = 'ascending';  // ascending or random
+  const minAudioFiles = 3; // start at 0,  if order = ascending
+  const maxAudioFiles = 10; // if order = ascending
+  const threshold = 0.01; //  threshold for triggerng
+  const movingMedianSize = 3; // min is >3, shortest latency
+  const minTimeInterval = 0.3; // [s], time between two triggering events 
+  const fadeInDuration = 0.05; // fadeIn of sound trigger
+  const synthMode = 'fadeout'; // otherwise, the whole sample is played
+  const fadeOutDuration = 1; // fadeoutDuration if synthMode = 'fadeout'
   const loop = false;
-  const order = 'random';  // ascending or random
-  const minAudioFiles = 19; // start at 0
-  const maxAudioFiles = 25; //
-  const synthMode = 'short'; //short or long
 
 
-  // initialization
+
+  // if you think you want to touch that, create a new script
+  // in your prefered editor or at https://10.10.0.1/script-editor
   const adjustLevelLin = helpers.math.decibelToLinear(adjustLevelDB); 
-  const buffers = graph.session.audioFilesByLabel;
   const audioContext = graph.como.audioContext;
   
   
   //for kick detection 
-  const movingAverage = new helpers.algo.MovingAverage(5); //to change to median !!!
+  const movingMedian = new helpers.algo.MovingMedian(movingMedianSize); //
   let triggered = false;
   let peak = 0;
   let triggerTime = 0;
@@ -45,16 +47,15 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
 
     },
     process(inputFrame) {      
-      const enhancedIntensity = inputFrame.data['intensity'].compressed;
-      const gain = Math.min(inputFrame.data['intensity'].linear, 1);
-      const median = movingAverage.process(enhancedIntensity); // changr to median
-      const delta = enhancedIntensity - median;       
-      //console.log(delta);
+      const compressedIntensity = inputFrame.data['intensity'].compressed; //used for detection
+      const linearIntensity = Math.min(inputFrame.data['intensity'].linear, 1);  // used to modulate the energy
+      const median = movingMedian.process(compressedIntensity); // changed to median
+      const delta = compressedIntensity - median;       
 
       const timeInterval = audioContext.currentTime - triggerTime;
       if (delta > threshold) {
-        if (enhancedIntensity > peak && !triggered && timeInterval > minTimeInterval) {
-          peak = enhancedIntensity;
+        if (compressedIntensity > peak && !triggered && timeInterval > minTimeInterval) {
+          peak = compressedIntensity;
           triggerTime = audioContext.currentTime;
           triggered = true;
           
@@ -85,19 +86,19 @@ function kickSamples(graph, helpers, audioInNode, audioOutNode, outputFrame) {
           const buffer = bufferNames[bufferName.name]; 
           
           // playing buffer
-          synth.start(buffer, { fadeInDuration: fadeInDuration, loop: loop, gain: gain * adjustLevelLin }); 
+          synth.start(buffer, { fadeInDuration, loop, gain: linearIntensity * adjustLevelLin }); 
   
         } 
       }  else {
         triggered = false;
         peak = 0;  
-        if (synthMode === 'short') {
-          synth.stop({ fadeOutDuration: fadeOutDuration });  
+        if (synthMode === 'fadeout') {
+          synth.stop({ fadeOutDuration });  
         }
       }   
     },
     destroy() {
-      synth.stop({ fadeOutDuration: 0 });
+      synth.stop({ fadeOutDuration : 0});
       synth.disconnect();
     },
   }

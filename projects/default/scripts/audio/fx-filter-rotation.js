@@ -4,20 +4,21 @@ function fxGainGyro(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   const adjustLevelDB = 0; // [db]:  < 0 softer, > 0 louder
   const adjustCutoff = 1; // adjusting bandpass frequency
   const adjustQ = 1; // adjusting bandpass Q
-  const adjustLeve2Background = 1; // adjusting minimum energy
-  const adjustLevelDynamic = 1; // adjusting minimum energy
+  const adjustLevelBackground = 0.01; // adjusting minimum energy
+  const adjustLevelDynamic = 2; // adjusting minimum energy
+  const scalingIntensity = 0.5;
 
-  //const thresholdIntensity = 3e-6;  // old value 1e-5  without /3 in sqrt and *1000
   const scalingShape = 0.25; //coeff in power function
-  const minCutoff =  300; // Hz do not set below 1
-  const maxCutoff =  500; //Hz
+  const minCutoff =  200; // Hz do not set below 1
+  const maxCutoff =  1000; //Hz
   const cutoffRatio = Math.log(maxCutoff / Math.max(1, minCutoff));
+  const MovingAverageSize = 10; //filering intensity
   const coeffOldVersion = Math.sqrt(3) / 360; // ?
 
   // initialization
   const adjustLevelLin = helpers.math.decibelToLinear(adjustLevelDB); 
   const audioContext = graph.como.audioContext;
-  const movingAverage = new helpers.algo.MovingAverage(10);
+  const movingAverage = new helpers.algo.MovingAverage(MovingAverageSize);
   const filter = audioContext.createBiquadFilter();
   const gain = audioContext.createGain();
 
@@ -45,13 +46,13 @@ function fxGainGyro(graph, helpers, audioInNode, audioOutNode, outputFrame) {
       const gamma = inputFrame.data['rotationRate'].gamma;
       const intensityGyro = Math.sqrt((alpha*alpha + beta*beta + gamma*gamma)/3); 
       const avg = movingAverage.process(intensityGyro); 
-      const scaled = Math.pow(avg, scalingShape);
+      const scaled = Math.pow(avg, scalingShape) * scalingIntensity;
       //console.log(scaled);
       
-      const cutoff = minCutoff * Math.exp(cutoffRatio * scaled * Math.pow(coeffOldVersion, scalingShape));
+      const cutoff = minCutoff * Math.exp(cutoffRatio * scaled );
       filter.frequency.setTargetAtTime(cutoff * adjustCutoff, audioContext.currentTime, 0.01);
-      filter.Q.setTargetAtTime(6 * scaled * Math.pow(coeffOldVersion, scalingShape) * adjustQ, audioContext.currentTime, 0.01);
-      gain.gain.setTargetAtTime(adjustLevelLin * ((1 * adjustLevelBackground) + 4 * intensityGyro * coeffOldVersion * adjustLevelDynamic), audioContext.currentTime, 0.01);
+      filter.Q.setTargetAtTime( scaled * adjustQ, audioContext.currentTime, 0.01);
+      gain.gain.setTargetAtTime((adjustLevelLin * (adjustLevelBackground + scaled * adjustLevelDynamic)), audioContext.currentTime, 0.01);
     
     },
     destroy() {

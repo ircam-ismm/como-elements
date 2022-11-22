@@ -1,18 +1,23 @@
-function kickRotation(graph, helpers, audioInNode, audioOutNode, outputFrame) {
-
-  // user const 
+function synthTriggerRotation(graph, helpers, audioInNode, audioOutNode, outputFrame) {
+  
+  // user parameters
   const adjustLevelDB = 0; // [db]:  < 0 softer, > 0 louder
-  const threshold = 0.01;
-  const minTimeInterval = 0.5;
-  const fadeInDuration = 0.05;
-  const fadeOutDuration = 0.2;
-  const loop = false;
   const order = 'ascending';  // ascending or random
-  const minAudioFiles = 1; // start at 0
-  const maxAudioFiles = 5; //
-  const synthMode = 'long'; //short or long
-  const thresholdIntensity = 1e-3;
+  const minAudioFiles = 3; // start at 0,  if order = ascending
+  const maxAudioFiles = 10; // if order = ascending
+  const threshold = 0.001; //  threshold for triggerng
+  const thresholdRotation = 1e-5//threshold for gating gyros
+  const movingMedianSize = 3; // min is >3, shortest latency
+  const minTimeInterval = 0.2; // [s], time between two triggering events 
+  const fadeInDuration = 0.05; // fadeIn of sound trigger
+  const synthMode = 'fadeout'; // otherwise, the whole sample is played
+  const fadeOutDuration = 1; // fadeoutDuration if synthMode = 'fadeout'
+  const loop = false;
 
+
+
+  // if you think you want to touch that, create a new script
+  // in your prefered editor or at https://10.10.0.1/script-editor
 
   // initialization
   const adjustLevelLin = helpers.math.decibelToLinear(adjustLevelDB); 
@@ -20,7 +25,7 @@ function kickRotation(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   
   
   //for kick detection 
-  const movingAverage = new helpers.algo.MovingAverage(3); //to change to median !!!
+  const movingMedian = new helpers.algo.MovingMedian(movingMedianSize); //to change to median !!!
   let triggered = false;
   let peak = 0;
   let triggerTime = 0;
@@ -51,12 +56,12 @@ function kickRotation(graph, helpers, audioInNode, audioOutNode, outputFrame) {
       const beta = inputFrame.data['rotationRate'].beta;
       const gamma = inputFrame.data['rotationRate'].gamma;
       const intensityGyro = Math.sqrt((alpha*alpha + beta*beta + gamma*gamma)/3) / 360; 
-      const clipped = Math.max(thresholdIntensity, intensityGyro) - thresholdIntensity;
+      const clipped = Math.max(thresholdRotation, intensityGyro) - thresholdRotation;
       
       const signal = clipped; //to trigger
       const gain = signal; //to adjust volume at start
       
-      const median = movingAverage.process(signal); // changr to median
+      const median = movingMedian.process(signal); // changr to median
       const delta = signal - median;       
       //console.log(delta);
 
@@ -100,7 +105,7 @@ function kickRotation(graph, helpers, audioInNode, audioOutNode, outputFrame) {
       }  else {
         triggered = false;
         peak = 0;  
-        if (synthMode === 'short') {
+        if (synthMode === 'fadeout') {
           synth.stop({ fadeOutDuration: fadeOutDuration });  
         }
       }   
