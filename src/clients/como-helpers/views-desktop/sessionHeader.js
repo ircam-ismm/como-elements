@@ -10,17 +10,35 @@ export function sessionHeader(data, listeners, {
   const session = data.sessions.get(sessionId).getValues();
 
   return html`
-    <div style="
-      position: relative;
-      margin: 0 0 6px;
-      background-color: #343434;
-      padding: 4px;
-    ">
+    <div
+      style="
+        position: relative;
+        margin: 0 0 6px;
+        background-color: #343434;
+        padding: 4px;
+      "
+    >
       <h3 style="
         height: 30px;
         line-height: 30px;
         margin: 0;
-      "># session
+      ">
+        <span
+          style="
+            cursor: pointer;
+            display: inline-block;
+            height: 100%;
+            line-height: 100%;
+            width: 84px;
+          "
+          @click="${e => {
+            const $content = e.currentTarget.parentElement.parentElement.nextElementSibling;
+            const display = $content.style.display === 'none' ? 'block' : 'none';
+            $content.style.display = display;
+          }}"
+        >
+          # session
+        </span>
         <sc-text
           .value="${session.name}"
           @change="${e => listeners.setSessionParams(sessionId, { name: e.detail.value })}"

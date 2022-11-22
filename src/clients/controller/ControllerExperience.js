@@ -286,19 +286,21 @@ class ControllerExperience extends AbstractExperience {
                 padding: 4px;
                 margin-top: 20px;
               ">
-              ${views.sessionHeader(viewData, listeners, { sessionId })}
-              ${views.graphOptionsControls(viewData, listeners, {
-                sessionId,
-                showScriptsControls: (this.viewOptions.layout === 'full'),
-              })}
+                ${views.sessionHeader(viewData, listeners, { sessionId })}
+                <div style="display:none;">
+                  ${views.graphOptionsControls(viewData, listeners, {
+                    sessionId,
+                    showScriptsControls: (this.viewOptions.layout === 'full'),
+                  })}
 
-              ${this.viewOptions.layout === 'full' ?
-                html`
-                  ${views.sessionLearning(viewData, listeners, { sessionId })}
-                  ${views.sessionLabelsAndAudioFiles(viewData, listeners, { sessionId })}
-                  ${views.sessionPlayers(viewData, listeners, { sessionId })}
-                `
-              : ``}
+                  ${this.viewOptions.layout === 'full' ?
+                    html`
+                      ${views.sessionLearning(viewData, listeners, { sessionId })}
+                      ${views.sessionLabelsAndAudioFiles(viewData, listeners, { sessionId })}
+                      ${views.sessionPlayers(viewData, listeners, { sessionId })}
+                    `
+                  : ``}
+                </div>
               </div>
             `;
           })}
