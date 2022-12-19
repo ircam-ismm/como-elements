@@ -5,10 +5,12 @@ function synthGestureRecognition(graph, helpers, audioInNode, audioOutNode, outp
   const fadeOutDuration = 1;  // [s]
   const loop = true;
 
+  const order = 'ascending'; // or 'ascending'
   // if you think you want to touch that, create a new script
   // in your prefered editor or at https://10.10.0.1/script-editor
   const audioContext = graph.como.audioContext;
-  let currentBuffer = undefined;
+  let currentLabel = undefined;
+  let labelsCounters = {};
 
   const synth = new helpers.synth.BufferPlayer(audioContext);
   synth.connect(audioOutNode);
@@ -19,13 +21,30 @@ function synthGestureRecognition(graph, helpers, audioInNode, audioOutNode, outp
     },
     process(inputFrame) {
       const label = inputFrame.data['ml-decoder'].likeliest;
-      // query all buffers related to the label, and pick a random buffer one
-      const buffers = graph.session.labelAudioFileTable.queryBuffers(label);
-      const index = Math.floor(Math.random() * buffers.length);
-      const buffer = buffers[index];
 
-      if (currentBuffer !== buffer) {
-        currentBuffer = buffer;
+      if (currentLabel !== label) {
+        currentLabel = label;
+        let buffer = null;
+
+        if (order === 'random') {
+          // query all buffers related to the label, and pick a random buffer one
+          const buffers = graph.session.labelAudioFileTable.queryBuffers(label);
+          const index = Math.floor(Math.random() * buffers.length);
+          buffer = buffers[index];
+        } else if (order === 'ascending') {
+          if (!labelsCounters[label]) {
+            labelsCounters[label] = 0;
+          }
+
+          const index = labelsCounters[label];
+          const filenames = graph.session.labelAudioFileTable.query(label);
+          const sorted = filenames.sort();
+          const filename = sorted[index];
+          buffer = graph.session.audioBuffers[filename];
+
+          labelsCounters[label] = (labelsCounters[label] + 1) % sorted.length;
+        }
+
         synth.stop({ fadeOutDuration });
 
         if (buffer) {
