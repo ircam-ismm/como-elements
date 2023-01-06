@@ -5,10 +5,10 @@
   "clients": {
     "player": {
       "target": "browser",
-      "default": true
     },
     "designer": {
       "target": "browser",
+      "default": true
     },
     "controller": {
       "target": "browser",
