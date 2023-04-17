@@ -211,7 +211,6 @@ class ControllerExperience extends AbstractExperience {
     window.cancelAnimationFrame(this.rafId);
 
     this.rafId = window.requestAnimationFrame(() => {
-
       const project = this.como.project.getValues();
       const sessions = Array.from(this.sessions.values());
       const players = Array.from(this.players.values());
@@ -221,6 +220,7 @@ class ControllerExperience extends AbstractExperience {
 
       const dataScriptList = this.scriptsDataService.getList();
       const audioScriptList = this.scriptsAudioService.getList();
+
 
       const viewData = {
         project: this.como.project.getValues(),
@@ -335,6 +335,7 @@ class ControllerExperience extends AbstractExperience {
           ${screen}
         </div>
       `, this.$container);
+
     });
   }
 }

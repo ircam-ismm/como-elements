@@ -17,10 +17,13 @@ export function graphOptionsControls(data, listeners, {
     return ``;
   }
 
-  const session = data.sessions.get(sessionId).getValues();
-  const destinationId = session.graph.audio.modules.find(m => m.type === 'AudioDestination').id;
-  const dataScripts = session.graph.data.modules.filter(m => m.type === 'ScriptData');
-  const audioScripts = session.graph.audio.modules.filter(m => m.type === 'ScriptAudio');
+  const session = data.sessions.get(sessionId);
+  const sessionGraph = session.get('graph');
+  const sessionGraphOptions = session.get('graphOptions');
+
+  const destinationId = sessionGraph.audio.modules.find(m => m.type === 'AudioDestination').id;
+  const dataScripts = sessionGraph.data.modules.filter(m => m.type === 'ScriptData');
+  const audioScripts = sessionGraph.audio.modules.filter(m => m.type === 'ScriptAudio');
 
   let player = null;
 
@@ -29,7 +32,7 @@ export function graphOptionsControls(data, listeners, {
   }
 
   const targetId = player ? playerId : sessionId;
-  const graphOptions = player ? player.graphOptions : session.graphOptions;
+  const graphOptions = player ? player.graphOptions : sessionGraphOptions;
   const updateGraphFunc = player ?
     listeners.updatePlayerGraphOptions : listeners.updateSessionGraphOptions;
 

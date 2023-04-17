@@ -5,13 +5,12 @@ import { playerControls } from './playerControls';
 export function sessionPlayers(data, listeners, {
   sessionId = null,
 } = {}) {
-  const session = data.sessions.get(sessionId).getValues();
   const players = Array.from(data.players.values())
-    .filter(player => player.get('sessionId') === session.id)
+    .filter(player => player.get('sessionId') === sessionId)
     .sort((a, b) => a.get('id') < b.get('id') ? -1 : 1)
     .sort((a, b) => a.get('metas').type === 'designer' ? -1 : 0); // display designers first
 
-  return html`
+  const view = html`
     <h3 style="${styles.h3}">Players</h3>
 
     ${players.map(player => playerControls(data, listeners, {
@@ -24,4 +23,6 @@ export function sessionPlayers(data, listeners, {
       showScriptsControls: true,
     }))}
   `;
+
+  return view;
 }

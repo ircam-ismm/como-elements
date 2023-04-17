@@ -7,9 +7,12 @@ import '@ircam/simple-components/sc-toggle.js';
 export function sessionLabelsAndAudioFiles(data, listeners, {
   sessionId = null,
 } = {}) {
-  const session = data.sessions.get(sessionId).getValues();
+  const session = data.sessions.get(sessionId);
+  const labels = session.get('labels');
+  const audioFiles = session.get('audioFiles');
+  const labelAudioFileTable = session.get('labelAudioFileTable');
 
-  return html`
+  const view = html`
       <a style="${styles.openCloseLink}"
       @click="${e => {
         e.preventDefault();
@@ -26,7 +29,7 @@ export function sessionLabelsAndAudioFiles(data, listeners, {
     ">
       <h3 style="${styles.h3}">labels</h3>
 
-      ${session.labels.map(label => {
+      ${labels.map(label => {
         return html`
           <div style="margin-bottom: 2px">
             <sc-text
@@ -59,7 +62,7 @@ export function sessionLabelsAndAudioFiles(data, listeners, {
       </div>
 
       <h3 style="${styles.h3}">audio files</h3>
-      ${session.audioFiles.sort().map(file => {
+      ${audioFiles.sort().map(file => {
         return html`
           <div style="margin-bottom: 2px">
             <sc-text
@@ -75,7 +78,7 @@ export function sessionLabelsAndAudioFiles(data, listeners, {
       })}
 
       <h3 style="${styles.h3}">labels / audio files table</h3>
-      ${session.labelAudioFileTable.map(row => {
+      ${labelAudioFileTable.map(row => {
         return html`
           <div style="margin-bottom: 2px">
             <sc-text
@@ -112,7 +115,7 @@ export function sessionLabelsAndAudioFiles(data, listeners, {
         >
           <option value="">> select label</option>
 
-          ${session.labels.map(label => {
+          ${labels.map(label => {
             return html`<option value="${label}">${label}</option>`;
           })}
         </select>
@@ -122,7 +125,7 @@ export function sessionLabelsAndAudioFiles(data, listeners, {
         >
           <option value="">> select audio file</option>
 
-          ${session.audioFiles.sort().filter(f => f.active).map(file => {
+          ${audioFiles.sort().filter(f => f.active).map(file => {
             return html`<option value="${file.name}">${file.name}</option>`;
           })}
         </select>
@@ -134,5 +137,7 @@ export function sessionLabelsAndAudioFiles(data, listeners, {
       </form>
     </div>
   `;
+
+  return view;
 }
 

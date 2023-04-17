@@ -2,7 +2,7 @@ import { html } from 'lit/html.js';
 import * as styles from './styles.js'
 
 export function createSessions(data, listeners) {
-  return html`
+  const view = html`
     <form
       @submit="${async e => {
         e.preventDefault();
@@ -50,4 +50,6 @@ export function createSessions(data, listeners) {
       />
     </form>
   `;
+
+  return view;
 }

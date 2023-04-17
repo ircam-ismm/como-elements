@@ -6,7 +6,7 @@
   // - 80 is default http port
   // - 443 is the default https port
   // these two ports
-  port: 8000,
+  port: 443,
 
   // If the application runs behind a proxy server (e.g. https://my-domain.com/my-app/`),
   // path to the application root (i.e. 'my-app')
@@ -26,8 +26,8 @@
   // },
 
   httpsInfos: {
-    key: null, // 'certs/privkey.pem',
-    cert: null, // 'certs/fullchain.pem',
+    key: '/Users/matuszewski/work/dev/utils/network/certs/privkey.pem',
+    cert: '/Users/matuszewski/work/dev/utils/network/certs/fullchain.pem',
   },
 
   // @important: for node clients only, Ip of the server

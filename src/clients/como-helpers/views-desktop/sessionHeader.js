@@ -7,7 +7,7 @@ import '@ircam/simple-components/sc-bang.js';
 export function sessionHeader(data, listeners, {
   sessionId = null,
 } = {}) {
-  const session = data.sessions.get(sessionId).getValues();
+  const sessionName = data.sessions.get(sessionId).get('name');
 
   return html`
     <div
@@ -40,7 +40,7 @@ export function sessionHeader(data, listeners, {
           # session
         </span>
         <sc-text
-          .value="${session.name}"
+          .value="${sessionName}"
           @change="${e => listeners.setSessionParams(sessionId, { name: e.detail.value })}"
         ></sc-text>
       </h3>
@@ -56,7 +56,7 @@ export function sessionHeader(data, listeners, {
           value="move all player to session"
         ></sc-text>
         <sc-bang
-          @input="${e => listeners.assignPlayersToSession(session.id)}"
+          @input="${e => listeners.assignPlayersToSession(sessionId)}"
         ></sc-bang>
       </div>
       <sc-button
@@ -66,7 +66,7 @@ export function sessionHeader(data, listeners, {
           right: 200px;
           top: 4px;
         "
-        @release="${e => listeners.duplicateSession(session.id)}"
+        @release="${e => listeners.duplicateSession(sessionId)}"
       ></sc-button>
       <sc-button
         value="Delete Session"
@@ -75,7 +75,7 @@ export function sessionHeader(data, listeners, {
           right: 4px;
           top: 4px;
         "
-        @release="${e => listeners.deleteSession(session.id)}"
+        @release="${e => listeners.deleteSession(sessionId)}"
       ></sc-button>
     </div>
   `;

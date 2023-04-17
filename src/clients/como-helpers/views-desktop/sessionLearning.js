@@ -6,9 +6,15 @@ import '@ircam/simple-components/sc-text.js';
 export function sessionLearning(data, listeners, {
   sessionId = null,
 } = {}) {
-  const session = data.sessions.get(sessionId).getValues();
+  return ``;
+  const session = data.sessions.get(sessionId);
+  const learningConfig = session.get('learningConfig');
 
-  return html`
+  console.time('copy examples');
+  const examples = session.get('examples'); // this is a problem
+  console.timeEnd('copy examples');
+
+  const view = html`
     <div>
       <h3 style="${styles.h3}">ML Config Presets</h3>
 
@@ -37,7 +43,7 @@ export function sessionLearning(data, listeners, {
         <sc-text
           height="250"
           width="400"
-          value="${JSON.stringify(session.learningConfig, null, 2)}"
+          value="${JSON.stringify(learningConfig, null, 2)}"
           @change="${e => listeners.setSessionParams(sessionId, { learningConfig: JSON.parse(e.detail.value) })}"
         ></sc-text>
       </div>
@@ -50,7 +56,7 @@ export function sessionLearning(data, listeners, {
           @input="${e => listeners.deleteSessionExamples(sessionId)}"
         ></sc-button>
 
-        ${Object.values(session.examples)
+        ${Object.values(examples)
           .map(example => example.label)
           .filter((item, index, arr) => arr.indexOf(item) === index)
           .map(label => {
@@ -73,8 +79,8 @@ export function sessionLearning(data, listeners, {
       >> show examples details</a>
 
       <div style="display: none">
-        ${Object.keys(session.examples).map(exampleUuid => {
-          const example = session.examples[exampleUuid];
+        ${Object.keys(examples).map(exampleUuid => {
+          const example = examples[exampleUuid];
 
           return html`
             <p style="
@@ -102,4 +108,6 @@ export function sessionLearning(data, listeners, {
       </div>
     </div>
   `;
+
+  return view;
 }
