@@ -28,9 +28,10 @@ dns/dnsmasq.leases
 
 /projects/*
 !/projects/default
+!/projects/dev
 
-projects/default/recordings/*
-projects/default/sessions
+/projects/*/recordings/*
+/projects/*/sessions
 
 02-launch-*.command
 !02-launch-app.command

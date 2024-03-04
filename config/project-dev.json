@@ -1,7 +1,7 @@
 {
   name: 'CoMo Elements',
   author: 'Ircam - ISMM',
-  project: 'education',
+  project: 'dev',
 
   // test
   preloadAudioFiles: false,
