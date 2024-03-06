@@ -1,10 +1,10 @@
 function synthLikeliestLoop(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   // console.log(graph.session.audioBuffers);
   const audioContext = graph.como.audioContext;
-  const syncedScheduler = helpers.syncedScheduler;
+  const syncPlugin = graph.como.experience.plugins.sync;
   let currentBuffer = undefined;
 
-  const synth = new helpers.synth.SyncedBufferPlayer(syncedScheduler, audioContext);
+  const synth = new helpers.synth.SyncedBufferPlayer(syncPlugin, audioContext);
   synth.connect(audioOutNode);
 
   return {
