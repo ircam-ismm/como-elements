@@ -6,7 +6,7 @@
   // - 80 is default http port
   // - 443 is the default https port
   // these two ports
-  port: 443,
+  port: 8000,
 
   // If the application runs behind a proxy server (e.g. https://my-domain.com/my-app/`),
   // path to the application root (i.e. 'my-app')

@@ -7,7 +7,7 @@ import views from '../como-helpers/views-mobile/index.js';
 
 // for simple debugging in browser...
 const MOCK_SENSORS = window.location.hash === '#mock-sensors';
-console.info('> to mock sensors for debugging purpose, use https://127.0.0.1:8000/designer#mock-sensors');
+console.info('> to mock sensors for debugging purpose, use https://127.0.0.1:8000/#mock-sensors');
 console.info('> hash:', window.location.hash, '- mock sensors:', MOCK_SENSORS);
 
 class DesignerExperience extends AbstractExperience {
@@ -42,7 +42,8 @@ class DesignerExperience extends AbstractExperience {
       return this.render();
     }
 
-    const source = this.como.hasDeviceMotion ?
+    console.log(this.como.hasDeviceMotion);
+    const source = this.como.hasDeviceMotion && !MOCK_SENSORS ?
       new this.como.sources.DeviceMotion(this.como, player.get('id')) :
       new this.como.sources.RandomValues(this.como, player.get('id'));
 
