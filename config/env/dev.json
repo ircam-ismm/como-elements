@@ -26,8 +26,8 @@
   // },
 
   httpsInfos: {
-    key: '/Users/matuszewski/work/dev/utils/network/certs/privkey.pem',
-    cert: '/Users/matuszewski/work/dev/utils/network/certs/fullchain.pem',
+    key: '../network/certs/privkey.pem',
+    cert: '../network/certs/fullchain.pem',
   },
 
   // @important: for node clients only, Ip of the server

@@ -26,8 +26,8 @@
   // },
 
   httpsInfos: {
-    key: null, // 'certs/privkey.pem',
-    cert: null, // 'certs/fullchain.pem',
+    key: '../network/certs/privkey.pem',
+    cert: '../network/certs/fullchain.pem',
   },
 
   // @important: for node clients only, Ip of the server
