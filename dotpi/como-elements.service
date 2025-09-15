@@ -1,0 +1,22 @@
+[Unit]
+Description=como-elements
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=exec
+Environment="ENV=default"
+ExecStart=npm run start
+WorkingDirectory=/home/pi/apps/como-elements
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+
+# wait before restarting
+RestartSec=5s
+
+# Do not stop to try restarting service
+StartLimitBurst=0
+
+[Install]
+WantedBy=default.target

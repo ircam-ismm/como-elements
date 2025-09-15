@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# local directory
+cd "$( dirname "$0" )" || (echo "no dir: ${0}"; exit 1)
+
+(cd .. && npm install)
+(cd .. && npm run build)
+
+sudo dotpi service-install como-elements.service
