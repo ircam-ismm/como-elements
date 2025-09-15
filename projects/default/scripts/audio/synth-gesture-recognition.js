@@ -1,16 +1,34 @@
 function synthGestureRecognition(graph, helpers, audioInNode, audioOutNode, outputFrame) {
   
   // user parameters
-  const fadeInDuration = 0.2; // [s]
-  const fadeOutDuration = 1;  // [s]
+  const fadeInDuration = 0.1; // [s]
+  const fadeOutDuration = 0.5;  // [s]
   const loop = true;
-
+  const windowSize = 50;
+  const threshold = 0.6; //%
   const order = 'ascending'; // or 'ascending'
   // if you think you want to touch that, create a new script
   // in your prefered editor or at https://10.10.0.1/script-editor
+  
   const audioContext = graph.como.audioContext;
   let currentLabel = undefined;
   let labelsCounters = {};
+  let slidingWindow = new Array(windowSize).fill(0)
+  let slidingWindowIndex = 0
+  
+  function histogram(data) {
+
+    const max = Math.max(...data)
+    const histogram = new Array(max + 1).fill(0);
+    for (const item of data) {
+        histogram[item]++;
+    }
+    const maxHistogram = Math.max(...histogram)
+    const indexMaxHistogram = histogram.indexOf(maxHistogram)
+    
+    return {'maxHistogram': maxHistogram, 'indexMaxHistogram':indexMaxHistogram};
+  }
+
 
   const synth = new helpers.synth.BufferPlayer(audioContext);
   synth.connect(audioOutNode);
@@ -20,10 +38,24 @@ function synthGestureRecognition(graph, helpers, audioInNode, audioOutNode, outp
 
     },
     process(inputFrame) {
-      const label = inputFrame.data['ml-decoder'].likeliest;
+      const labelUnfiltered =  inputFrame.data['ml-decoder'].likeliest; 
+      const labels = inputFrame.data['ml-decoder'].labels; 
+      const indexLikeliest = labels.indexOf(labelUnfiltered);
+      
+      slidingWindow[slidingWindowIndex] = indexLikeliest;
+      slidingWindowIndex = (slidingWindowIndex + 1) % windowSize;
+
+      const maxHistogramNormalised = histogram(slidingWindow).maxHistogram/windowSize;
+      const indexMaxHistogram = histogram(slidingWindow).indexMaxHistogram;
+
+      let label = null;
+      if (maxHistogramNormalised > threshold){
+        label = labels[indexMaxHistogram];
+      };
 
       if (currentLabel !== label) {
         currentLabel = label;
+
         let buffer = null;
 
         if (order === 'random') {
@@ -44,7 +76,7 @@ function synthGestureRecognition(graph, helpers, audioInNode, audioOutNode, outp
 
           labelsCounters[label] = (labelsCounters[label] + 1) % sorted.length;
         }
-
+        console.log(label,buffer);
         synth.stop({ fadeOutDuration });
 
         if (buffer) {
