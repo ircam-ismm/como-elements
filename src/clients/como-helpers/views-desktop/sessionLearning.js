@@ -6,13 +6,9 @@ import '@ircam/simple-components/sc-text.js';
 export function sessionLearning(data, listeners, {
   sessionId = null,
 } = {}) {
-  return ``;
   const session = data.sessions.get(sessionId);
   const learningConfig = session.get('learningConfig');
-
-  console.time('copy examples');
   const examples = session.get('examples'); // this is a problem
-  console.timeEnd('copy examples');
 
   const view = html`
     <div>

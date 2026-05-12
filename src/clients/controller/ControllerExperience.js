@@ -287,7 +287,7 @@ class ControllerExperience extends AbstractExperience {
                 margin-top: 20px;
               ">
                 ${views.sessionHeader(viewData, listeners, { sessionId })}
-                <div style="display:none;">
+                <div>
                   ${views.graphOptionsControls(viewData, listeners, {
                     sessionId,
                     showScriptsControls: (this.viewOptions.layout === 'full'),
